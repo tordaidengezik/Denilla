@@ -38,3 +38,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+package-lock.json
+package.json
+pnpm-lock.yaml
+postcss.config.mjs
+tailwind.config.ts
+tsconfig.json
+README.md

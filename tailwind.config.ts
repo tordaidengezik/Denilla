@@ -11,6 +11,14 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        customBg: '#000C18'
+      },
+      spacing: {
+        14: '3.5rem', 
+        16: '4rem',    
+        18: '4.5rem', 
+        20: '5rem',    
+        24: '10rem', 
       },
     },
   },

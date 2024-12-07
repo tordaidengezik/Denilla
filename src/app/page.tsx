@@ -21,14 +21,15 @@ export default function Home() {
         <h1 className="text-4xl font-semibold text-gray-500 text-opacity-90">
           Next generation social network platform.
         </h1>
+        
         <Link 
-          href="/api/auth/register" 
+          href="/register" 
           className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 font-semibold w-64 text-center"
         >
           Create Account
         </Link>
         <Link 
-          href="/api/auth/login" 
+          href="/login" 
           className="bg-black text-orange-500 px-6 py-2 border border-gray-700 rounded-lg hover:bg-gray-900 font-semibold w-64 text-center"
         >
           Sign in

@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
+export async function registerUser(req: Request) {
   try {
     const { username, email, password } = await req.json();
 
@@ -26,3 +26,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Adatbázis hiba.' }, { status: 500 });
   }
 }
+
+export const POST = registerUser;

@@ -50,9 +50,11 @@ export default function CreatePostPage() {
                 {uploadedImage && (
                     <div className="flex justify-center items-center mt-4">
                         <div className="relative inline-block border border-gray-700 rounded-lg bg-gray-900">
-                            <img
+                            <Image
                                 src={uploadedImage}
                                 alt="Uploaded"
+                                width={500}
+                                height={500}
                                 className="w-auto h-auto max-w-full max-h-[500px] object-contain rounded-lg"
                             />
                         </div>

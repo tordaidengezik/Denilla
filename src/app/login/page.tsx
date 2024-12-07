@@ -1,10 +1,12 @@
+"use client"; 
+
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation'; 
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
-  const router = useRouter();
+  const router = useRouter(); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +23,14 @@ export default function Login() {
       if (res.ok) {
         const data = await res.json();
         setMessage('Login successful!');
-        localStorage.setItem('token', data.token); // JWT tárolása
-        router.push('/'); // Átirányítás a főoldalra
-      } else {
+        localStorage.setItem('token', data.token); 
+        router.push('/');
+      } else{
         const error = await res.json();
         setMessage(error.error || 'Invalid login.');
+      }   
       }
-    } catch (err) {
+     catch (err) {
       setMessage('Failed to connect to the server.');
       console.error(err); 
     }

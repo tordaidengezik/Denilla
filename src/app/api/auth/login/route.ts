@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-export async function POST(req: Request) {
+export async function loginUser(req: Request) {
   try {
     const { email, password } = await req.json();
 
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user  !(await bcrypt.compare(password, user.password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return NextResponse.json({ error: 'Helytelen felhasználónév vagy jelszó.' }, { status: 401 });
     }
 
@@ -28,3 +28,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Adatbázis hiba.' }, { status: 500 });
   }
 }
+
+export const POST = loginUser;

@@ -1,18 +1,24 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from "next/image";
-import { House, Search, Bell, Bookmark } from 'lucide-react';
+import { House, Search, Bell, Bookmark, LogOut } from 'lucide-react';
 
 export default function SideMenu() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const getLinkClass = (path: string) => 
     pathname === path ? 'text-orange-500 font-bold mb-4' : 'text-white mb-4';
 
   const getIconColor = (path: string) =>
     pathname === path ? "#E8760F" : "#FFFFFF";
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
 
   return (
       <nav className="w-full md:w-1/4 h-full md:h-full bg-dark-gray p-6 flex flex-col items-center space-y-5">
@@ -62,7 +68,13 @@ export default function SideMenu() {
               Post
             </button>
           </Link>
-
+        <button
+          onClick={handleLogout}
+          className="flex items-center space-x-3 text-white mt-6 hover:text-red-500 transition-all"
+        >
+          <LogOut color="#FFFFFF" size={30} />
+          <span>Logout</span>
+        </button>
         </div>
       </nav>
   );

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 
 export default function Register() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [message, setMessage] = useState('');
+  const router = useRouter(); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,10 +22,11 @@ export default function Register() {
 
       if (res.ok) {
         const data = await res.json();
-        setMessage(data.message || 'Registration successful!');
+        setMessage(data.message || 'Sikeres regisztráció!');
+        router.push('/post');
       } else {
         const error = await res.json();
-        setMessage(error.error || 'An error occurred.');
+        setMessage(error.error || 'Hiba lépett fel.');
       }
     } catch (err) {
       setMessage('Failed to connect to the server.');

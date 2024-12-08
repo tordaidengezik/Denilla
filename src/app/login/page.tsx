@@ -22,12 +22,12 @@ export default function Login() {
 
       if (res.ok) {
         const data = await res.json();
-        setMessage('Login successful!');
+        setMessage('Sikeres bejelentkezés!');
         localStorage.setItem('token', data.token); 
-        router.push('/');
+        router.push('/post');
       } else{
         const error = await res.json();
-        setMessage(error.error || 'Invalid login.');
+        setMessage(error.error || 'Érvénytelen bejelentkezés.');
       }   
       }
      catch (err) {

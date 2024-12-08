@@ -17,7 +17,7 @@ export async function loginUser(req: Request) {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return NextResponse.json({ error: 'Helytelen felhasználónév vagy jelszó.' }, { status: 401 });
+      return NextResponse.json({ error: 'Helytelen e-mail cím vagy jelszó.' }, { status: 401 });
     }
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });

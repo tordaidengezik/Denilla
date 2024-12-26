@@ -21,7 +21,9 @@ export default function SideMenu() {
   };
 
   return (
-      <nav className="w-full md:w-1/4 h-full md:h-full bg-dark-gray p-6 flex flex-col items-center space-y-5">
+    <div className="relative w-full md:w-1/4 h-screen bg-dark-gray">
+      {/* Navigation Menu */}
+      <nav className="p-6 flex flex-col items-center space-y-5">
         <div className="flex flex-col items-start">
           <div className="flex-shrink-0 mb-4">
             <Link href="/">
@@ -68,14 +70,31 @@ export default function SideMenu() {
               Post
             </button>
           </Link>
-        <button
-          onClick={handleLogout}
-          className="flex items-center space-x-3 text-white mt-6 hover:text-red-500 transition-all"
-        >
-          <LogOut color="#FFFFFF" size={30} />
-          <span>Logout</span>
-        </button>
         </div>
       </nav>
+
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-md border border-gray-600 rounded-full shadow-lg">
+        <Link
+          href="/profile"
+          className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-600 rounded-full transition-all w-full"
+        >
+          <Image
+            src="/yeti_pfp.jpg"
+            alt="Logo"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <span className="font-bold text-xl ml-3">Yeti</span>
+        </Link>
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600  rounded-full "
+        >
+          <LogOut color="#FFFFFF" size={30} />
+        </button>
+      </div>
+    </div>
   );
 }

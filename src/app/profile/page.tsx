@@ -12,6 +12,11 @@ export default function Layout() {
     const [topBookmarks, setTopBookmarks] = useState(56);
     const [topBookmarked, setTopBookmarked] = useState(false);
 
+    const [midLikes, setMidLikes] = useState(3224);
+    const [midLiked, setMidLiked] = useState(false);
+    const [midBookmarks, setMidBookmarks] = useState(765);
+    const [midBookmarked, setMidBookmarked] = useState(false);
+
     const [mid2Likes, setMid2Likes] = useState(3224);
     const [mid2Liked, setMid2Liked] = useState(false);
     const [mid2Bookmarks, setMid2Bookmarks] = useState(765);
@@ -30,7 +35,7 @@ export default function Layout() {
                 <TopMenu />
                 
                 {/* Felső Post */}
-                <div className="pt-5 pr-5 pl-5">
+                <div className="p-4">
                     <div className="p-4 bg-black border border-gray-500 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
@@ -91,7 +96,68 @@ export default function Layout() {
                 </div>
 
                 {/* Középső Post */}
-                <div className="pt-5 pr-5 pl-5">
+                <div className="p-4">
+                    <div className="p-4 bg-black border border-gray-500 rounded-xl">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                                <Image
+                                    src="/yeti_pfp.jpg"
+                                    alt="Logo"
+                                    width={40}
+                                    height={40}
+                                    className="rounded-full"
+                                />
+                                <h1 className="font-bold text-white">Yeti</h1>
+                                <h1 className="flex text-gray-400">
+                                    <Dot />
+                                    2021 November 30
+                                </h1>
+                            </div>
+
+                            <div className="flex items-center space-x-6">
+                                <button
+                                    onClick={() => {
+                                        setMidLiked(!midLiked);
+                                        setMidLikes(midLiked ? midLikes - 1 : midLikes + 1);
+                                    }}
+                                    className="flex items-center space-x-2"
+                                >
+                                    <p className={midLiked ? "text-red-600" : "text-white"}>{midLikes}</p>
+                                    <Heart className={midLiked ? "text-red-600" : "text-white"} />
+                                </button>
+                                
+                                <button
+                                    onClick={() => {
+                                        setMidBookmarked(!midBookmarked);
+                                        setMidBookmarks(midBookmarked ? midBookmarks - 1 : midBookmarks + 1);
+                                    }}
+                                    className="flex items-center space-x-2"
+                                >
+                                    <p className={midBookmarked ? "text-blue-500" : "text-white"}>{midBookmarks}</p>
+                                    <Bookmark className={midBookmarked ? "text-blue-500" : "text-white"} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="pt-5">
+                            <p>
+                                If the image is rectangular, using rounded-full will turn it into an oval
+                                shape unless the width and height are equal. For a circular appearance,
+                                ensure the image is square (width === height).
+                            </p>
+                            <Image
+                                src="/space.webp"
+                                alt="Post Image"
+                                width={5000}
+                                height={5000}
+                                className="rounded-xl pt-3"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Középső Post 2 */}
+                <div className="p-4">
                     <div className="p-4 bg-black border border-gray-500 rounded-xl max-h-[600px] overflow-hidden relative">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
@@ -154,7 +220,7 @@ export default function Layout() {
                 </div>
 
                 {/* Alsó Post */}
-                <div className="pt-5 pr-5 pl-5">
+                <div className="p-4">
                     <div className="p-4 bg-black border border-gray-500 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">

@@ -41,7 +41,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
+    <div className="flex flex-col items-center justify-center h-screen bg-dark-gray text-white">
       <h1 className="text-4xl font-bold mb-6">Login</h1>
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
         <input

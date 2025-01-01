@@ -87,7 +87,6 @@ export default function SideMenu() {
           />
           <span className="font-bold text-xl ml-3">Yeti</span>
         </Link>
-
         <button
           onClick={handleLogout}
           className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600  rounded-full "

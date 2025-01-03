@@ -1,45 +1,52 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { put } from '@vercel/blob';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
+// Token ellenőrző middleware
+const verifyToken = (req: Request) => {
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET!);
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return null;
+  }
+};
+
+
 export async function POST(req: Request) {
   try {
+    // Token ellenőrzés
+    const user = verifyToken(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const content = formData.get('content') as string;
     const userId = formData.get('userId') as string;
     const file = formData.get('file') as File | null;
 
-    // Validáció
     if (!content && !file) {
       return NextResponse.json(
-        { error: 'Content or file is required' },
+        { error: 'Tartalom vagy kép szükséges' },
         { status: 400 }
       );
     }
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      );
-    }
-
+    // Ideiglenes base64 kép tárolás
     let imageURL = null;
     if (file) {
-      try {
-        const blob = await put(file.name, file, {
-          access: 'public',
-        });
-        imageURL = blob.url;
-      } catch (error) {
-        console.error('File upload error:', error);
-        return NextResponse.json(
-          { error: 'File upload failed' },
-          { status: 500 }
-        );
-      }
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      imageURL = `data:${file.type};base64,${buffer.toString('base64')}`;
     }
 
     const post = await prisma.post.create({
@@ -64,6 +71,39 @@ export async function POST(req: Request) {
     console.error('Post creation error:', error);
     return NextResponse.json(
       { error: 'Hiba történt a poszt létrehozásakor' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    // Token ellenőrzés
+    const user = verifyToken(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const posts = await prisma.post.findMany({
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+        likes: true,
+        bookmarks: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return NextResponse.json(posts);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return NextResponse.json(
+      { error: 'Hiba történt a posztok lekérésekor' },
       { status: 500 }
     );
   }

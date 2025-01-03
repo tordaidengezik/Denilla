@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation'; // Ezt módosítottuk
 import SideMenu from "../sidemenu/page";
 import TopMenu from "../topmenu/page";
 import RightSideMenu from "../rightSideMenu/page";
@@ -19,31 +20,39 @@ interface PostType {
 }
 
 export default function Layout() {
-  const [posts, setPosts] = useState<PostType[]>([]); // Üres tömbbel inicializáljuk
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/api/posts');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        const token = localStorage.getItem('token');
+        if (!token) {
+          router.push('/login');
+          return;
         }
-        const data = await response.json();
-        // Ellenőrizzük, hogy a data tömb-e
-        if (Array.isArray(data)) {
+
+        const response = await fetch('/api/posts', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
           setPosts(data);
         } else {
-          console.error('A szervertől érkezett adat nem tömb formátumú');
-          setPosts([]); // Fallback üres tömbre
+          console.error('Hiba történt a posztok betöltésekor:', response.statusText);
+          setPosts([]);
         }
       } catch (error) {
         console.error('Hiba történt a posztok betöltésekor:', error);
-        setPosts([]); // Hiba esetén üres tömb
+        setPosts([]);
       }
     };
-
     fetchPosts();
-  }, []);
+  }, [router]); 
+
+
 
   // Ellenőrizzük, hogy van-e adat
   if (!posts || posts.length === 0) {

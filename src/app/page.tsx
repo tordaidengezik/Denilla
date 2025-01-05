@@ -1,9 +1,41 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [formVisible, setFormVisible] = useState<"register" | "login" | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const username = formData.get('username');
+
+    try {
+      const endpoint = formVisible === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, username }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+        router.push('/foryou');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <div
@@ -30,40 +62,9 @@ export default function Home() {
           Next generation social network platform.
         </h1>
 
-        {formVisible === "register" && (
-          <div className="bg-gray-900 bg-opacity-60 p-6 rounded-lg shadow-lg max-w-md w-full mb-6">
-            <form className="flex flex-col space-y-4">
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <button
-                type="submit"
-                className="bg-white text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-300 transition-all font-semibold"
-              >
-                Create Account
-              </button>
-            </form>
-          </div>
-        )}
-
-        {formVisible === "login" && (
-          <div className="bg-gray-900 bg-opacity-60 p-6 rounded-lg shadow-lg max-w-md w-full mb-6">
-            <form className="flex flex-col space-y-4">
+        {formVisible === "login" ? (
+          <div className="bg-[#1f1f1f] bg-opacity-80 p-6 rounded-lg shadow-lg w-96 mb-6">
+            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
               <input
                 type="email"
                 name="email"
@@ -84,24 +85,50 @@ export default function Home() {
               </button>
             </form>
           </div>
-        )}
-
-        {formVisible !== "register" && (
-          <button
-            onClick={() => setFormVisible("register")}
-            className="bg-white text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-200 font-semibold w-64 text-center"
-          >
-            Create Account
-          </button>
-        )}
-
-        {formVisible !== "login" && (
-          <button
-            onClick={() => setFormVisible("login")}
-            className="bg-black text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-800 font-semibold w-64 text-center"
-          >
-            Sign In
-          </button>
+        ) : formVisible === "register" ? (
+          <div className="bg-[#1f1f1f] bg-opacity-80 p-6 rounded-lg shadow-lg w-96">
+            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <button
+                type="submit"
+                className="bg-white text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-200 transition-all font-semibold"
+              >
+                Create Account
+              </button>
+            </form>
+          </div>
+        ) : (
+          <div className="flex flex-col space-y-4 w-96">
+            <button
+              onClick={() => setFormVisible("login")}
+              className="bg-black text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-800 font-semibold"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => setFormVisible("register")}
+              className="bg-white text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-200 font-semibold"
+            >
+              Create Account
+            </button>
+          </div>
         )}
 
         <h1 className="text-xs text-black">

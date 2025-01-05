@@ -1,18 +1,18 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname, } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from "next/image";
 import { House, Search, Bell, Bookmark, LogOut } from 'lucide-react';
 import CreatePostModal from '../createPost/createPost';
 import { useState } from 'react';
-import { signOut } from "next-auth/react";
+
 
 
 
 export default function SideMenu() {
   const pathname = usePathname();
-  
+  const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -31,16 +31,10 @@ export default function SideMenu() {
       ? "#E8760F"
       : "#FFFFFF";
 
-    const handleLogout = async () => {
-      try {
-        await signOut({
-          redirect: true,
-          callbackUrl: "/" // A főoldalra irányít kijelentkezés után
-        });
-      } catch (error) {
-        console.error("Kijelentkezési hiba:", error);
-      }
-    };
+      const handleLogout = () => {
+        localStorage.removeItem("token");
+        router.push("/");
+      };
 
   return (
     <div className="relative w-full md:w-1/4 h-screen bg-dark-gray">

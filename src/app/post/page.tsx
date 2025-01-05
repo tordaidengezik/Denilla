@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'; // Ezt módosítottuk
+import { useRouter } from 'next/navigation'; 
 import SideMenu from "../sidemenu/page";
 import TopMenu from "../topmenu/page";
 import RightSideMenu from "../rightSideMenu/page";
 import Post from "../postSablon/post";
+
+
 
 interface PostType {
   id: number;
@@ -76,6 +78,7 @@ export default function Layout() {
         {Array.isArray(posts) && posts.map((post) => (
           <div key={post.id}>
             <Post
+              id={post.id}
               author={post.user.username}
               date={new Date(post.createdAt).toLocaleDateString()}
               content={post.content}

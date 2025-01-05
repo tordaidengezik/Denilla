@@ -1,11 +1,10 @@
 import SideMenu from "../sidemenu/page";
-import TopMenu from "../topmenu/page";
 import RightSideMenu from "../rightSideMenu/page";
 import Post from "../postSablon/post";
 
-export default function Layout() {
-  // Manuális adatok (később helyettesíthetők adatbázisból érkező adatokkal)
-  const posts = [
+export default function BookmarksPage() {
+  // Példa könyvjelzőzött posztok
+  const bookmarkedPosts = [
     {
       id: 1,
       author: "Yeti",
@@ -42,10 +41,7 @@ export default function Layout() {
       <SideMenu />
 
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
-        <TopMenu />
-
-        {/* Posztok megjelenítése */}
-        {posts.map((post) => (
+        {bookmarkedPosts.map((post) => (
           <div key={post.id}>
             <Post
               author={post.author}
@@ -55,7 +51,7 @@ export default function Layout() {
               initialLikes={post.initialLikes}
               initialBookmarks={post.initialBookmarks}
             />
-           
+
             <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
           </div>
         ))}

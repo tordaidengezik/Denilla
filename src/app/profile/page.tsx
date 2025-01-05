@@ -6,7 +6,7 @@ import Post from "../postSablon/post"; // Importáljuk a Post sablont
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Bell } from 'lucide-react';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ProfileTopMenu from '../profileTopMenu/page'; // Importáljuk a ProfileTopMenu komponenst
 
 interface PostType {
@@ -53,28 +53,6 @@ export default function ProfilePage() {
 
     fetchUserPosts();
   }, [router]);
-  // const posts = [
-  //   {
-  //     id: 1,
-  //     author: "Yeti",
-  //     date: "2022 December 12",
-  //     content:
-  //       "If the image is rectangular, using rounded-full will turn it into an oval shape unless the width and height are equal.",
-  //     imageSrc: "/death-stranding.jpg",
-  //     initialLikes: 234,
-  //     initialBookmarks: 56,
-  //   },
-  //   {
-  //     id: 3,
-  //     author: "Yeti",
-  //     date: "2018 September 09",
-  //     content:
-  //       "Embark on a voyage of a lifetime with One Piece. The epic anime series created by renowned mangaka Eiichiro Oda is a global phenomenon.",
-  //     imageSrc: "/luffy.jpg",
-  //     initialLikes: 120,
-  //     initialBookmarks: 30,
-  //   },
-  // ];
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -82,7 +60,6 @@ export default function ProfilePage() {
 
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
         <hr className="w-full border-gray-500 border-t-2 mx-auto" />
-
         {/* Profil fejléc */}
         <div className="relative bg-gray-800 h-48">
           {/* Borítókép */}

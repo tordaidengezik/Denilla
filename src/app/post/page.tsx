@@ -23,6 +23,9 @@ interface PostType {
 
 export default function Layout() {
   const [posts, setPosts] = useState<PostType[]>([]);
+  const handlePostDelete = (deletedId: number) => {
+    setPosts(currentPosts => currentPosts.filter(post => post.id !== deletedId));
+  };
   const router = useRouter();
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export default function Layout() {
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
         <TopMenu />
         {Array.isArray(posts) && posts.map((post) => (
-          <div key={post.id}>
+          <div key={post.id} id={`post-${post.id}`}>
             <Post
               id={post.id}
               author={post.user.username}
@@ -85,6 +88,7 @@ export default function Layout() {
               imageSrc={post.imageURL}  // imageURL használata
               initialLikes={post.likes.length}
               initialBookmarks={post.bookmarks.length}
+              onDelete={handlePostDelete}
             />
             <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
           </div>

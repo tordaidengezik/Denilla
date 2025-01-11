@@ -2,6 +2,7 @@
 
 import SideMenu from '../sidemenu/page';
 import RightSideMenu from "../rightSideMenu/page";
+<<<<<<< HEAD
 import Image from 'next/image';
 import { Bell } from 'lucide-react';
 import { useState } from 'react';
@@ -15,16 +16,48 @@ interface ProfileTemplateProps {
     coverImage: string;
     profileImage: string;
   }
+=======
+import Post from "../postSablon/post";
+import Image from 'next/image';
+import { Bell } from 'lucide-react';
+import { useState } from 'react';
+import ProfileTopMenu from '../profileTopMenu/page';
+
+interface PostData {
+  id: number;
+  author: string;
+  date: string;
+  content: string;
+  imageSrc: string;
+  initialLikes: number;
+  initialBookmarks: number;
+}
+
+interface ProfileTemplateProps {
+  name: string;
+  description: string;
+  coverImage: string;
+  profileImage: string;
+  posts: PostData[];
+}
+>>>>>>> 6cd064934ab47c6fd25e6457d4744a100f2cc06c
 
 const Profile = ({
   name,
   description,
   coverImage,
   profileImage,
+<<<<<<< HEAD
 }: ProfileTemplateProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isNotified, setIsNotified] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'likes'>('posts');
+=======
+  posts,
+}: ProfileTemplateProps) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isNotified, setIsNotified] = useState(false);
+>>>>>>> 6cd064934ab47c6fd25e6457d4744a100f2cc06c
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -76,6 +109,7 @@ const Profile = ({
           </div>
           <p className="text-white mt-5">{description}</p>
         </div>
+<<<<<<< HEAD
         {/* Tab váltó gombok */}
         <div className="flex border-b border-gray-700">
           <button
@@ -99,6 +133,26 @@ const Profile = ({
         {/* Tartalom megjelenítése */}
         {activeTab === 'posts' && <ProfilePosts />}
         {activeTab === 'likes' && <ProfileLikes />}
+=======
+
+        <ProfileTopMenu />
+
+        {/* Posztok */}
+        {posts.map((post) => (
+          <div key={post.id}>
+            <Post
+              id={post.id}
+              author={post.author}
+              date={post.date}
+              content={post.content}
+              imageSrc={post.imageSrc}
+              initialLikes={post.initialLikes}
+              initialBookmarks={post.initialBookmarks}
+            />
+            <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+          </div>
+        ))}
+>>>>>>> 6cd064934ab47c6fd25e6457d4744a100f2cc06c
       </main>
 
       <RightSideMenu />
@@ -106,4 +160,8 @@ const Profile = ({
   );
 };
 
+<<<<<<< HEAD
 export default Profile;
+=======
+export default Profile;
+>>>>>>> 6cd064934ab47c6fd25e6457d4744a100f2cc06c

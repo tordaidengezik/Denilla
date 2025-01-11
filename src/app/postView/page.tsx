@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6cd064934ab47c6fd25e6457d4744a100f2cc06c
 import SideMenu from "../sidemenu/page";
 import RightSideMenu from "../rightSideMenu/page";
 import Post from "../postSablon/post";
@@ -79,4 +82,8 @@ export default function Layout() {
       <RightSideMenu />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6cd064934ab47c6fd25e6457d4744a100f2cc06c

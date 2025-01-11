@@ -59,6 +59,7 @@ export default function ProfilePosts() {
             imageSrc={post.imageURL}
             initialLikes={post.likes.length}
             initialBookmarks={post.bookmarks.length}
+            showActions={true}
           />
           <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
         </div>

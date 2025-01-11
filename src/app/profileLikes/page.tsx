@@ -3,61 +3,63 @@
 import { useEffect, useState } from "react";
 import Post from "../postSablon/post";
 
-interface PostType {
+interface LikedPost {
   id: number;
-  user: {
-    username: string;
-  };
+  author: string;
+  date: string;
   content: string;
-  imageURL?: string;
-  createdAt: string;
-  likes: { userId: number; username: string }[];
-  bookmarks: { userId: number; username: string }[];
+  imageSrc?: string;
+  initialLikes: number;
+  initialBookmarks: number;
 }
 
 export default function ProfileLikes() {
-  const [likedPosts, setLikedPosts] = useState<PostType[]>([]);
+  const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
 
-  useEffect(() => {
-    const fetchLikedPosts = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
+// Like-ok frissítése amikor változás történik
+const updateLikes = () => {
+  const savedLikes = localStorage.getItem('likedPosts');
+  if (savedLikes) {
+    setLikedPosts(JSON.parse(savedLikes));
+  } else {
+    setLikedPosts([]);
+  }
+};
 
-        const response = await fetch('/api/like', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+// Kezdeti betöltés
+useEffect(() => {
+  updateLikes();
+}, []);
 
-        if (response.ok) {
-          const data = await response.json();
-          setLikedPosts(data);
-        }
-      } catch (error) {
-        console.error('Hiba történt a kedvelt posztok betöltésekor:', error);
-      }
-    };
+// Like-ok változásának figyelése
+useEffect(() => {
+  window.addEventListener('storage', updateLikes);
+  // Custom event figyelése a közvetlen változásokhoz
+  window.addEventListener('likeUpdate', updateLikes);
+  
+  return () => {
+    window.removeEventListener('storage', updateLikes);
+    window.removeEventListener('likeUpdate', updateLikes);
+  };
+}, []);
 
-    fetchLikedPosts();
-  }, []);
-
-  return (
-    <div>
-      {likedPosts.map((post) => (
-        <div key={post.id}>
-          <Post
-            id={post.id}
-            author={post.user.username}
-            date={new Date(post.createdAt).toLocaleDateString()}
-            content={post.content}
-            imageSrc={post.imageURL}
-            initialLikes={post.likes.length}
-            initialBookmarks={post.bookmarks.length}
-          />
-          <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
-        </div>
-      ))}
-    </div>
-  );
+return (
+  <div>
+    {likedPosts.map((post, index) => (
+      <div key={`${post.id}-${index}`}>
+        <Post
+          id={post.id}
+          author={post.author}
+          date={post.date}
+          content={post.content}
+          imageSrc={post.imageSrc}
+          initialLikes={post.initialLikes}
+          initialBookmarks={post.initialBookmarks}
+          onLikeRemove = {updateLikes}
+        />
+        <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+      </div>
+    ))}
+  </div>
+);
 }

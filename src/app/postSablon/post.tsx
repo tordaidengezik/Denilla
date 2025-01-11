@@ -14,8 +14,10 @@ interface PostProps {
   initialLikes: number;
   initialBookmarks: number;
   onBookmarkRemove?: () => void;
+  onLikeRemove?: () => void;
   onDelete?: (postId: number) => void;
   onEdit?: (postId: number, content: string, file: File | null) => void;
+  showActions?: boolean; //Szerkesztés és törlés gombok megjelenítése
 }
 
 export default function Post({
@@ -26,8 +28,8 @@ export default function Post({
   imageSrc,
   initialLikes,
   initialBookmarks,
-   onDelete,
-  // onEdit,
+  onDelete,
+  showActions = false,
 }: PostProps) {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
@@ -44,6 +46,12 @@ export default function Post({
     if (savedBookmarks) {
       const bookmarkedPosts = JSON.parse(savedBookmarks);
       setBookmarked(bookmarkedPosts.some((post: PostProps) => post.id === id));
+    }
+
+    const savedLikes = localStorage.getItem('likedPosts');
+    if (savedLikes) {
+      const likedPosts = JSON.parse(savedLikes);
+      setLiked(likedPosts.some((post: PostProps) => post.id === id));
     }
   }, [id]);
 
@@ -136,6 +144,33 @@ const handleDelete = async () => {
   }
 };
 
+const handleLike = () => {
+  const savedLikes = localStorage.getItem('likedPosts');
+  let likedPosts = savedLikes ? JSON.parse(savedLikes) : [];
+  
+  if (!liked) {
+    // Like hozzáadása
+    likedPosts.push({
+      id,
+      author,
+      date,
+      content,
+      imageSrc,
+      initialLikes: likes,
+      initialBookmarks
+    });
+    setLikes(likes + 1);
+  } else {
+    // Like eltávolítása
+    likedPosts = likedPosts.filter((post: PostProps) => post.id !== id);
+    setLikes(likes - 1);
+  }
+  
+  localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+  setLiked(!liked);
+  window.dispatchEvent(new Event('likeUpdate'));
+};
+
 
   
 return (
@@ -157,10 +192,7 @@ return (
       </div>
       <div className="flex items-center space-x-6">
         <button
-          onClick={() => {
-            setLiked(!liked);
-            setLikes(liked ? likes - 1 : likes + 1);
-          }}
+          onClick={handleLike}
           className="flex items-center space-x-2"
         >
           <p className={liked ? "text-red-600" : "text-white"}>{likes}</p>
@@ -191,7 +223,7 @@ return (
       )}
     </div>
 
-
+    {showActions &&(
     <div className="flex justify-end space-x-2 mt-2">
       <button
         onClick={() => setIsEditing(!isEditing)}
@@ -206,8 +238,8 @@ return (
         Törlés
       </button>
     </div>
-    
-    {isEditing && (
+    )}
+    {showActions && isEditing && (
       <div className="mt-4">
         <textarea
           value={editContent}

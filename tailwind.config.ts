@@ -11,7 +11,10 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        customBg: '#000C18'
+        customBg: '#000C18',
+        orange: {
+          650: '#F84F08', 
+        }
       },
       spacing: {
         14: '3.5rem', 

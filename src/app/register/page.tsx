@@ -66,7 +66,7 @@ export default function Register() {
         />
         <button
           type="submit"
-          className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+          className="bg-orange-650 text-white px-6 py-2 rounded-lg hover:bg-orange-500"
         >
           Register
         </button>

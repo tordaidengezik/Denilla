@@ -49,7 +49,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => setIsNotified(!isNotified)}
                 className={`p-2 rounded-full font-bold text-white transition-all ${
-                  isNotified ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-500 hover:bg-orange-700"
+                  isNotified ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-650 hover:bg-orange-700"
                 }`}
               >
                 <Bell size={20} />
@@ -57,7 +57,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => setIsFollowing(!isFollowing)}
                 className={`px-4 py-1 rounded-lg font-bold text-white transition-all ${
-                  isFollowing ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-500 hover:bg-orange-700"
+                  isFollowing ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-650 hover:bg-orange-700"
                 }`}
               >
                 {isFollowing ? "Followed" : "Follow"}
@@ -70,11 +70,11 @@ export default function ProfilePage() {
         </div>
 
         {/* Tab váltó gombok */}
-        <div className="flex border-b border-gray-700">
+        <div className="flex border-b border-gray-500">
           <button
             onClick={() => setActiveTab('posts')}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'posts' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-400'
+              activeTab === 'posts' ? 'text-orange-650' : 'text-gray-400'
             }`}
           >
             Posts
@@ -82,7 +82,7 @@ export default function ProfilePage() {
           <button
             onClick={() => setActiveTab('likes')}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'likes' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-400'
+              activeTab === 'likes' ? 'text-orange-650' : 'text-gray-400'
             }`}
           >
             Likes

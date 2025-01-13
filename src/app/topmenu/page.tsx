@@ -11,13 +11,13 @@ export default function TopMenu() {
       <div className="flex-grow flex justify-center gap-x-24">
         <Link
           href="/foryou"
-          className={`w-20 text-center ${pathname === '/foryou' ? 'text-orange-500 font-bold' : 'text-white'}`}>
+          className={`w-20 text-center ${pathname === '/foryou' ? 'text-orange-650 font-bold' : 'text-white'}`}>
           For You
         </Link>
         {' | '}
         <Link
           href="/following"
-          className={`w-20 text-center ${pathname === '/following' ? 'text-orange-500 font-bold' : 'text-white'}`}>
+          className={`w-20 text-center ${pathname === '/following' ? 'text-orange-650 font-bold' : 'text-white'}`}>
           Following
         </Link>
       </div>

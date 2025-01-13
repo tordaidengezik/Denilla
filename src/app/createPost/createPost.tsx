@@ -137,15 +137,7 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
                 height={500}
                 className="w-auto h-auto max-w-full max-h-[500px] object-contain rounded-lg"
               />
-              <button
-                onClick={() => {
-                  setFile(null);
-                  setUploadedImage(null);
-                }}
-                className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full"
-              >
-                X
-              </button>
+              
             </div>
           )}
 
@@ -162,7 +154,7 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
               className={`${
                 !content && !file
                   ? 'bg-gray-500 cursor-not-allowed'
-                  : 'bg-orange-500 hover:bg-orange-600'
+                  : 'bg-orange-650 hover:bg-orange-500'
               } text-white px-4 py-2 w-32 rounded-xl focus:ring-2 focus:ring-orange-300 transition-all`}
             >
               Post

@@ -26,7 +26,7 @@ export default function RightSideMenu(){
                                 />
                                 <p className="text-white">{profile.name}</p>
                             </div>
-                            <button className="bg-orange-500 text-white px-4 py-1 rounded-lg hover:bg-orange-600">
+                            <button className="bg-orange-650 text-white px-4 py-1 rounded-lg hover:bg-orange-500">
                                 Follow
                             </button>
                         </li>
@@ -39,31 +39,31 @@ export default function RightSideMenu(){
                 <ul className="space-y-2">
                     <li>
                         <p className="text-gray-500 opacity-70">1 - trending</p>
-                        <a href="#" className="text-orange-500 hover:underline">
+                        <a href="#" className="text-orange-650 hover:underline">
                             #NextJs
                         </a>
                     </li>
                     <li>
                         <p className="text-gray-500 opacity-70">2 - trending</p>
-                        <a href="#" className="text-orange-500 hover:underline">
+                        <a href="#" className="text-orange-650 hover:underline">
                             #React
                         </a>
                     </li>
                     <li>
                         <p className="text-gray-500 opacity-70">3 - trending</p>
-                        <a href="#" className="text-orange-500 hover:underline">
+                        <a href="#" className="text-orange-650 hover:underline">
                             #JavaScript
                         </a>
                     </li>
                     <li>
                         <p className="text-gray-500 opacity-70">4 - trending</p>
-                        <a href="#" className="text-orange-500 hover:underline">
+                        <a href="#" className="text-orange-650 hover:underline">
                             #TailwindCSS
                         </a>
                     </li>
                     <li>
                         <p className="text-gray-500 opacity-70">5 - trending</p>
-                        <a href="#" className="text-orange-500 hover:underline">
+                        <a href="#" className="text-orange-650 hover:underline">
                             #WebDevelopment
                         </a>
                     </li>

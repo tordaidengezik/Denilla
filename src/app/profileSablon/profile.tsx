@@ -81,7 +81,7 @@ const Profile = ({
           <button
             onClick={() => setActiveTab('posts')}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'posts' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-400'
+              activeTab === 'posts' ? 'text-orange-650' : 'text-gray-400'
             }`}
           >
             Posts
@@ -89,7 +89,7 @@ const Profile = ({
           <button
             onClick={() => setActiveTab('likes')}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'likes' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-400'
+              activeTab === 'likes' ? 'text-orange-650' : 'text-gray-400'
             }`}
           >
             Likes

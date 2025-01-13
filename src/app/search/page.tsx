@@ -6,7 +6,7 @@ import Post from "../postSablon/post";
 import { useState } from "react";
 
 export default function Layout() {
-  const [searchQuery, setSearchQuery] = useState(""); // Keresési állapot
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   const posts = [
     {
@@ -42,7 +42,7 @@ export default function Layout() {
             placeholder="Search for posts or profiles"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 text-white bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full p-3 text-white bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-650"
           />
         </div>
 

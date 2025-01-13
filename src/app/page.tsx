@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -41,7 +42,7 @@ export default function Home() {
     <div
       className="flex items-center justify-center h-screen text-white px-8 space-x-72"
       style={{
-        background: "linear-gradient(45deg, #111827 45%, #f97316 45%)",
+        background: "linear-gradient(45deg, #000000 45%, #F84F08 45%)",
       }}
     >
       <div className="flex flex-col items-center space-y-4">
@@ -63,75 +64,89 @@ export default function Home() {
         </h1>
 
         {formVisible === "login" ? (
-          <div className="bg-[#1f1f1f] bg-opacity-80 p-6 rounded-lg shadow-lg w-96 mb-6">
+          <div className="bg-[#1f1f1f] bg-opacity-50 p-6 rounded-lg shadow-lg w-96 mb-6">
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <input
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <button
                 type="submit"
-                className="bg-black text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-800 transition-all font-semibold"
+                className="bg-black text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-800 transition-all font-semibold"
               >
                 Sign In
               </button>
             </form>
+            {/* Toggle to Create Account */}
+            <button
+              onClick={() => setFormVisible("register")}
+              className="text-sm text-orange-650 mt-4 hover:underline"
+            >
+              Don not have an account? Create one here.
+            </button>
           </div>
         ) : formVisible === "register" ? (
-          <div className="bg-[#1f1f1f] bg-opacity-80 p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-[#1f1f1f] bg-opacity-50 p-6 rounded-lg shadow-lg w-96">
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
               <input
                 type="text"
                 name="username"
                 placeholder="Username"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <input
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <button
                 type="submit"
-                className="bg-white text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-200 transition-all font-semibold"
+                className="bg-white text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-200 transition-all font-semibold"
               >
                 Create Account
               </button>
             </form>
-          </div>
-        ) : (
-          <div className="flex flex-col space-y-4 w-96">
+            {/* Toggle to Sign In */}
             <button
               onClick={() => setFormVisible("login")}
-              className="bg-black text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-800 font-semibold"
+              className="text-sm text-orange-650 mt-4 hover:underline"
+            >
+              Already have an account? Sign in here.
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col space-y-4 w-80">
+            <button
+              onClick={() => setFormVisible("login")}
+              className="bg-black text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-800 font-semibold"
             >
               Sign In
             </button>
             <button
               onClick={() => setFormVisible("register")}
-              className="bg-white text-orange-500 px-6 py-2 rounded-lg hover:bg-gray-200 font-semibold"
+              className="bg-white text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-200 font-semibold"
             >
               Create Account
             </button>
           </div>
         )}
 
-        <h1 className="text-xs text-black">
+        <h1 className="text-sm text-black">
           By signing up, you agree to the Terms of Service <br /> and Privacy Policy, including Cookie Use.
         </h1>
       </div>

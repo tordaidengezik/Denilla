@@ -19,16 +19,16 @@ export default function SideMenu() {
 
   const getLinkClass = (path: string) =>
     (path === '/foryou' && (pathname === '/foryou' || pathname === '/following'))
-      ? 'text-orange-500 font-bold mb-4'
+      ? 'text-orange-650 font-bold mb-4'
       : pathname === path
-      ? 'text-orange-500 font-bold mb-4'
+      ? 'text-orange-650 font-bold mb-4'
       : 'text-white mb-4';
 
   const getIconColor = (path: string) =>
     (path === '/foryou' && (pathname === '/foryou' || pathname === '/following'))
-      ? "#E8760F"
+      ? "#F84F08"
       : pathname === path
-      ? "#E8760F"
+      ? "#F84F08"
       : "#FFFFFF";
 
       const handleLogout = () => {
@@ -87,7 +87,7 @@ export default function SideMenu() {
           {/* Post Button */}
           <button
             onClick={() => setIsModalOpen(true)} 
-            className="bg-orange-500 text-white px-4 py-2 w-40 rounded-xl hover:bg-orange-600 focus:ring-2 focus:ring-orange-300 transition-all"
+            className="bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 text-white px-4 py-2 w-40 rounded-xl hover:from-orange-600 hover:via-red-600 hover:to-yellow-600 focus:ring-2 focus:ring-orange-300 transition-all"
           >
             Post
           </button>
@@ -98,7 +98,7 @@ export default function SideMenu() {
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-md border border-gray-600 rounded-full shadow-lg">
         <Link
           href="/profile"
-          className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-600 rounded-full transition-all w-full"
+          className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
         >
           <Image
             src="/yeti_pfp.jpg"

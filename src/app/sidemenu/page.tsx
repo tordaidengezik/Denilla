@@ -45,8 +45,8 @@ export default function SideMenu() {
               <Image
                 src="/Denilla.png"
                 alt="Logo"
-                width={30}
-                height={30}
+                width={35}
+                height={35}
                 className="rounded-full"
               />
             </Link>
@@ -113,7 +113,7 @@ export default function SideMenu() {
           onClick={handleLogout}
           className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600 rounded-full "
         >
-          <LogOut color="#FFFFFF" size={30} />
+          <LogOut color="#FFFFFF" size={24} />
         </button>
       </div>
       

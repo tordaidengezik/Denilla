@@ -89,7 +89,6 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* Tartalom megjelenítése */}
         {activeTab === 'posts' && <ProfilePosts />}
         {activeTab === 'likes' && <ProfileLikes />}
       </main>

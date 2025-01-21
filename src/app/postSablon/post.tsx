@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Dot, Heart, Bookmark } from "lucide-react";
+import { Dot, Heart, Bookmark, Trash2, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 
 
@@ -17,7 +17,7 @@ interface PostProps {
   onLikeRemove?: () => void;
   onDelete?: (postId: number) => void;
   onEdit?: (postId: number, content: string, file: File | null) => void;
-  showActions?: boolean; //Szerkesztés és törlés gombok megjelenítése
+  showActions?: boolean; 
 }
 
 export default function Post({
@@ -223,46 +223,50 @@ return (
       )}
     </div>
 
-    {showActions &&(
-    <div className="flex justify-end space-x-2 mt-2">
-      <button
-        onClick={() => setIsEditing(!isEditing)}
-        className="text-blue-500 hover:text-blue-600"
-      >
-        Szerkesztés
-      </button>
-      <button
-        onClick={handleDelete}
-        className="text-red-500 hover:text-red-600"
-      >
-        Törlés
-      </button>
-    </div>
+    {showActions && !isEditing && (
+      <div className="flex justify-end space-x-2 mt-4">
+        <button
+          onClick={() => setIsEditing(true)}
+          className="bg-orange-650 text-white px-3 py-2 w-32 rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center space-x-2"
+        >
+          <span>Edit</span>      
+          <Pencil size={16} />
+        </button>
+        <button
+          onClick={handleDelete}
+          className="bg-gray-500 text-white px-3 py-2 w-32 rounded-xl hover:bg-red-600 transition-all flex items-center justify-center space-x-2"
+        >
+          <span>Delete</span> 
+          <Trash2 size={16}/>      
+        </button>
+      </div>
     )}
+
     {showActions && isEditing && (
       <div className="mt-4">
         <textarea
           value={editContent}
           onChange={(e) => setEditContent(e.target.value)}
-          className="w-full p-2 bg-gray-800 text-white rounded"
+          className="w-full p-2 bg-gray-800 text-white rounded focus:ring-orange-650"
         />
         <input
           type="file"
           onChange={(e) => setEditFile(e.target.files?.[0] || null)}
-          className="mt-2 text-white"
+          className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
         />
+
         <div className="flex justify-end space-x-2 mt-2">
           <button
             onClick={() => setIsEditing(false)}
-            className="px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Mégse
+            className="bg-gray-500 text-white px-3 py-2 w-32 rounded-xl hover:bg-red-600 transition-all flex items-center justify-center space-x-2"
+            >
+            Cancel
           </button>
           <button
             onClick={handleEdit}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Mentés
+            className="bg-orange-650 text-white px-3 py-2 w-32 rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center space-x-2"
+            >
+            Save
           </button>
         </div>
       </div>

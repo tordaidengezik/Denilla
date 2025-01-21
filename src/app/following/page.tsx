@@ -1,9 +1,14 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import SideMenu from "../sidemenu/page";
 import TopMenu from "../topmenu/page";
 import RightSideMenu from "../rightSideMenu/page";
 import Post from "../postSablon/post";
 
 export default function Layout() {
+  const router = useRouter();
+
   // Manuális adatok (később helyettesíthetők adatbázisból érkező adatokkal)
   const posts = [
     {
@@ -41,13 +46,19 @@ export default function Layout() {
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
 
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
+      {/* Görgethető fő tartalom */}
+      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <TopMenu />
 
         {/* Posztok megjelenítése */}
         {posts.map((post) => (
-          <div key={post.id}>
+          <div
+            key={post.id}
+            onClick={() => router.push(`/postView?id=${post.id}`)} // Átadjuk az ID-t az URL-ben
+            className="cursor-pointer"
+          >
             <Post
+              id={post.id}
               author={post.author}
               date={post.date}
               content={post.content}
@@ -55,7 +66,6 @@ export default function Layout() {
               initialLikes={post.initialLikes}
               initialBookmarks={post.initialBookmarks}
             />
-           
             <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
           </div>
         ))}

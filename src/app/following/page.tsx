@@ -66,7 +66,7 @@ export default function Layout() {
               initialLikes={post.initialLikes}
               initialBookmarks={post.initialBookmarks}
             />
-            <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+            <hr className="w-4/5 border-gray-500 border-t-1 mx-auto" />
           </div>
         ))}
       </main>

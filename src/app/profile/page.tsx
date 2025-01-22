@@ -19,7 +19,7 @@ export default function ProfilePage() {
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
 
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
+      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <hr className="w-full border-gray-500 border-t-2 mx-auto" />
         {/* Profil fejléc */}
         <div className="relative bg-gray-800 h-48">

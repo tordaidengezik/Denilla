@@ -40,7 +40,7 @@ export default function Layout() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
+      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <TopMenu />
         {posts.map((post) => (
           <div key={post.id}>

@@ -2,7 +2,6 @@
 
 import SideMenu from '../sidemenu/page';
 import RightSideMenu from "../rightSideMenu/page";
-
 import ProfilePosts from '../profilePosts/page';
 import ProfileLikes from '../profileLikes/page';
 import Image from 'next/image';
@@ -20,7 +19,7 @@ export default function ProfilePage() {
       <SideMenu />
 
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
-        <hr className="w-full border-gray-500 border-t-2 mx-auto" />
+        <hr className="w-full border-gray-500 border-t-1 mx-auto" />
         {/* Profil fejléc */}
         <div className="relative bg-gray-800 h-48">
           <Image
@@ -74,7 +73,7 @@ export default function ProfilePage() {
           <button
             onClick={() => setActiveTab('posts')}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'posts' ? 'text-orange-650' : 'text-gray-400'
+              activeTab === 'posts' ? 'text-orange-650' : 'text-gray-300'
             }`}
           >
             Posts
@@ -82,7 +81,7 @@ export default function ProfilePage() {
           <button
             onClick={() => setActiveTab('likes')}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'likes' ? 'text-orange-650' : 'text-gray-400'
+              activeTab === 'likes' ? 'text-orange-650' : 'text-gray-300'
             }`}
           >
             Likes

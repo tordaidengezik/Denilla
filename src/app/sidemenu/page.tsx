@@ -41,7 +41,7 @@ export default function SideMenu() {
       <nav className="p-6 flex flex-col items-center space-y-5">
         <div className="flex flex-col items-start">
           <div className="flex-shrink-0 mb-4">
-            <Link href="/">
+            <Link href="/foryou">
               <Image
                 src="/Denilla.png"
                 alt="Logo"

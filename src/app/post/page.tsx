@@ -57,8 +57,6 @@ export default function Layout() {
     fetchPosts();
   }, [router]); 
 
-
-
   // Ellenőrizzük, hogy van-e adat
   if (!posts || posts.length === 0) {
     return (

@@ -45,7 +45,7 @@ export default function Layout() {
         {posts.map((post) => (
           <div key={post.id}>
             <Post {...post} />
-            <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+            <hr className="w-4/5 border-gray-500 border-t-1 mx-auto" />
           </div>
         ))}
       </main>

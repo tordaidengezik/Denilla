@@ -66,6 +66,23 @@ export async function POST(req: Request) {
       },
     });
 
+    const otherUsers = await prisma.user.findMany({
+      where: {
+        NOT: {
+          id: parseInt(userId)
+        }
+      }
+    });
+
+    await prisma.notification.createMany({
+      data: otherUsers.map(user => ({
+        toUserId: user.id,
+        type: 'new_post',
+        message: `${post.user.username} created a new post`,
+        postId: post.id
+      }))
+    });
+
     return NextResponse.json(post, { status: 201 });
   } catch (error) {
     console.error('Post creation error:', error);

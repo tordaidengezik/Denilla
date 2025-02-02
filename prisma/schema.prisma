@@ -8,25 +8,27 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  username  String     @unique
-  email     String     @unique
-  password  String
-  createdAt DateTime   @default(now())
-  posts     Post[]     
-  likes     Like[]
-  bookmarks Bookmark[]
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  email         String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  posts         Post[]     
+  likes         Like[]
+  bookmarks     Bookmark[]
+  notifications Notification[] @relation("ReceivedNotifications")
 }
 
 model Post {
-  id        Int        @id @default(autoincrement())
-  user      User       @relation(fields: [userId], references: [id])
-  userId    Int
-  content   String
-  imageURL  String?
-  createdAt DateTime   @default(now())
-  likes     Like[]
-  bookmarks Bookmark[]
+  id            Int            @id @default(autoincrement())
+  user          User           @relation(fields: [userId], references: [id])
+  userId        Int
+  content       String
+  imageURL      String?
+  createdAt     DateTime       @default(now())
+  likes         Like[]
+  bookmarks     Bookmark[]
+  notifications Notification[]
 }
 
 model Like {
@@ -49,4 +51,16 @@ model Bookmark {
   createdAt DateTime @default(now())
 
   @@unique([userId, postId])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  toUser    User     @relation("ReceivedNotifications", fields: [toUserId], references: [id])
+  toUserId  Int
+  type      String   // 'new_post' vagy 'system_message'
+  message   String
+  postId    Int?     // Opcionális, csak post-típusú értesítéseknél
+  post      Post?    @relation(fields: [postId], references: [id])
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

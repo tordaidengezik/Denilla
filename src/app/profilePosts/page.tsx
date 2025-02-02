@@ -47,6 +47,10 @@ export default function ProfilePosts() {
     fetchUserPosts();
   }, [router]);
 
+  function handlePostDelete(postId: number): void {
+    setUserPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+  }
+
   return (
     <div>
       {userPosts.map((post) => (
@@ -59,6 +63,7 @@ export default function ProfilePosts() {
             imageSrc={post.imageURL}
             initialLikes={post.likes.length}
             initialBookmarks={post.bookmarks.length}
+            onDelete={handlePostDelete}
             showActions={true}
           />
           <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />

@@ -8,7 +8,6 @@ import RightSideMenu from "../rightSideMenu/page";
 import Post from "../postSablon/post";
 
 
-
 interface PostType {
   id: number;
   user: {

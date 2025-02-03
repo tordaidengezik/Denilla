@@ -17,6 +17,9 @@ model User {
   likes         Like[]
   bookmarks     Bookmark[]
   notifications Notification[] @relation("ReceivedNotifications")
+  followers     Follow[]       @relation("Followers")
+  following     Follow[]       @relation("Following")
+
 }
 
 model Post {
@@ -63,4 +66,15 @@ model Notification {
   post      Post?    @relation(fields: [postId], references: [id])
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+  follower    User     @relation("Following", fields: [followerId], references: [id])
+  followerId  Int
+  following   User     @relation("Followers", fields: [followingId], references: [id])
+  followingId Int
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }

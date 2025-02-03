@@ -2,25 +2,72 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+
+interface User {
+  id: number;
+  username: string;
+}
 
 export default function RightSideMenu() {
-  const router = useRouter(); 
+  const router = useRouter();
+  const [users, setUsers] = useState<User[]>([]);
+  const [followingState, setFollowingState] = useState<Record<number, boolean>>({});
 
-  // Követési állapotok tárolása
-  const [followingState, setFollowingState] = useState<Record<number, boolean>>({
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-  });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('/api/users', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // rightSideMenu/page.tsx módosítások a követés kezeléséhez
+  const handleFollow = async (userId: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch("/api/follow", {
+        method: followingState[userId] ? "DELETE" : "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ followingId: userId }),
+      });
+
+      if (response.ok) {
+        toggleFollow(userId);
+      }
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
 
   // Követési állapot váltása
   const toggleFollow = (id: number) => {
     setFollowingState((prevState) => ({
-      ...prevState, 
-      [id]: !prevState[id], 
+      ...prevState,
+      [id]: !prevState[id],
     }));
   };
 
@@ -29,48 +76,31 @@ export default function RightSideMenu() {
       {/* Who to Follow szekció */}
       <div className="border border-gray-500 rounded-lg p-4 bg-black mb-6">
         <h2 className="text-white font-bold mb-4">Who to Follow</h2>
-        <ul className="space-y-1"> {/* Csökkentett távolság a profilok között */}
-          {[
-            { id: 1, name: "John Doe", image: "/yeti_pfp.jpg" },
-            { id: 2, name: "Jane Smith", image: "/yeti_pfp.jpg" },
-            { id: 3, name: "Chris Johnson", image: "/yeti_pfp.jpg" },
-            { id: 4, name: "Patricia Brown", image: "/yeti_pfp.jpg" },
-            { id: 5, name: "Michael Lee", image: "/yeti_pfp.jpg" },
-          ].map((profile) => (
+        <ul className="space-y-1">
+          {users.map((user) => (
             <li
-              key={profile.id}
-              className="flex items-center justify-between p-2 rounded-lg cursor-pointer hover:bg-gray-900 transition"
+              key={user.id}
+              className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-900 transition"
             >
-              {/* Navigáció a profil oldalra */}
-              <div
-                onClick={() => router.push("/profile")} // Navigáció a profil oldalra
-                className="flex items-center space-x-3 w-full"
-              >
-                {/* Profilkép */}
+              <div className="flex items-center space-x-3">
                 <Image
-                  src={profile.image}
-                  alt={profile.name}
+                  src="/yeti_pfp.jpg"
+                  alt={user.username}
                   width={40}
                   height={40}
                   className="rounded-full"
                 />
-                {/* Profilnév */}
-                <p className="text-white">{profile.name}</p>
+                <p className="text-white">{user.username}</p>
               </div>
-
-              {/* Follow gomb */}
               <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Megakadályozza a doboz kattintási eseményét
-                  toggleFollow(profile.id); // Követési állapot váltása
-                }}
+                onClick={() => handleFollow(user.id)}
                 className={`px-4 py-1 rounded-lg font-bold text-white transition-all ${
-                  followingState[profile.id]
+                  followingState[user.id]
                     ? "bg-orange-700 hover:bg-orange-800"
-                    : "bg-orange-650 hover:bg-orange-700"
+                    : "bg-orange-500 hover:bg-orange-700"
                 }`}
               >
-                {followingState[profile.id] ? "Followed" : "Follow"}
+                {followingState[user.id] ? "Following" : "Follow"}
               </button>
             </li>
           ))}
@@ -84,7 +114,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">1 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)} 
+              onClick={() => router.push(`/postView?id=1`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #NextJs
@@ -93,7 +123,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">2 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)} 
+              onClick={() => router.push(`/postView?id=1`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #React
@@ -102,7 +132,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">3 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)} 
+              onClick={() => router.push(`/postView?id=1`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #JavaScript
@@ -111,7 +141,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">4 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)} 
+              onClick={() => router.push(`/postView?id=1`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #TailwindCSS
@@ -120,7 +150,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">5 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)} 
+              onClick={() => router.push(`/postView?id=1`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #WebDevelopment

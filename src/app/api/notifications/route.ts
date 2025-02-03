@@ -57,3 +57,28 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const user = verifyToken(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { notificationId } = await req.json();
+
+    await prisma.notification.delete({
+      where: {
+        id: parseInt(notificationId),
+        toUserId: parseInt(user.id) // Biztonsági ellenőrzés
+      },
+    });
+
+    return NextResponse.json({ message: 'Notification deleted successfully' });
+  } catch {
+    return NextResponse.json(
+      { error: 'Hiba történt az értesítés törlésekor' },
+      { status: 500 }
+    );
+  }
+}

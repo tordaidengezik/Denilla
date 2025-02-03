@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import SideMenu from "../sidemenu/page";
 import RightSideMenu from "../rightSideMenu/page";
 import Image from "next/image";
 import Post from "../postSablon/post";
+import { Trash2 } from "lucide-react";
 
 interface Notification {
   id: number;
@@ -33,16 +34,16 @@ export default function NotificationPage() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) {
-          router.push('/login');
+          router.push("/login");
           return;
         }
 
-        const response = await fetch('/api/notifications', {
+        const response = await fetch("/api/notifications", {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (response.ok) {
@@ -50,20 +51,50 @@ export default function NotificationPage() {
           setNotifications(data);
         }
       } catch (error) {
-        console.error('Hiba történt az értesítések betöltésekor:', error);
+        console.error("Hiba történt az értesítések betöltésekor:", error);
       }
     };
 
     fetchNotifications();
-    
+
     // Értesítések frissítése 30 másodpercenként
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, [router]);
 
   const handleNotificationClick = (notification: Notification) => {
-    if (notification.type === 'new_post' && notification.post) {
-      setSelectedPostId(selectedPostId === notification.post.id ? null : notification.post.id);
+    if (notification.type === "new_post" && notification.post) {
+      setSelectedPostId(
+        selectedPostId === notification.post.id ? null : notification.post.id
+      );
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const response = await fetch("/api/notifications", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ notificationId }),
+      });
+
+      if (response.ok) {
+        // Frissítjük a state-et, eltávolítjuk a törölt értesítést
+        setNotifications((prev) =>
+          prev.filter((notification) => notification.id !== notificationId)
+        );
+      }
+    } catch (error) {
+      console.error("Hiba történt az értesítés törlésekor:", error);
     }
   };
 
@@ -73,7 +104,9 @@ export default function NotificationPage() {
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         {notifications.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
-            <p className="text-lg font-semibold">You dont have any notifications yet</p>
+            <p className="text-lg font-semibold">
+              You dont have any notifications yet
+            </p>
           </div>
         ) : (
           <div className="p-4 space-y-6">
@@ -82,8 +115,12 @@ export default function NotificationPage() {
                 <div
                   onClick={() => handleNotificationClick(notification)}
                   className={`flex items-center space-x-4 bg-black p-4 rounded-lg border border-gray-600 ${
-                    !notification.read ? 'bg-opacity-90' : 'bg-opacity-50'
-                  } ${notification.type === 'new_post' ? 'cursor-pointer hover:bg-gray-900' : ''}`}
+                    !notification.read ? "bg-opacity-90" : "bg-opacity-50"
+                  } ${
+                    notification.type === "new_post"
+                      ? "cursor-pointer hover:bg-gray-900"
+                      : ""
+                  }`}
                 >
                   <Image
                     src="/yeti_pfp.jpg"
@@ -100,19 +137,29 @@ export default function NotificationPage() {
                   </div>
                 </div>
 
-                {selectedPostId === notification.post?.id && notification.post && (
-                  <div className="mt-4">
-                    <Post
-                      id={notification.post.id}
-                      author={notification.post.user.username}
-                      date={new Date(notification.createdAt).toLocaleDateString()}
-                      content={notification.post.content}
-                      imageSrc={notification.post.imageURL}
-                      initialLikes={notification.post.likes.length}
-                      initialBookmarks={notification.post.bookmarks.length}
-                    />
-                  </div>
-                )}
+                <button
+                  onClick={() => handleDeleteNotification(notification.id)}
+                  className="text-gray-400 hover:text-red-500 transition-colors p-2"
+                >
+                  <Trash2 size={20} />
+                </button>
+
+                {selectedPostId === notification.post?.id &&
+                  notification.post && (
+                    <div className="mt-4">
+                      <Post
+                        id={notification.post.id}
+                        author={notification.post.user.username}
+                        date={new Date(
+                          notification.createdAt
+                        ).toLocaleDateString()}
+                        content={notification.post.content}
+                        imageSrc={notification.post.imageURL}
+                        initialLikes={notification.post.likes.length}
+                        initialBookmarks={notification.post.bookmarks.length}
+                      />
+                    </div>
+                  )}
               </div>
             ))}
           </div>

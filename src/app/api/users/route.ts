@@ -12,22 +12,36 @@ export async function GET(req: Request) {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+    const currentUserId = parseInt(decoded.id);
     
-    // Get all users except the current user
+    // Get all users except the current user, including follow status
     const users = await prisma.user.findMany({
       where: {
         NOT: {
-          id: parseInt(decoded.id)
+          id: currentUserId
         }
       },
       select: {
         id: true,
-        username: true
+        username: true,
+        followers: {
+          where: {
+            followerId: currentUserId
+          }
+        }
       }
     });
 
-    return NextResponse.json(users);
-  } catch {
+    // Transform the data to include isFollowing status
+    const usersWithFollowStatus = users.map(user => ({
+      id: user.id,
+      username: user.username,
+      isFollowing: user.followers.length > 0
+    }));
+
+    return NextResponse.json(usersWithFollowStatus);
+  } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }

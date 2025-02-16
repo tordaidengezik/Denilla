@@ -4,43 +4,52 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-
 interface User {
   id: number;
   username: string;
+  isFollowing: boolean;
 }
 
 export default function RightSideMenu() {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
-  const [followingState, setFollowingState] = useState<Record<number, boolean>>({});
-
+  const [followingState, setFollowingState] = useState<Record<number, boolean>>(
+    {}
+  );
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch('/api/users', {
+        const response = await fetch("/api/users", {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (response.ok) {
           const data = await response.json();
           setUsers(data);
+          // Initialize following state from fetched data
+          const initialFollowingState = data.reduce(
+            (acc: Record<number, boolean>, user: User) => {
+              acc[user.id] = user.isFollowing;
+              return acc;
+            },
+            {}
+          );
+          setFollowingState(initialFollowingState);
         }
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error("Error fetching users:", error);
       }
     };
 
     fetchUsers();
   }, []);
 
-  // rightSideMenu/page.tsx módosítások a követés kezeléséhez
   const handleFollow = async (userId: number) => {
     try {
       const token = localStorage.getItem("token");
@@ -56,19 +65,18 @@ export default function RightSideMenu() {
       });
 
       if (response.ok) {
-        toggleFollow(userId);
+        setFollowingState((prev) => ({
+          ...prev,
+          [userId]: !prev[userId],
+        }));
+
+        if (window.location.pathname === "/following") {
+          window.dispatchEvent(new Event("followStatusChanged"));
+        }
       }
     } catch (error) {
       console.error("Error following user:", error);
     }
-  };
-
-  // Követési állapot váltása
-  const toggleFollow = (id: number) => {
-    setFollowingState((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
   };
 
   return (

@@ -23,31 +23,37 @@ export default function Following() {
   const [posts, setPosts] = useState<Post[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchFollowingPosts = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          router.push("/login");
-          return;
-        }
-
-        const response = await fetch("/api/posts/following", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setPosts(data);
-        }
-      } catch (error) {
-        console.error("Error fetching following posts:", error);
+  const fetchFollowingPosts = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login");
+        return;
       }
-    };
 
+      const response = await fetch("/api/posts/following", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error("Error fetching following posts:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchFollowingPosts();
+
+    // Listen for follow status changes
+    window.addEventListener("followStatusChanged", fetchFollowingPosts);
+    return () => {
+      window.removeEventListener("followStatusChanged", fetchFollowingPosts);
+    };
   }, [router]);
 
   return (

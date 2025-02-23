@@ -1,41 +1,65 @@
 "use client";
 
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { House, Search, Bell, Bookmark, LogOut } from 'lucide-react';
-import CreatePostModal from '../createPost/createPost';
-import { useState } from 'react';
+import { House, Search, Bell, Bookmark, LogOut } from "lucide-react";
+import CreatePostModal from "../createPost/createPost";
+import { useState, useEffect } from "react";
 
-
-
+interface User {
+  username: string;
+  profileImage: string;
+}
 
 export default function SideMenu() {
   const pathname = usePathname();
   const router = useRouter();
-
+  const [user, setUser] = useState<User>({ username: '', profileImage: '/yeti_pfp.jpg' });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const getLinkClass = (path: string) =>
-    (path === '/foryou' && (pathname === '/foryou' || pathname === '/following'))
-      ? 'text-orange-650 font-bold mb-4'
+    path === "/foryou" && (pathname === "/foryou" || pathname === "/following")
+      ? "text-orange-650 font-bold mb-4"
       : pathname === path
-      ? 'text-orange-650 font-bold mb-4'
-      : 'text-white mb-4';
+      ? "text-orange-650 font-bold mb-4"
+      : "text-white mb-4";
 
   const getIconColor = (path: string) =>
-    (path === '/foryou' && (pathname === '/foryou' || pathname === '/following'))
+    path === "/foryou" && (pathname === "/foryou" || pathname === "/following")
       ? "#F84F08"
       : pathname === path
       ? "#F84F08"
       : "#FFFFFF";
 
-      const handleLogout = () => {
-        localStorage.removeItem("token");
-        router.push("/");
-      };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
   return (
     <div className="relative w-full md:w-1/4 h-screen bg-dark-gray">
       <nav className="p-6 flex flex-col items-center space-y-5">
@@ -53,40 +77,40 @@ export default function SideMenu() {
           </div>
 
           {/* Home Link */}
-          <Link href="foryou" className={getLinkClass('/foryou')}>
+          <Link href="foryou" className={getLinkClass("/foryou")}>
             <div className="flex items-center space-x-3">
-              <House color={getIconColor('/foryou')} size={30} />
+              <House color={getIconColor("/foryou")} size={30} />
               <span>Home</span>
             </div>
           </Link>
 
           {/* Search Link */}
-          <Link href="search" className={getLinkClass('/search')}>
+          <Link href="search" className={getLinkClass("/search")}>
             <div className="flex items-center space-x-3">
-              <Search color={getIconColor('/search')} size={30} />
+              <Search color={getIconColor("/search")} size={30} />
               <span>Search</span>
             </div>
           </Link>
 
           {/* Notifications Link */}
-          <Link href="notifications" className={getLinkClass('/notifications')}>
+          <Link href="notifications" className={getLinkClass("/notifications")}>
             <div className="flex items-center space-x-3">
-              <Bell color={getIconColor('/notifications')} size={30} />
+              <Bell color={getIconColor("/notifications")} size={30} />
               <span>Notifications</span>
             </div>
           </Link>
 
           {/* Bookmarks Link */}
-          <Link href="bookmarks" className={getLinkClass('/bookmarks')}>
+          <Link href="bookmarks" className={getLinkClass("/bookmarks")}>
             <div className="flex items-center space-x-3">
-              <Bookmark color={getIconColor('/bookmarks')} size={30} />
+              <Bookmark color={getIconColor("/bookmarks")} size={30} />
               <span>Bookmarks</span>
             </div>
           </Link>
 
           {/* Post Button */}
           <button
-            onClick={() => setIsModalOpen(true)} 
+            onClick={() => setIsModalOpen(true)}
             className="bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 text-white px-4 py-2 w-40 rounded-xl hover:from-orange-600 hover:via-red-600 hover:to-yellow-600 focus:ring-2 focus:ring-orange-300 transition-all"
           >
             Post
@@ -101,13 +125,13 @@ export default function SideMenu() {
           className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
         >
           <Image
-            src="/yeti_pfp.jpg"
-            alt="Logo"
+            src={user.profileImage || "/yeti_pfp.jpg"}
+            alt="Profile Picture"
             width={40}
             height={40}
             className="rounded-full"
           />
-          <span className="font-bold text-xl ml-3">Yeti</span>
+          <span className="font-bold text-xl ml-3">{user.username}</span>
         </Link>
         <button
           onClick={handleLogout}
@@ -116,11 +140,9 @@ export default function SideMenu() {
           <LogOut color="#FFFFFF" size={24} />
         </button>
       </div>
-      
+
       {/* Modal */}
-      {isModalOpen && (
-        <CreatePostModal onClose={() => setIsModalOpen(false)} />
-      )}
+      {isModalOpen && <CreatePostModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 }

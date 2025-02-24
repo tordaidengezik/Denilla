@@ -8,6 +8,7 @@ interface User {
   id: number;
   username: string;
   isFollowing: boolean;
+  profileImage: string;
 }
 
 export default function RightSideMenu() {
@@ -92,7 +93,7 @@ export default function RightSideMenu() {
             >
               <div className="flex items-center space-x-3">
                 <Image
-                  src="/yeti_pfp.jpg"
+                  src={user.profileImage || "/yeti_pfp.jpg"}
                   alt={user.username}
                   width={40}
                   height={40}

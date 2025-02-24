@@ -3,18 +3,16 @@
 import SideMenu from '../sidemenu/page';
 import RightSideMenu from "../rightSideMenu/page";
 import Image from 'next/image';
-import { Bell } from 'lucide-react';
 import { useState } from 'react';
 import ProfileLikes from '../profileLikes/page';
 import ProfilePosts from '../profilePosts/page';
 
-
 interface ProfileTemplateProps {
-    name: string;
-    description: string;
-    coverImage: string;
-    profileImage: string;
-  }
+  name: string;
+  description: string;
+  coverImage: string;
+  profileImage: string;
+}
 
 const Profile = ({
   name,
@@ -22,8 +20,6 @@ const Profile = ({
   coverImage,
   profileImage,
 }: ProfileTemplateProps) => {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isNotified, setIsNotified] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'likes'>('posts');
 
   return (
@@ -55,27 +51,10 @@ const Profile = ({
         <div className="p-5 pt-14">
           <div className="flex items-center justify-between">
             <h1 className="text-white font-bold text-xl ml-5">{name}</h1>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setIsNotified(!isNotified)}
-                className={`p-2 rounded-full font-bold text-white transition-all ${
-                  isNotified ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-650 hover:bg-orange-700"
-                }`}
-              >
-                <Bell size={20} />
-              </button>
-              <button
-                onClick={() => setIsFollowing(!isFollowing)}
-                className={`px-4 py-1 rounded-lg font-bold text-white transition-all ${
-                  isFollowing ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-650 hover:bg-orange-700"
-                }`}
-              >
-                {isFollowing ? "Followed" : "Follow"}
-              </button>
-            </div>
           </div>
           <p className="text-white mt-5">{description}</p>
         </div>
+
         {/* Tab váltó gombok */}
         <div className="flex border-b border-gray-700">
           <button

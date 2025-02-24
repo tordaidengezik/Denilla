@@ -13,6 +13,7 @@ interface PostProps {
   imageSrc?: string;
   initialLikes: number;
   initialBookmarks: number;
+  profileImage?: string;
   onBookmarkRemove?: () => void;
   onLikeRemove?: () => void;
   onDelete?: (postId: number) => void;
@@ -28,6 +29,7 @@ export default function Post({
   imageSrc,
   initialLikes,
   initialBookmarks,
+  profileImage = "/yeti_pfp.jpg",
   onDelete,
   showActions = false,
 }: PostProps) {
@@ -178,7 +180,7 @@ return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
         <Image
-          src="/yeti_pfp.jpg"
+          src={profileImage}
           alt={author}
           width={40}
           height={40}

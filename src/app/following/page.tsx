@@ -14,6 +14,7 @@ interface Post {
   createdAt: string;
   user: {
     username: string;
+    profileImage: string;
   };
   likes: { userId: number; username: string }[];
   bookmarks: { userId: number; username: string }[];
@@ -78,6 +79,7 @@ export default function Following() {
                 imageSrc={post.imageURL}
                 initialLikes={post.likes.length}
                 initialBookmarks={post.bookmarks.length}
+                profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
               />
               <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
             </div>

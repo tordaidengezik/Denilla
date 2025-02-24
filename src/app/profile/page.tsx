@@ -16,6 +16,9 @@ export default function ProfilePage() {
     coverImage: "/cover.jpg",
   });
 
+  const [deleteProfileImage, setDeleteProfileImage] = useState(false);
+  const [deleteCoverImage, setDeleteCoverImage] = useState(false);
+
   const [activeTab, setActiveTab] = useState<"posts" | "likes">("posts");
   const [isEditing, setIsEditing] = useState(false);
   const [newDescription, setNewDescription] = useState("");
@@ -54,6 +57,9 @@ export default function ProfilePage() {
 
       const formData = new FormData();
       formData.append("description", newDescription);
+      formData.append("deleteProfileImage", deleteProfileImage.toString());
+      formData.append("deleteCoverImage", deleteCoverImage.toString());
+
       if (profileFile) formData.append("profileImage", profileFile);
       if (coverFile) formData.append("coverImage", coverFile);
 
@@ -69,6 +75,8 @@ export default function ProfilePage() {
         const updatedUser = await response.json();
         setUser(updatedUser);
         setIsEditing(false);
+        setDeleteProfileImage(false);
+        setDeleteCoverImage(false);
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -78,7 +86,7 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
-  
+
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         {/* Cover Image */}
         <div className="relative bg-gray-800 h-48">
@@ -100,11 +108,13 @@ export default function ProfilePage() {
             />
           </div>
         </div>
-  
+
         {/* User Info Section */}
         <div className="p-5 pt-14">
           <div className="flex items-center justify-between">
-            <h1 className="text-white font-bold text-xl ml-5">{user.username}</h1>
+            <h1 className="text-white font-bold text-xl ml-5">
+              {user.username}
+            </h1>
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setIsEditing(!isEditing)}
@@ -114,7 +124,7 @@ export default function ProfilePage() {
               </button>
             </div>
           </div>
-  
+
           {isEditing ? (
             <div className="mt-4">
               <textarea
@@ -123,23 +133,45 @@ export default function ProfilePage() {
                 className="w-full p-2 bg-gray-800 text-white rounded"
                 placeholder="Add a description..."
               />
-              <div className="mt-2 space-y-2">
-                <input
-                  type="file"
-                  onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
-                  className="text-white"
-                  accept="image/*"
-                />
-                <input
-                  type="file"
-                  onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-                  className="text-white"
-                  accept="image/*"
-                />
+              <div className="mt-2 space-y-4">
+                <div className="flex items-center justify-between">
+                  <input
+                    type="file"
+                    onChange={(e) =>
+                      setProfileFile(e.target.files?.[0] || null)
+                    }
+                    className="text-white"
+                    accept="image/*"
+                  />
+                  <button
+                    onClick={() => setDeleteProfileImage(true)}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Delete Profile Image
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <input
+                    type="file"
+                    onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
+                    className="text-white"
+                    accept="image/*"
+                  />
+                  <button
+                    onClick={() => setDeleteCoverImage(true)}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Delete Cover Image
+                  </button>
+                </div>
               </div>
               <div className="flex justify-end space-x-2 mt-4">
                 <button
-                  onClick={() => setIsEditing(false)}
+                  onClick={() => {
+                    setIsEditing(false);
+                    setDeleteProfileImage(false);
+                    setDeleteCoverImage(false);
+                  }}
                   className="px-4 py-2 bg-gray-500 text-white rounded"
                 >
                   Cancel
@@ -153,36 +185,38 @@ export default function ProfilePage() {
               </div>
             </div>
           ) : (
-            <p className="text-white mt-5">{user.description}</p>
+            user.description && (
+              <p className="text-white mt-5">{user.description}</p>
+            )
           )}
         </div>
-  
+
         {/* Tabs */}
         <div className="flex border-b border-gray-500">
           <button
-            onClick={() => setActiveTab('posts')}
+            onClick={() => setActiveTab("posts")}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'posts' ? 'text-orange-650' : 'text-gray-300'
+              activeTab === "posts" ? "text-orange-650" : "text-gray-300"
             }`}
           >
             Posts
           </button>
           <button
-            onClick={() => setActiveTab('likes')}
+            onClick={() => setActiveTab("likes")}
             className={`flex-1 py-2 text-center ${
-              activeTab === 'likes' ? 'text-orange-650' : 'text-gray-300'
+              activeTab === "likes" ? "text-orange-650" : "text-gray-300"
             }`}
           >
             Likes
           </button>
         </div>
-  
+
         {/* Content */}
-        {activeTab === 'posts' && <ProfilePosts />}
-        {activeTab === 'likes' && <ProfileLikes />}
+        {activeTab === "posts" && <ProfilePosts />}
+        {activeTab === "likes" && <ProfileLikes />}
       </main>
-  
+
       <RightSideMenu />
     </div>
   );
-}  
+}

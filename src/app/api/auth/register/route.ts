@@ -12,6 +12,10 @@ export async function registerUser(req: Request) {
       return NextResponse.json({ error: 'Hiányzó vagy érvénytelen adat.' }, { status: 400 });
     }
 
+    if (password.length < 6) {
+      return NextResponse.json({ error: 'A jelszónak minimum 6 karakter hosszúnak kell lennie.' }, { status: 400 });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.user.create({

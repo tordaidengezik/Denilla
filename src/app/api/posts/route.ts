@@ -95,26 +95,36 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    // Token ellenőrzés
-    const user = verifyToken(req);
-    if (!user) {
+    // Token ellenőrzése
+    const token = req.headers.get('authorization')?.split(' ')[1];
+    if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Felhasználó ID kinyerése a tokenből
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+    const userId = parseInt(decoded.id);
+
+    // Posztok lekérése ahol a user nem egyezik
     const posts = await prisma.post.findMany({
+      where: {
+        userId: {
+          not: userId // Kizárjuk a bejelentkezett felhasználó posztjait
+        }
+      },
       include: {
         user: {
           select: {
             username: true,
             profileImage: true
-          },
+          }
         },
         likes: true,
-        bookmarks: true,
+        bookmarks: true
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(posts);

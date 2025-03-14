@@ -55,7 +55,7 @@ export default function Following() {
     return () => {
       window.removeEventListener("followStatusChanged", fetchFollowingPosts);
     };
-  }, [router]);
+  });
 
   return (
     <div className="flex flex-col md:flex-row h-screen">

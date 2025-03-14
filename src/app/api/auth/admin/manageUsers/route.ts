@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import { verifyAdmin } from '@/app/utils/verifyAdmin';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { verifyAdmin } from "@/app/utils/verifyAdmin";
 
 const prisma = new PrismaClient();
 
@@ -38,4 +38,20 @@ export async function PUT(req: Request) {
   });
 
   return NextResponse.json(updatedUser);
+}
+
+export async function DELETE(req: Request) {
+  const user = await verifyAdmin(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { userId } = await req.json();
+
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+
+  return NextResponse.json({ message: "User deleted successfully" });
 }

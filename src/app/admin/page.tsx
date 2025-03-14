@@ -7,6 +7,8 @@ import SideMenu from "../sidemenu/page";
 export default function AdminPage() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [users, setUsers] = useState<{ id: number; username: string; email: string }[]>([]);
+  const [posts, setPosts] = useState<{ id: number; content: string }[]>([]);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -37,6 +39,75 @@ export default function AdminPage() {
     checkAdmin();
   }, [router]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        // Felhasználók lekérése
+        const usersResponse = await fetch("/api/auth/admin/manageUsers", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json();
+          setUsers(usersData);
+        }
+
+        // Posztok lekérése
+        const postsResponse = await fetch("/api/auth/admin/deletePosts", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (postsResponse.ok) {
+          const postsData = await postsResponse.json();
+          setPosts(postsData);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch("/api/auth/admin/manageUsers", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        setUsers(users.filter((user) => user.id !== userId));
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch("/api/auth/admin/deletePosts", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (response.ok) {
+        setPosts(posts.filter((post) => post.id !== postId));
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   if (!isAdmin) {
     return <p>Loading...</p>;
   }
@@ -46,14 +117,38 @@ export default function AdminPage() {
       <SideMenu />
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
         <h1 className="text-white text-center text-3xl font-bold mt-10">Admin Panel</h1>
-        <div className="p-4">
-          <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all">
-            Delete User Posts
-          </button>
-          <button className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-all ml-4">
-            Manage Users
-          </button>
-        </div>
+
+        {/* Felhasználók kezelése */}
+        <section className="p-4">
+          <h2 className="text-white text-xl font-bold mb-4">Manage Users</h2>
+          {users.map((user) => (
+            <div key={user.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
+              <span className="text-white">{user.username} ({user.email})</span>
+              <button
+                onClick={() => handleDeleteUser(user.id)}
+                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              >
+                Delete User
+              </button>
+            </div>
+          ))}
+        </section>
+
+        {/* Posztok kezelése */}
+        <section className="p-4">
+          <h2 className="text-white text-xl font-bold mb-4">Manage Posts</h2>
+          {posts.map((post) => (
+            <div key={post.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
+              <span className="text-white">{post.content}</span>
+              <button
+                onClick={() => handleDeletePost(post.id)}
+                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              >
+                Delete Post
+              </button>
+            </div>
+          ))}
+        </section>
       </main>
     </div>
   );

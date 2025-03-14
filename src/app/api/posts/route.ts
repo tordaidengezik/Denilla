@@ -106,6 +106,7 @@ export async function GET(req: Request) {
         user: {
           select: {
             username: true,
+            profileImage: true
           },
         },
         likes: true,

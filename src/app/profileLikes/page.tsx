@@ -19,6 +19,7 @@ interface Post {
 
 export default function ProfileLikes() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -46,7 +47,13 @@ export default function ProfileLikes() {
     };
 
     fetchLikes();
-  }, [router]);
+    const handleLikeUpdate = () => setRefreshKey((prev) => prev + 1);
+    window.addEventListener("likeUpdate", handleLikeUpdate);
+
+    return () => {
+      window.removeEventListener("likeUpdate", handleLikeUpdate);
+    };
+  }, [router, refreshKey]);
 
   return (
     <div>
@@ -61,6 +68,7 @@ export default function ProfileLikes() {
             initialLikes={post.likes.length}
             initialBookmarks={post.bookmarks.length}
             profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
+            onLikeRemove={()=> setRefreshKey((prev) => prev + 1)}
           />
           <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
         </div>

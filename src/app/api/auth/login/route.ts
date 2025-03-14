@@ -20,9 +20,9 @@ export async function loginUser(req: Request) {
       return NextResponse.json({ error: 'Helytelen e-mail cím vagy jelszó.' }, { status: 401 });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
 
-    return NextResponse.json({ token, message: 'Sikeres bejelentkezés!' }, { status: 200 });
+    return NextResponse.json({ token, role: user.role, message: 'Sikeres bejelentkezés!' }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Adatbázis hiba.' }, { status: 500 });

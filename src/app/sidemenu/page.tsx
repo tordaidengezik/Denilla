@@ -15,7 +15,11 @@ interface User {
 export default function SideMenu() {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<User>({ username: '', profileImage: '/yeti_pfp.jpg' });
+  const [user, setUser] = useState<User>({
+    username: "",
+    profileImage: "/yeti_pfp.jpg",
+  });
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getLinkClass = (path: string) =>
@@ -60,6 +64,30 @@ export default function SideMenu() {
 
     fetchUserProfile();
   }, []);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("/api/auth/admin/check", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        console.error("Error checking admin:", error);
+      }
+    };
+
+    checkAdmin();
+  }, []);
+
   return (
     <div className="relative w-full md:w-1/4 h-screen bg-dark-gray">
       <nav className="p-6 flex flex-col items-center space-y-5">
@@ -117,6 +145,16 @@ export default function SideMenu() {
           </button>
         </div>
       </nav>
+
+      {/* Admin Link */}
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all"
+        >
+          <span className="font-bold text-xl ml-3">ADMIN</span>
+        </Link>
+      )}
 
       {/* Profile and Logout */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-md border border-gray-600 rounded-full shadow-lg">

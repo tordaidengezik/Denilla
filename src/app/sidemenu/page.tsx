@@ -78,10 +78,13 @@ export default function SideMenu() {
         });
 
         if (response.ok) {
-          setIsAdmin(true);
+          setIsAdmin(true); // Ha admin jogosultság van
+        } else {
+          setIsAdmin(false); // Ha nincs admin jogosultság
         }
       } catch (error) {
         console.error("Error checking admin:", error);
+        setIsAdmin(false); // Hiba esetén alapértelmezés szerint nem admin
       }
     };
 
@@ -105,7 +108,7 @@ export default function SideMenu() {
           </div>
 
           {/* Home Link */}
-          <Link href="foryou" className={getLinkClass("/foryou")}>
+          <Link href="/foryou" className={getLinkClass("/foryou")}>
             <div className="flex items-center space-x-3">
               <House color={getIconColor("/foryou")} size={30} />
               <span>Home</span>
@@ -113,7 +116,7 @@ export default function SideMenu() {
           </Link>
 
           {/* Search Link */}
-          <Link href="search" className={getLinkClass("/search")}>
+          <Link href="/search" className={getLinkClass("/search")}>
             <div className="flex items-center space-x-3">
               <Search color={getIconColor("/search")} size={30} />
               <span>Search</span>
@@ -121,7 +124,7 @@ export default function SideMenu() {
           </Link>
 
           {/* Notifications Link */}
-          <Link href="notifications" className={getLinkClass("/notifications")}>
+          <Link href="/notifications" className={getLinkClass("/notifications")}>
             <div className="flex items-center space-x-3">
               <Bell color={getIconColor("/notifications")} size={30} />
               <span>Notifications</span>
@@ -129,7 +132,7 @@ export default function SideMenu() {
           </Link>
 
           {/* Bookmarks Link */}
-          <Link href="bookmarks" className={getLinkClass("/bookmarks")}>
+          <Link href="/bookmarks" className={getLinkClass("/bookmarks")}>
             <div className="flex items-center space-x-3">
               <Bookmark color={getIconColor("/bookmarks")} size={30} />
               <span>Bookmarks</span>

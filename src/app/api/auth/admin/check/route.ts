@@ -14,7 +14,12 @@ export async function GET(req: Request) {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { role: string };
-    return NextResponse.json({ role: decoded.role });
+    
+    if (decoded.role === "admin") {
+      return NextResponse.json({ role: "admin" });
+    }
+
+    return NextResponse.json({ role: null }, { status: 403 }); // Ha nem admin
   } catch (error) {
     console.error("Role check error:", error);
     return NextResponse.json({ role: null }, { status: 401 });

@@ -59,7 +59,7 @@ export default function ForYouPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen text-white">
-        <p>Betöltés...</p>
+        <p>Downloading...</p>
       </div>
     );
   }

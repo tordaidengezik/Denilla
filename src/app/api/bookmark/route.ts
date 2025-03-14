@@ -30,23 +30,19 @@ export async function POST(req: Request) {
 
     const { postId } = await req.json();
     
-    const bookmark = await prisma.bookmark.create({
+     await prisma.bookmark.create({
       data: {
         userId: user.id,
         postId: Number(postId),
       },
-      include: {
-        post: {
-          include: {
-            user: true,
-            likes: true,
-            bookmarks: true,
-          },
-        },
-      },
     });
 
-    return NextResponse.json(bookmark);
+    const updatedPost = await prisma.post.findUnique({
+      where: { id: Number(postId) },
+      include: { likes: true, bookmarks: true },
+    });
+
+    return NextResponse.json(updatedPost);
   } catch {
     return NextResponse.json(
       { error: 'Hiba történt a könyvjelző létrehozásakor' },
@@ -54,6 +50,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
 export async function GET(req: Request) {
   try {
@@ -104,7 +101,12 @@ export async function DELETE(req: Request) {
       },
     });
 
-    return NextResponse.json({ message: 'Könyvjelző sikeresen törölve' });
+    const updatedPost = await prisma.post.findUnique({
+      where: { id: Number(postId) },
+      include: { likes: true, bookmarks: true },
+    });
+
+    return NextResponse.json(updatedPost);
   } catch {
     return NextResponse.json(
       { error: 'Hiba történt a könyvjelző törlésekor' },

@@ -4,69 +4,72 @@ import { useEffect, useState } from "react";
 import SideMenu from "../sidemenu/page";
 import RightSideMenu from "../rightSideMenu/page";
 import Post from "../postSablon/post";
+import { useRouter } from "next/navigation";
 
-interface BookmarkedPost {
+interface Post {
   id: number;
-  author: string;
-  date: string;
   content: string;
-  imageSrc?: string;
-  initialLikes: number;
-  initialBookmarks: number;
+  imageURL?: string;
+  createdAt: string;
+  user: {
+    username: string;
+    profileImage?: string;
+  };
+  likes: { userId: number }[];
+  bookmarks: { userId: number }[];
 }
 
 export default function BookmarksPage() {
-  const [bookmarkedPosts, setBookmarkedPosts] = useState<BookmarkedPost[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const router = useRouter();
 
-  // Könyvjelzők frissítése amikor változás történik
-  const updateBookmarks = () => {
-    const savedBookmarks = localStorage.getItem("bookmarkedPosts");
-    if (savedBookmarks) {
-      setBookmarkedPosts(JSON.parse(savedBookmarks));
-    } else {
-      setBookmarkedPosts([]);
-    }
-  };
-
-  // Kezdeti betöltés
   useEffect(() => {
-    updateBookmarks();
-  }, []);
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          router.push("/login");
+          return;
+        }
 
-  // Könyvjelzők változásának figyelése
-  useEffect(() => {
-    window.addEventListener("storage", updateBookmarks);
-    // Custom event figyelése a közvetlen változásokhoz
-    window.addEventListener("bookmarkUpdate", updateBookmarks);
+        const response = await fetch("/api/bookmark", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    return () => {
-      window.removeEventListener("storage", updateBookmarks);
-      window.removeEventListener("bookmarkUpdate", updateBookmarks);
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.map((b: { post: Post }) => b.post));
+        }
+      } catch (error) {
+        console.error("Error fetching bookmarks:", error);
+      }
     };
-  }, []);
+
+    fetchBookmarks();
+  }, [router]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
       <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
-        {/* Ha nincs könyvjelzőzött poszt */}
-        {bookmarkedPosts.length === 0 ? (
+        {posts.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
             <p className="text-lg font-semibold">You haven’t bookmarked any post yet</p>
           </div>
         ) : (
-          /* Könyvjelzőzött posztok megjelenítése */
-          bookmarkedPosts.map((post) => (
+          posts.map((post) => (
             <div key={post.id}>
               <Post
                 id={post.id}
-                author={post.author}
-                date={post.date}
+                author={post.user.username}
+                date={new Date(post.createdAt).toLocaleDateString()}
                 content={post.content}
-                imageSrc={post.imageSrc}
-                initialLikes={post.initialLikes}
-                initialBookmarks={post.initialBookmarks}
-                onBookmarkRemove={updateBookmarks}
+                imageSrc={post.imageURL}
+                initialLikes={post.likes.length}
+                initialBookmarks={post.bookmarks.length}
+                profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
               />
               <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
             </div>

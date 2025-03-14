@@ -44,43 +44,43 @@ export default function Post({
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
 
   useEffect(() => {
-    const savedBookmarks = localStorage.getItem('bookmarkedPosts');
-    if (savedBookmarks) {
-      const bookmarkedPosts = JSON.parse(savedBookmarks);
-      setBookmarked(bookmarkedPosts.some((post: PostProps) => post.id === id));
-    }
+    const checkUserInteractions = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
 
-    const savedLikes = localStorage.getItem('likedPosts');
-    if (savedLikes) {
-      const likedPosts = JSON.parse(savedLikes);
-      setLiked(likedPosts.some((post: PostProps) => post.id === id));
-    }
+      const response = await fetch(`/api/user/interactions?postId=${id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLiked(data.liked);
+        setBookmarked(data.bookmarked);
+      }
+    };
+
+    checkUserInteractions();
   }, [id]);
 
-  const handleBookmark = () => {
-    const savedBookmarks = localStorage.getItem('bookmarkedPosts');
-    let bookmarkedPosts = savedBookmarks ? JSON.parse(savedBookmarks) : [];
-
-    if (!bookmarked) {
-      // Poszt hozzáadása a bookmarkokhoz
-      bookmarkedPosts.push({
-        id,
-        author,
-        date,
-        content,
-        imageSrc,
-        initialLikes,
-        initialBookmarks
-      });
-      setBookmarks(bookmarks + 1);
-    } else {
-      bookmarkedPosts = bookmarkedPosts.filter((post: PostProps) => post.id !== id);
+  const handleBookmark = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+  
+    const method = bookmarked ? 'DELETE' : 'POST';
+    const response = await fetch('/api/bookmark', {
+      method,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ postId: id })
+    });
+  
+    if (response.ok) {
+      const updatedPost = await response.json();
+      setBookmarks(updatedPost.bookmarks.length);
+      setBookmarked(!bookmarked);
     }
-
-    localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarkedPosts));
-  setBookmarked(!bookmarked);
-  window.dispatchEvent(new Event('bookmarkUpdate'));
-}
+  };
 
 const handleEdit = async () => {
   const token = localStorage.getItem('token');
@@ -146,33 +146,26 @@ const handleDelete = async () => {
   }
 };
 
-const handleLike = () => {
-  const savedLikes = localStorage.getItem('likedPosts');
-  let likedPosts = savedLikes ? JSON.parse(savedLikes) : [];
-  
-  if (!liked) {
-    // Like hozzáadása
-    likedPosts.push({
-      id,
-      author,
-      date,
-      content,
-      imageSrc,
-      initialLikes: likes,
-      initialBookmarks
-    });
-    setLikes(likes + 1);
-  } else {
-    // Like eltávolítása
-    likedPosts = likedPosts.filter((post: PostProps) => post.id !== id);
-    setLikes(likes - 1);
-  }
-  
-  localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-  setLiked(!liked);
-  window.dispatchEvent(new Event('likeUpdate'));
-};
+const handleLike = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
 
+  const method = liked ? 'DELETE' : 'POST';
+  const response = await fetch('/api/like', {
+    method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ postId: id })
+  });
+
+  if (response.ok) {
+    const updatedPost = await response.json();
+    setLikes(updatedPost.likes.length);
+    setLiked(!liked);
+  }
+};
 
   
 return (

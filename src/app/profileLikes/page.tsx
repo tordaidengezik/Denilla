@@ -2,64 +2,69 @@
 
 import { useEffect, useState } from "react";
 import Post from "../postSablon/post";
+import { useRouter } from "next/navigation";
 
-interface LikedPost {
+interface Post {
   id: number;
-  author: string;
-  date: string;
   content: string;
-  imageSrc?: string;
-  initialLikes: number;
-  initialBookmarks: number;
+  imageURL?: string;
+  createdAt: string;
+  user: {
+    username: string;
+    profileImage?: string;
+  };
+  likes: { userId: number }[];
+  bookmarks: { userId: number }[];
 }
 
 export default function ProfileLikes() {
-  const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const router = useRouter();
 
-// Like-ok frissítése amikor változás történik
-const updateLikes = () => {
-  const savedLikes = localStorage.getItem('likedPosts');
-  if (savedLikes) {
-    setLikedPosts(JSON.parse(savedLikes));
-  } else {
-    setLikedPosts([]);
-  }
-};
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          router.push("/login");
+          return;
+        }
 
-// Kezdeti betöltés
-useEffect(() => {
-  updateLikes();
-}, []);
+        const response = await fetch("/api/like", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-// Like-ok változásának figyelése
-useEffect(() => {
-  window.addEventListener('storage', updateLikes);
-  // Custom event figyelése a közvetlen változásokhoz
-  window.addEventListener('likeUpdate', updateLikes);
-  
-  return () => {
-    window.removeEventListener('storage', updateLikes);
-    window.removeEventListener('likeUpdate', updateLikes);
-  };
-}, []);
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.map((l: { post: Post }) => l.post));
+        }
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+      }
+    };
 
-return (
-  <div>
-    {likedPosts.map((post, index) => (
-      <div key={`${post.id}-${index}`}>
-        <Post
-          id={post.id}
-          author={post.author}
-          date={post.date}
-          content={post.content}
-          imageSrc={post.imageSrc}
-          initialLikes={post.initialLikes}
-          initialBookmarks={post.initialBookmarks}
-          onLikeRemove = {updateLikes}
-        />
-        <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
-      </div>
-    ))}
-  </div>
-);
+    fetchLikes();
+  }, [router]);
+
+  return (
+    <div>
+      {posts.map((post) => (
+        <div key={post.id}>
+          <Post
+            id={post.id}
+            author={post.user.username}
+            date={new Date(post.createdAt).toLocaleDateString()}
+            content={post.content}
+            imageSrc={post.imageURL}
+            initialLikes={post.likes.length}
+            initialBookmarks={post.bookmarks.length}
+            profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
+          />
+          <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+        </div>
+      ))}
+    </div>
+  );
 }

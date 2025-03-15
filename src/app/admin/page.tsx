@@ -115,7 +115,7 @@ export default function AdminPage() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
+      <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <h1 className="text-white text-center text-3xl font-bold mt-10">Admin Panel</h1>
 
         {/* Felhasználók kezelése */}

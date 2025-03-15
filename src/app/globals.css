@@ -19,3 +19,16 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.transform {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Mobilnézetben fix pozícionálás */
+@media (max-width: 767px) {
+  .fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+}

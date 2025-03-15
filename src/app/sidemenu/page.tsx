@@ -1,11 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { House, Search, Bell, Bookmark, LogOut } from "lucide-react";
+import { House, Search, Bell, Bookmark, LogOut, X } from "lucide-react";
 import CreatePostModal from "../createPost/createPost";
-import { useState, useEffect } from "react";
 
 interface User {
   username: string;
@@ -13,6 +13,7 @@ interface User {
 }
 
 export default function SideMenu() {
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User>({
@@ -78,13 +79,13 @@ export default function SideMenu() {
         });
 
         if (response.ok) {
-          setIsAdmin(true); // Ha admin jogosultság van
+          setIsAdmin(true);
         } else {
-          setIsAdmin(false); // Ha nincs admin jogosultság
+          setIsAdmin(false);
         }
       } catch (error) {
         console.error("Error checking admin:", error);
-        setIsAdmin(false); // Hiba esetén alapértelmezés szerint nem admin
+        setIsAdmin(false);
       }
     };
 
@@ -92,98 +93,143 @@ export default function SideMenu() {
   }, []);
 
   return (
-    <div className="relative w-full md:w-1/4 h-screen bg-dark-gray">
-      <nav className="p-6 flex flex-col items-center space-y-5">
-        <div className="flex flex-col items-start">
-          <div className="flex-shrink-0 mb-4">
-            <Link href="/foryou">
+    <>
+      {/* Hamburger gomb */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 rounded-full"
+        aria-label="Menü nyitása"
+      >
+        {isOpen ? (
+          <X className="w-6 h-6 text-white" />
+        ) : (
+          <svg
+            className="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        )}
+      </button>
+
+      {/* Reszponzív menü konténer */}
+      <div
+        className={`
+          fixed lg:relative
+          z-50
+          h-screen bg-dark-gray
+          transform transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          w-64 lg:w-1/4
+        `}
+      >
+        <div className="relative w-full h-screen bg-dark-gray">
+          <nav className="p-6 flex flex-col items-center space-y-5">
+            <div className="flex flex-col items-start">
+              <div className="flex-shrink-0 mb-4">
+                <Link href="/foryou">
+                  <Image
+                    src="/Denilla.png"
+                    alt="Logo"
+                    width={35}
+                    height={35}
+                    className="rounded-full"
+                  />
+                </Link>
+              </div>
+
+              <Link href="/foryou" className={getLinkClass("/foryou")}>
+                <div className="flex items-center space-x-3">
+                  <House color={getIconColor("/foryou")} size={30} />
+                  <span>Home</span>
+                </div>
+              </Link>
+
+              <Link href="/search" className={getLinkClass("/search")}>
+                <div className="flex items-center space-x-3">
+                  <Search color={getIconColor("/search")} size={30} />
+                  <span>Search</span>
+                </div>
+              </Link>
+
+              <Link
+                href="/notifications"
+                className={getLinkClass("/notifications")}
+              >
+                <div className="flex items-center space-x-3">
+                  <Bell color={getIconColor("/notifications")} size={30} />
+                  <span>Notifications</span>
+                </div>
+              </Link>
+
+              <Link href="/bookmarks" className={getLinkClass("/bookmarks")}>
+                <div className="flex items-center space-x-3">
+                  <Bookmark color={getIconColor("/bookmarks")} size={30} />
+                  <span>Bookmarks</span>
+                </div>
+              </Link>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 text-white px-4 py-2 w-40 rounded-xl hover:from-orange-600 hover:via-red-600 hover:to-yellow-600 focus:ring-2 focus:ring-orange-300 transition-all"
+              >
+                Post
+              </button>
+            </div>
+          </nav>
+
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all"
+            >
+              <span className="font-bold text-xl ml-3">ADMIN</span>
+            </Link>
+          )}
+
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-lg border border-gray-600 rounded-full shadow-lg">
+            <Link
+              href="/profile"
+              className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
+            >
               <Image
-                src="/Denilla.png"
-                alt="Logo"
-                width={35}
-                height={35}
+                src={user.profileImage || "/yeti_pfp.jpg"}
+                alt="Profile Picture"
+                width={40}
+                height={40}
                 className="rounded-full"
               />
+              <span className="font-bold text-xl ml-3">{user.username}</span>
             </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600 rounded-full"
+            >
+              <LogOut color="#FFFFFF" size={24} />
+            </button>
           </div>
-
-          {/* Home Link */}
-          <Link href="/foryou" className={getLinkClass("/foryou")}>
-            <div className="flex items-center space-x-3">
-              <House color={getIconColor("/foryou")} size={30} />
-              <span>Home</span>
-            </div>
-          </Link>
-
-          {/* Search Link */}
-          <Link href="/search" className={getLinkClass("/search")}>
-            <div className="flex items-center space-x-3">
-              <Search color={getIconColor("/search")} size={30} />
-              <span>Search</span>
-            </div>
-          </Link>
-
-          {/* Notifications Link */}
-          <Link href="/notifications" className={getLinkClass("/notifications")}>
-            <div className="flex items-center space-x-3">
-              <Bell color={getIconColor("/notifications")} size={30} />
-              <span>Notifications</span>
-            </div>
-          </Link>
-
-          {/* Bookmarks Link */}
-          <Link href="/bookmarks" className={getLinkClass("/bookmarks")}>
-            <div className="flex items-center space-x-3">
-              <Bookmark color={getIconColor("/bookmarks")} size={30} />
-              <span>Bookmarks</span>
-            </div>
-          </Link>
-
-          {/* Post Button */}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 text-white px-4 py-2 w-40 rounded-xl hover:from-orange-600 hover:via-red-600 hover:to-yellow-600 focus:ring-2 focus:ring-orange-300 transition-all"
-          >
-            Post
-          </button>
         </div>
-      </nav>
-
-      {/* Admin Link */}
-      {isAdmin && (
-        <Link
-          href="/admin"
-          className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all"
-        >
-          <span className="font-bold text-xl ml-3">ADMIN</span>
-        </Link>
-      )}
-
-      {/* Profile and Logout */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-md border border-gray-600 rounded-full shadow-lg">
-        <Link
-          href="/profile"
-          className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
-        >
-          <Image
-            src={user.profileImage || "/yeti_pfp.jpg"}
-            alt="Profile Picture"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-          <span className="font-bold text-xl ml-3">{user.username}</span>
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600 rounded-full "
-        >
-          <LogOut color="#FFFFFF" size={24} />
-        </button>
       </div>
+      
+      {isModalOpen && (
+            <CreatePostModal onClose={() => setIsModalOpen(false)} />
+          )}
 
-      {/* Modal */}
-      {isModalOpen && <CreatePostModal onClose={() => setIsModalOpen(false)} />}
-    </div>
+      {/* Mobil overlay */}
+      {isOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </>
   );
 }
+

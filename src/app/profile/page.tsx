@@ -87,7 +87,7 @@ export default function ProfilePage() {
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
 
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
+      <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         {/* Cover Image */}
         <div className="relative bg-gray-800 h-48">
           <Image

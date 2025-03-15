@@ -53,7 +53,7 @@ export default function BookmarksPage() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
+      <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         {posts.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
             <p className="text-lg font-semibold">You haven’t bookmarked any post yet</p>

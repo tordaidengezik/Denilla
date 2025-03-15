@@ -81,7 +81,7 @@ export default function RightSideMenu() {
   };
 
   return (
-    <nav className="w-full md:w-1/4 h-1/4 md:h-full p-4 overflow-auto bg-dark-gray">
+    <nav className="w-full md:w-1/4 h-1/4 md:h-full p-4 overflow-auto bg-dark-gray hidden min-[1300px]:block min-[1300px]:w-1/4">
       {/* Who to Follow szekció */}
       <div className="border border-gray-500 rounded-lg p-4 bg-black mb-6">
         <h2 className="text-white font-bold mb-4">Who to Follow</h2>

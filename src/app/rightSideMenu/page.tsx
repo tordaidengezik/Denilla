@@ -92,13 +92,16 @@ export default function RightSideMenu() {
               className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-900 transition"
             >
               <div className="flex items-center space-x-3">
-                <Image
-                  src={user.profileImage || "/yeti_pfp.jpg"}
-                  alt={user.username}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
+                {/* Profilkép konténer */}
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <Image
+                    src={user.profileImage || "/yeti_pfp.jpg"}
+                    alt={user.username}
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <p className="text-white">{user.username}</p>
               </div>
               <button

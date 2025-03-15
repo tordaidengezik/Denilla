@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { House, Search, Bell, Bookmark, LogOut, X } from "lucide-react";
+import { House, Search, Bell, Bookmark, LogOut, X, UserRound } from "lucide-react";
 import CreatePostModal from "../createPost/createPost";
 
 interface User {
@@ -176,6 +176,15 @@ export default function SideMenu() {
                 </div>
               </Link>
 
+              {isAdmin && (
+                <Link href="/admin" className={getLinkClass("/admin")}>
+                <div className="flex items-center space-x-3">
+                  <UserRound color={getIconColor("/admin")} size={30} />
+                  <span>Admin Dashboard</span>
+                </div>
+                </Link>
+              )}
+
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 text-white px-4 py-2 w-40 rounded-xl hover:from-orange-600 hover:via-red-600 hover:to-yellow-600 focus:ring-2 focus:ring-orange-300 transition-all"
@@ -185,29 +194,24 @@ export default function SideMenu() {
             </div>
           </nav>
 
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all"
-            >
-              <span className="font-bold text-xl ml-3">ADMIN</span>
-            </Link>
-          )}
 
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-lg border border-gray-600 rounded-full shadow-lg">
-            <Link
-              href="/profile"
-              className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
-            >
+          <Link
+            href="/profile"
+            className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
+          >
+            <div className="w-10 h-10 rounded-full overflow-hidden">
               <Image
                 src={user.profileImage || "/yeti_pfp.jpg"}
                 alt="Profile Picture"
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="w-full h-full object-cover"
               />
-              <span className="font-bold text-xl ml-3">{user.username}</span>
-            </Link>
+            </div>
+            <span className="font-bold text-xl ml-3">{user.username}</span>
+          </Link>
+
             <button
               onClick={handleLogout}
               className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600 rounded-full"

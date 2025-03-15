@@ -187,13 +187,17 @@ export default function Post({
     <div className="p-6 bg-black rounded-xl mx-3 my-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Image
-            src={profileImage}
-            alt={author}
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          {/* Profilkép konténer */}
+          <div className="w-10 h-10 rounded-full overflow-hidden">
+            <Image
+              src={profileImage}
+              alt={author}
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
           <h1 className="font-bold text-white">{author}</h1>
           <h1 className="flex text-gray-400">
             <Dot />
@@ -236,14 +240,14 @@ export default function Post({
         <div className="flex justify-end space-x-2 mt-4">
           <button
             onClick={() => setIsEditing(true)}
-            className="bg-orange-650 text-white px-3 py-2 w-32 rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center space-x-2"
+            className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700 transition-all flex items-center justify-center space-x-2"
           >
             <span>Edit</span>
             <Pencil size={16} />
           </button>
           <button
             onClick={handleDelete}
-            className="bg-gray-500 text-white px-3 py-2 w-32 rounded-xl hover:bg-red-600 transition-all flex items-center justify-center space-x-2"
+            className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-red-600 hover:bg-red-700 transition-all flex items-center justify-center space-x-2"
           >
             <span>Delete</span>
             <Trash2 size={16} />
@@ -253,27 +257,36 @@ export default function Post({
 
       {showActions && isEditing && (
         <div className="mt-4">
+         
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
-            className="w-full p-2 bg-gray-800 text-white rounded focus:ring-orange-650"
+            className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 
+          hover:border-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50
+          placeholder:text-gray-400 transition-all duration-200"
+            placeholder="Add a description..."
           />
+
           <input
             type="file"
             onChange={(e) => setEditFile(e.target.files?.[0] || null)}
-            className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            className="flex-1 text-sm text-gray-400 file:mr-2 file:py-1.5 file:px-4 file:rounded-lg 
+              file:border-0 file:text-sm file:font-medium
+            file:bg-orange-600 file:text-white hover:file:bg-orange-700 transition-colors"
+            accept="image/*"
           />
 
           <div className="flex justify-end space-x-2 mt-2">
             <button
               onClick={() => setIsEditing(false)}
-              className="bg-gray-500 text-white px-3 py-2 w-32 rounded-xl hover:bg-red-600 transition-all flex items-center justify-center space-x-2"
+              className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-gray-500 hover:bg-gray-600"
             >
               Cancel
             </button>
+
             <button
               onClick={handleEdit}
-              className="bg-orange-650 text-white px-3 py-2 w-32 rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center space-x-2"
+              className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700"
             >
               Save
             </button>

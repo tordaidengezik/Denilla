@@ -98,13 +98,13 @@ export default function ProfilePage() {
             className="absolute top-0 left-0 w-full h-full"
           />
           {/* Profile Picture */}
-          <div className="absolute bottom-[-40px] left-5">
+          <div className="absolute bottom-[-40px] left-5 w-20 h-20 rounded-full overflow-hidden border-2 border-dark-gray">
             <Image
               src={user.profileImage || "/yeti_pfp.jpg"}
               alt="Profile Picture"
               width={80}
               height={80}
-              className="rounded-full border-2 border-dark-gray"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
@@ -130,38 +130,60 @@ export default function ProfilePage() {
               <textarea
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
-                className="w-full p-2 bg-gray-800 text-white rounded"
+                className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 
+                  hover:border-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50
+                  placeholder:text-gray-400 transition-all duration-200"
                 placeholder="Add a description..."
               />
               <div className="mt-2 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 flex-nowrap">
+                  <span className="text-white font-medium whitespace-nowrap min-w-[120px]">
+                    Profile Image
+                  </span>
                   <input
                     type="file"
-                    onChange={(e) =>
-                      setProfileFile(e.target.files?.[0] || null)
-                    }
-                    className="text-white"
+                    onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
+                    className="flex-1 text-sm text-gray-400
+                      file:mr-2 file:py-1.5 file:px-4 file:rounded-lg
+                      file:border-0 file:text-sm file:font-medium
+                      file:bg-orange-600 file:text-white
+                      hover:file:bg-orange-700 transition-colors"
                     accept="image/*"
                   />
                   <button
-                    onClick={() => setDeleteProfileImage(true)}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    onClick={() => setDeleteProfileImage(prev => !prev)}
+                    className={`px-4 py-1 min-w-[6rem] rounded-lg font-bold text-white ${
+                      deleteProfileImage 
+                        ? "bg-gray-600 hover:bg-gray-700" 
+                        : "bg-red-600 hover:bg-red-700"
+                    }`}
                   >
-                    Delete Profile Image
+                    {deleteProfileImage ? "Cancel Delete" : "Delete Profile Image"}
                   </button>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 flex-nowrap">
+                  <span className="text-white font-medium whitespace-nowrap min-w-[120px]">
+                    Cover Image
+                  </span>
                   <input
                     type="file"
                     onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-                    className="text-white"
+                    className="flex-1 text-sm text-gray-400
+                      file:mr-2 file:py-1.5 file:px-4 file:rounded-lg
+                      file:border-0 file:text-sm file:font-medium
+                      file:bg-orange-600 file:text-white
+                      hover:file:bg-orange-700 transition-colors"
                     accept="image/*"
                   />
                   <button
-                    onClick={() => setDeleteCoverImage(true)}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    onClick={() => setDeleteCoverImage (prev => !prev)}
+                    className={`px-4 py-1 min-w-[6rem] rounded-lg font-bold text-white ${
+                      deleteCoverImage 
+                        ? "bg-gray-600 hover:bg-gray-700" 
+                        : "bg-red-600 hover:bg-red-700"
+                    }`}
                   >
-                    Delete Cover Image
+                    {deleteCoverImage ? "Cancel Delete" : "Delete Cover Image"}
                   </button>
                 </div>
               </div>
@@ -172,13 +194,13 @@ export default function ProfilePage() {
                     setDeleteProfileImage(false);
                     setDeleteCoverImage(false);
                   }}
-                  className="px-4 py-2 bg-gray-500 text-white rounded"
+                  className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-gray-500 hover:bg-gray-600"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveProfile}
-                  className="px-4 py-2 bg-orange-650 text-white rounded"
+                  className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700"
                 >
                   Save
                 </button>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SideMenu from "../sidemenu/page";
+import RightSideMenu from "../rightSideMenu/page";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -126,7 +127,7 @@ export default function AdminPage() {
               <span className="text-white">{user.username} ({user.email})</span>
               <button
                 onClick={() => handleDeleteUser(user.id)}
-                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700"
               >
                 Delete User
               </button>
@@ -139,10 +140,10 @@ export default function AdminPage() {
           <h2 className="text-white text-xl font-bold mb-4">Manage Posts</h2>
           {posts.map((post) => (
             <div key={post.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
-              <span className="text-white">{post.content}</span>
+              <span className="text-white mr-4 break-words flex-1">{post.content}</span>
               <button
                 onClick={() => handleDeletePost(post.id)}
-                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700"
               >
                 Delete Post
               </button>
@@ -150,6 +151,7 @@ export default function AdminPage() {
           ))}
         </section>
       </main>
+      <RightSideMenu />
     </div>
   );
 }

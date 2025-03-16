@@ -13,22 +13,21 @@ model User {
   email         String         @unique
   password      String
   role          String         @default("user")
-  description   String?        
-  profileImage  String?        
-  coverImage    String?        
+  description   String?
+  profileImage  String?
+  coverImage    String?
   createdAt     DateTime       @default(now())
-  posts         Post[]     
+  posts         Post[]
   likes         Like[]
   bookmarks     Bookmark[]
   notifications Notification[] @relation("ReceivedNotifications")
   followers     Follow[]       @relation("Followers")
   following     Follow[]       @relation("Following")
-
 }
 
 model Post {
   id            Int            @id @default(autoincrement())
-  user          User           @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
   content       String
   imageURL      String?
@@ -40,7 +39,7 @@ model Post {
 
 model Like {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   post      Post     @relation(fields: [postId], references: [id])
   postId    Int
@@ -51,7 +50,7 @@ model Like {
 
 model Bookmark {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   post      Post     @relation(fields: [postId], references: [id])
   postId    Int
@@ -62,11 +61,11 @@ model Bookmark {
 
 model Notification {
   id        Int      @id @default(autoincrement())
-  toUser    User     @relation("ReceivedNotifications", fields: [toUserId], references: [id])
+  toUser    User     @relation("ReceivedNotifications", fields: [toUserId], references: [id], onDelete: Cascade)
   toUserId  Int
-  type      String   // 'new_post' vagy 'system_message'
+  type      String // 'new_post' vagy 'system_message'
   message   String
-  postId    Int?     // Opcionális, csak post-típusú értesítéseknél
+  postId    Int? // Opcionális, csak post-típusú értesítéseknél
   post      Post?    @relation(fields: [postId], references: [id])
   read      Boolean  @default(false)
   createdAt DateTime @default(now())

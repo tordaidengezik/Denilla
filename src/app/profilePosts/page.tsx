@@ -8,6 +8,7 @@ interface PostType {
   id: number;
   user: {
     username: string;
+    profileImage?: string;
   };
   content: string;
   imageURL?: string;
@@ -63,6 +64,7 @@ export default function ProfilePosts() {
             imageSrc={post.imageURL}
             initialLikes={post.likes.length}
             initialBookmarks={post.bookmarks.length}
+            profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
             onDelete={handlePostDelete}
             showActions={true}
           />

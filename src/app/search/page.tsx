@@ -2,12 +2,30 @@
 
 import SideMenu from "../sidemenu/page";
 import RightSideMenu from "../rightSideMenu/page";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Layout() {
   const [searchQuery, setSearchQuery] = useState(""); 
+  const [users, setUsers] = useState<{ id: number; username: string; email: string }[]>([]);
 
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) return;
   
+          const [usersRes] = await Promise.all([
+            fetch("/api/auth/admin/manageUsers", { headers: { Authorization: `Bearer ${token}` } })
+          ]);
+  
+          if (usersRes.ok) setUsers(await usersRes.json());
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+  
+      fetchData();
+    }, []);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -26,8 +44,13 @@ export default function Layout() {
           />
         </div>
 
-        
-        
+        <section className="p-4">
+          {users.map((user) => (
+            <div key={user.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
+              <span className="text-white">{user.username} ({user.email})</span>
+            </div>
+          ))}
+        </section>
       </main>
 
       <RightSideMenu />

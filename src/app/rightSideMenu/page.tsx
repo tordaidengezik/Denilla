@@ -106,10 +106,10 @@ export default function RightSideMenu() {
               </div>
               <button
                 onClick={() => handleFollow(user.id)}
-                className={`px-4 py-1 rounded-lg font-bold text-white transition-all ${
+                className={`px-4 py-1 rounded-lg font-bold text-white ${
                   followingState[user.id]
                     ? "bg-orange-700 hover:bg-orange-800"
-                    : "bg-orange-500 hover:bg-orange-700"
+                    : "bg-orange-650 hover:bg-orange-700"
                 }`}
               >
                 {followingState[user.id] ? "Following" : "Follow"}
@@ -173,3 +173,4 @@ export default function RightSideMenu() {
     </nav>
   );
 }
+

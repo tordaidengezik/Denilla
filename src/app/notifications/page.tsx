@@ -20,6 +20,7 @@ interface Notification {
     imageURL?: string;
     user: {
       username: string;
+      profileImage?: string; // Profilkép mező hozzáadva
     };
     likes: { userId: number; username: string }[];
     bookmarks: { userId: number; username: string }[];
@@ -105,61 +106,65 @@ export default function NotificationPage() {
         {notifications.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
             <p className="text-lg font-semibold">
-              You dont have any notifications yet
+              You don't have any notifications yet
             </p>
           </div>
         ) : (
           <div className="p-4 space-y-6">
             {notifications.map((notification) => (
-              <div key={notification.id}>
-                <div
-                  onClick={() => handleNotificationClick(notification)}
-                  className={`flex items-center space-x-4 bg-black p-4 rounded-lg border border-gray-600 ${
-                    !notification.read ? "bg-opacity-90" : "bg-opacity-50"
-                  } ${
-                    notification.type === "new_post"
-                      ? "cursor-pointer hover:bg-gray-900"
-                      : ""
-                  }`}
-                >
-                  <Image
-                    src="/yeti_pfp.jpg"
-                    alt="User"
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
-                  <div className="flex items-center space-x-2">
-                    <p className="text-white">{notification.message}</p>
-                    <p className="text-gray-400 text-sm">
-                      {new Date(notification.createdAt).toLocaleDateString()}
-                    </p>
+              <div key={notification.id} className="group relative">
+                <div className="flex items-start justify-between space-x-4 bg-black p-4 rounded-lg border border-gray-600 hover:bg-gray-900 transition-all">
+                  <div 
+                    onClick={() => handleNotificationClick(notification)}
+                    className="flex-1 flex items-start space-x-4 cursor-pointer"
+                  >
+                    {/* Módosított Profilkép rész */}
+                    <div className="relative h-12 w-12 flex-shrink-0">
+                      <Image
+                        src={notification.post?.user?.profileImage || "/yeti_pfp.jpg"}
+                        alt={notification.post?.user?.username || "User avatar"}
+                        fill
+                        className="rounded-full object-cover"
+                      />
+                    </div>
+                    
+                    <div>
+                      <p className="text-white">{notification.message}</p>
+                      <p className="text-gray-400 text-sm mt-1">
+                        {new Date(notification.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Kuka gomb változatlan */}
+                  <div className="flex items-center pl-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteNotification(notification.id);
+                      }}
+                      className="text-gray-400 hover:text-orange-650 transition-colors p-2 rounded-full hover:bg-gray-800"
+                    >
+                      <Trash2 size={20} />
+                    </button>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => handleDeleteNotification(notification.id)}
-                  className="text-gray-400 hover:text-red-500 transition-colors p-2"
-                >
-                  <Trash2 size={20} />
-                </button>
-
-                {selectedPostId === notification.post?.id &&
-                  notification.post && (
-                    <div className="mt-4">
-                      <Post
-                        id={notification.post.id}
-                        author={notification.post.user.username}
-                        date={new Date(
-                          notification.createdAt
-                        ).toLocaleDateString()}
-                        content={notification.post.content}
-                        imageSrc={notification.post.imageURL}
-                        initialLikes={notification.post.likes.length}
-                        initialBookmarks={notification.post.bookmarks.length}
-                      />
-                    </div>
-                  )}
+                {/* Poszt megjelenítés változatlan */}
+                {selectedPostId === notification.post?.id && notification.post && (
+                  <div className="mt-4">
+                    <Post
+                      id={notification.post.id}
+                      author={notification.post.user.username}
+                      date={new Date(notification.createdAt).toLocaleDateString()}
+                      content={notification.post.content}
+                      imageSrc={notification.post.imageURL}
+                      initialLikes={notification.post.likes.length}
+                      initialBookmarks={notification.post.bookmarks.length}
+                      profileImage={notification.post.user.profileImage} // Profilkép átadva
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

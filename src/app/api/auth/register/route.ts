@@ -13,7 +13,7 @@ export async function registerUser(req: Request) {
     }
 
     if (password.length < 6) {
-      return NextResponse.json({ error: 'A jelszónak minimum 6 karakter hosszúnak kell lennie.' }, { status: 400 });
+      return NextResponse.json({ error: 'A jelszó minimum 6 karakter.' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

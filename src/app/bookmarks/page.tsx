@@ -18,7 +18,6 @@ interface Post {
   likes: { userId: number }[];
   bookmarks: { userId: number }[];
 }
-
 export default function BookmarksPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const router = useRouter();

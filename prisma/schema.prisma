@@ -23,6 +23,7 @@ model User {
   notifications Notification[] @relation("ReceivedNotifications")
   followers     Follow[]       @relation("Followers")
   following     Follow[]       @relation("Following")
+  comments      Comment[]
 }
 
 model Post {
@@ -35,6 +36,7 @@ model Post {
   likes         Like[]
   bookmarks     Bookmark[]
   notifications Notification[]
+  comments     Comment[]
 }
 
 model Like {
@@ -81,3 +83,14 @@ model Follow {
 
   @@unique([followerId, followingId])
 }
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   // A komment szövege
+  createdAt DateTime @default(now())
+  userId    Int      // A kommentet író felhasználó
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int      // A kommenthez tartozó poszt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+

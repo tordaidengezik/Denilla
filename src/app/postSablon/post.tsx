@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Dot, Heart, Bookmark, Trash2, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface PostProps {
   id: number;
@@ -43,6 +44,8 @@ export default function Post({
   const [editFile, setEditFile] = useState<File | null>(null);
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
 
+  const router = useRouter();
+
   useEffect(() => {
     const checkUserInteractions = async () => {
       const token = localStorage.getItem("token");
@@ -60,6 +63,10 @@ export default function Post({
 
     checkUserInteractions();
   }, [id]);
+
+  const handlePostClick = () => {
+    router.push(`/postView?id=${id}`);
+  };
 
   const handleBookmark = async () => {
     try {
@@ -172,8 +179,8 @@ export default function Post({
 
       if (response.ok) {
         setLiked(!liked);
-        setLikeCount(prevCount => liked ? prevCount - 1 : prevCount + 1);
-        
+        setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
+
         if (liked && onLikeRemove) {
           onLikeRemove();
         }
@@ -184,8 +191,8 @@ export default function Post({
   };
 
   return (
-    <div className="p-6 bg-black rounded-xl mx-3 my-3">
-      <div className="flex items-center justify-between">
+    <div className="p-6 bg-black rounded-xl mx-3 my-3" onClick={handlePostClick}>
+      <div className="flex items-center justify-between" >
         <div className="flex items-center space-x-4">
           {/* Profilkép konténer */}
           <div className="w-10 h-10 rounded-full overflow-hidden">
@@ -197,7 +204,7 @@ export default function Post({
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           <h1 className="font-bold text-white">{author}</h1>
           <h1 className="flex text-gray-400">
             <Dot />
@@ -257,7 +264,6 @@ export default function Post({
 
       {showActions && isEditing && (
         <div className="mt-4">
-         
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}

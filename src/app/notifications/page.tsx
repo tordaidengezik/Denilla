@@ -106,7 +106,7 @@ export default function NotificationPage() {
         {notifications.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
             <p className="text-lg font-semibold">
-              You don't have any notifications yet
+              You dont have any notifications yet
             </p>
           </div>
         ) : (

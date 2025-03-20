@@ -28,7 +28,7 @@ export default function AdminPage() {
 
         setIsAdmin(response.ok);
         if (!response.ok) router.push("/login");
-      } catch (error) {
+      } catch {
         router.push("/login");
       }
     };
@@ -67,7 +67,7 @@ export default function AdminPage() {
       const endpoint = deleteTarget.type === "user" 
         ? "/api/auth/admin/manageUsers" 
         : "/api/auth/admin/deletePosts";
-
+      
       await fetch(endpoint, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

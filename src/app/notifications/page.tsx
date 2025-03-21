@@ -161,7 +161,7 @@ export default function NotificationPage() {
                       imageSrc={notification.post.imageURL}
                       initialLikes={notification.post.likes.length}
                       initialBookmarks={notification.post.bookmarks.length}
-                      profileImage={notification.post.user.profileImage} // Profilkép átadva
+                      profileImage={notification.post.user.profileImage || "/yeti_pfp.jpg"} // Profilkép átadva
                     />
                   </div>
                 )}

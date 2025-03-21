@@ -191,7 +191,7 @@ export default function Post({
   };
 
   return (
-    <div className="p-6 bg-black rounded-xl mx-3 my-3" onClick={handlePostClick}>
+    <div className="p-6 bg-black rounded-xl mx-3 my-3">
       <div className="flex items-center justify-between" >
         <div className="flex items-center space-x-4">
           {/* Profilkép konténer */}
@@ -228,7 +228,7 @@ export default function Post({
         </div>
       </div>
 
-      <div className="pt-5">
+      <div className="pt-5" onClick={handlePostClick}>
         <p className="mb-4">{currentContent}</p>
         {currentImageSrc && (
           <div className="overflow-hidden rounded-xl max-h-96 mt-4">

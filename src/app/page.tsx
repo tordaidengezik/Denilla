@@ -126,7 +126,7 @@ export default function Home() {
               onClick={() => setFormVisible("register")}
               className="text-sm text-orange-650 mt-4 hover:underline"
             >
-              Don't have an account? Create one here.
+              Dont have an account? Create one here.
             </button>
           </div>
         ) : formVisible === "register" ? (

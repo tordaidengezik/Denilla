@@ -8,11 +8,10 @@ import RightSideMenu from "../rightSideMenu/page";
 export default function AdminPage() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [users, setUsers] = useState<{ id: number; username: string; email: string }[]>([]);
+  const [users, setUsers] = useState<{ id: number; username: string; email: string; role: string }[]>([]);
   const [posts, setPosts] = useState<{ id: number; content: string }[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<{ type: "user" | "post"; id: number } | null>(null);
 
-  // Admin check és adatlekérdezés változatlan
   useEffect(() => {
     const checkAdmin = async () => {
       try {
@@ -121,19 +120,48 @@ export default function AdminPage() {
 
         {/* Felhasználók kezelése */}
         <section className="p-4">
-          <h2 className="text-white text-xl font-bold mb-4">Manage Users</h2>
-          {users.map((user) => (
-            <div key={user.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
-              <span className="text-white">{user.username} ({user.email})</span>
-              <button
-                onClick={() => setDeleteTarget({ type: "user", id: user.id })}
-                className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700"
-              >
-                Delete User
-              </button>
-            </div>
-          ))}
-        </section>
+  <h2 className="text-white text-xl font-bold mb-4">Manage Users</h2>
+  {users.map((user) => (
+    <div key={user.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
+      <span className="text-white">{user.username} ({user.email}) - Role: {user.role}</span>
+      <div className="flex space-x-2">
+        <button
+          onClick={() => setDeleteTarget({ type: "user", id: user.id })}
+          className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700"
+        >
+          Delete User
+        </button>
+        <button
+          onClick={async () => {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            const newRole = user.role === "moderator" ? "user" : "moderator";
+
+            await fetch("/api/auth/admin/updateRole", {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ userId: user.id, role: newRole }),
+            });
+
+            setUsers((prevUsers) =>
+              prevUsers.map((u) =>
+                u.id === user.id ? { ...u, role: newRole } : u
+              )
+            );
+          }}
+          className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700"
+        >
+          {user.role === "moderator" ? "Revoke Moderator" : "Make Moderator"}
+        </button>
+      </div>
+    </div>
+  ))}
+</section>
+
 
         {/* Posztok kezelése */}
         <section className="p-4">

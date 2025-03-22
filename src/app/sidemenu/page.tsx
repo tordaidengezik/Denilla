@@ -4,7 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { House, Search, Bell, Bookmark, LogOut, X, UserRound } from "lucide-react";
+import {
+  House,
+  Search,
+  Bell,
+  Bookmark,
+  LogOut,
+  X,
+  UserRound,
+} from "lucide-react";
 import CreatePostModal from "../createPost/createPost";
 
 interface User {
@@ -22,6 +30,7 @@ export default function SideMenu() {
     profileImage: "/yeti_pfp.jpg",
   });
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isModerator, setIsModerator] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getLinkClass = (path: string) =>
@@ -38,13 +47,11 @@ export default function SideMenu() {
       ? "#F84F08"
       : "#FFFFFF";
 
-      const handleLogout = () => {
-        localStorage.removeItem("token");
-        router.push("/");
-        setShowLogoutConfirm(false);
-      };
-
-  
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+    setShowLogoutConfirm(false);
+  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -96,12 +103,40 @@ export default function SideMenu() {
     checkAdmin();
   }, []);
 
+  useEffect(() => {
+    const checkModerator = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("/api/auth/moderator/check", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          setIsModerator(true);
+        } else {
+          setIsModerator(false);
+        }
+      } catch (error) {
+        console.error("Error checking admin:", error);
+        setIsModerator(false);
+      }
+    };
+
+    checkModerator();
+  }, []);
+
   return (
     <>
       {showLogoutConfirm && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-gray-900 p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">
-            <h3 className="text-white text-xl font-bold mb-6 text-center">Are you sure to logout?</h3>
+            <h3 className="text-white text-xl font-bold mb-6 text-center">
+              Are you sure to logout?
+            </h3>
             <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
@@ -203,10 +238,19 @@ export default function SideMenu() {
 
               {isAdmin && (
                 <Link href="/admin" className={getLinkClass("/admin")}>
-                <div className="flex items-center space-x-3">
-                  <UserRound color={getIconColor("/admin")} size={30} />
-                  <span>Admin Dashboard</span>
-                </div>
+                  <div className="flex items-center space-x-3">
+                    <UserRound color={getIconColor("/admin")} size={30} />
+                    <span>Admin Dashboard</span>
+                  </div>
+                </Link>
+              )}
+
+              {isModerator && (
+                <Link href="/moderator" className={getLinkClass("/moderator")}>
+                  <div className="flex items-center space-x-3">
+                    <UserRound color={getIconColor("/moderator")} size={30} />
+                    <span>Moderator Dashboard</span>
+                  </div>
                 </Link>
               )}
 
@@ -218,7 +262,6 @@ export default function SideMenu() {
               </button>
             </div>
           </nav>
-
 
           {/* Profil és logout rész módosítva */}
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-lg border border-gray-600 rounded-full shadow-lg">
@@ -247,10 +290,8 @@ export default function SideMenu() {
           </div>
         </div>
       </div>
-      
-      {isModalOpen && (
-            <CreatePostModal onClose={() => setIsModalOpen(false)} />
-          )}
+
+      {isModalOpen && <CreatePostModal onClose={() => setIsModalOpen(false)} />}
 
       {/* Mobil overlay */}
       {isOpen && (
@@ -262,4 +303,3 @@ export default function SideMenu() {
     </>
   );
 }
-

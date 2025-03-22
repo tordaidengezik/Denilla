@@ -110,13 +110,13 @@ export default function ModeratorPage() {
 
       <main className="w-full md:w-3/4 h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
         <h1 className="text-white text-center text-3xl font-bold mt-10">
-          Moderátor Panel
+          Moderator Dashboard
         </h1>
 
         {/* Felhasználók szerkesztése */}
         <section className="p-4">
           <h2 className="text-white text-xl font-bold mb-4">
-            Felhasználók kezelése
+            Manage Users
           </h2>
           {users.map((user) => (
             <div
@@ -130,7 +130,7 @@ export default function ModeratorPage() {
                 }
                 className="px-4 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
               >
-                Szerkesztés
+                Edit
               </button>
             </div>
           ))}
@@ -139,7 +139,7 @@ export default function ModeratorPage() {
         {/* Posztok szerkesztése */}
         <section className="p-4">
           <h2 className="text-white text-xl font-bold mb-4">
-            Posztok kezelése
+            Manage Post
           </h2>
           {posts.map((post) => (
             <div
@@ -153,7 +153,7 @@ export default function ModeratorPage() {
                 }
                 className="px-4 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
               >
-                Szerkesztés
+                Edit
               </button>
             </div>
           ))}
@@ -176,13 +176,13 @@ export default function ModeratorPage() {
                   onClick={() => setEditUser({ id: null, username: "" })}
                   className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700"
                 >
-                  Mégse
+                  Cancel
                 </button>
                 <button
                   onClick={handleUserEdit}
                   className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
                 >
-                  Mentés
+                  Save
                 </button>
               </div>
             </div>
@@ -204,13 +204,13 @@ export default function ModeratorPage() {
                   onClick={() => setEditPost({ id: null, content: "" })}
                   className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700"
                 >
-                  Mégse
+                  Cancel
                 </button>
                 <button
                   onClick={handlePostEdit}
                   className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
                 >
-                  Mentés
+                  Save
                 </button>
               </div>
             </div>

@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
-// Follow user
 export async function POST(req: Request) {
   try {
     const token = req.headers.get('authorization')?.split(' ')[1];
@@ -15,21 +14,38 @@ export async function POST(req: Request) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
     const { followingId } = await req.json();
 
-    const follow = await prisma.follow.create({
+    // 1. Követő felhasználó adatainak lekérése
+    const follower = await prisma.user.findUnique({
+      where: { id: parseInt(decoded.id) },
+      select: { username: true, profileImage: true }
+    });
+
+    // 2. Követés létrehozása
+    await prisma.follow.create({
       data: {
         followerId: parseInt(decoded.id),
         followingId: parseInt(followingId),
       },
     });
 
-    return NextResponse.json(follow);
-  } catch {
+    // 3. Értesítés generálása
+    await prisma.notification.create({
+      data: {
+        toUserId: parseInt(followingId),
+        type: 'follow',
+        message: `${follower?.username} started following you`,
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch  {
     return NextResponse.json(
       { error: 'Failed to follow user' },
       { status: 500 }
     );
   }
 }
+
 
 // Unfollow user
 export async function DELETE(req: Request) {

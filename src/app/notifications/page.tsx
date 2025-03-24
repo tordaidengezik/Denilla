@@ -18,12 +18,12 @@ interface Notification {
     id: number;
     content: string;
     imageURL?: string;
-    user: {
-      username: string;
-      profileImage?: string; // Profilkép mező hozzáadva
-    };
     likes: { userId: number; username: string }[];
     bookmarks: { userId: number; username: string }[];
+    user: {
+      username: string;
+      profileImage?: string;
+    };
   };
 }
 
@@ -42,9 +42,7 @@ export default function NotificationPage() {
         }
 
         const response = await fetch("/api/notifications", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
@@ -52,82 +50,72 @@ export default function NotificationPage() {
           setNotifications(data);
         }
       } catch (error) {
-        console.error("Hiba történt az értesítések betöltésekor:", error);
+        console.error("Error fetching notifications:", error);
       }
     };
 
     fetchNotifications();
-
-    // Értesítések frissítése 30 másodpercenként
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, [router]);
 
   const handleNotificationClick = (notification: Notification) => {
     if (notification.type === "new_post" && notification.post) {
-      setSelectedPostId(
-        selectedPostId === notification.post.id ? null : notification.post.id
-      );
+      setSelectedPostId(notification.post.id === selectedPostId ? null : notification.post.id);
     }
   };
 
   const handleDeleteNotification = async (notificationId: number) => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
+      if (!token) return;
 
-      const response = await fetch("/api/notifications", {
+      await fetch("/api/notifications", {
         method: "DELETE",
-        headers: {
+        headers: { 
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json" 
         },
         body: JSON.stringify({ notificationId }),
       });
 
-      if (response.ok) {
-        // Frissítjük a state-et, eltávolítjuk a törölt értesítést
-        setNotifications((prev) =>
-          prev.filter((notification) => notification.id !== notificationId)
-        );
-      }
+      setNotifications(prev => prev.filter(n => n.id !== notificationId));
     } catch (error) {
-      console.error("Hiba történt az értesítés törlésekor:", error);
+      console.error("Error deleting notification:", error);
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
-      <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
+      <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll bg-dark-gray border-l border-r border-gray-500">
         {notifications.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
-            <p className="text-lg font-semibold">
-              You dont have any notifications yet
-            </p>
+            <p className="text-lg font-semibold">No notifications yet</p>
           </div>
         ) : (
           <div className="p-4 space-y-6">
             {notifications.map((notification) => (
               <div key={notification.id} className="group relative">
-                <div className="flex items-start justify-between space-x-4 bg-black p-4 rounded-lg border border-gray-600 hover:bg-gray-900 transition-all">
+                <div className="flex items-start justify-between bg-black p-4 rounded-lg border border-gray-600 hover:bg-gray-900 transition-all">
                   <div 
                     onClick={() => handleNotificationClick(notification)}
-                    className="flex-1 flex items-start space-x-4 cursor-pointer"
+                    className="flex-1 flex items-start gap-4 cursor-pointer"
                   >
-                    {/* Módosított Profilkép rész */}
+                    {/* Profilkép kezelése */}
                     <div className="relative h-12 w-12 flex-shrink-0">
                       <Image
-                        src={notification.post?.user?.profileImage || "/yeti_pfp.jpg"}
-                        alt={notification.post?.user?.username || "User avatar"}
+                        src={
+                          notification.type === "follow" 
+                            ? "/yeti_pfp.jpg" // Követési értesítések alapértelmezett képe
+                            : notification.post?.user?.profileImage || "/yeti_pfp.jpg"
+                        }
+                        alt="User avatar"
                         fill
                         className="rounded-full object-cover"
                       />
                     </div>
-                    
+
                     <div>
                       <p className="text-white">{notification.message}</p>
                       <p className="text-gray-400 text-sm mt-1">
@@ -136,22 +124,19 @@ export default function NotificationPage() {
                     </div>
                   </div>
 
-                  {/* Kuka gomb változatlan */}
-                  <div className="flex items-center pl-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteNotification(notification.id);
-                      }}
-                      className="text-gray-400 hover:text-orange-650 transition-colors p-2 rounded-full hover:bg-gray-800"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteNotification(notification.id);
+                    }}
+                    className="text-gray-400 hover:text-orange-650 p-2 rounded-full hover:bg-gray-800"
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 </div>
 
-                {/* Poszt megjelenítés változatlan */}
-                {selectedPostId === notification.post?.id && notification.post && (
+                {/* Poszt tartalom megjelenítése */}
+                {notification.type === "new_post" && notification.post?.id === selectedPostId && (
                   <div className="mt-4">
                     <Post
                       id={notification.post.id}
@@ -161,7 +146,7 @@ export default function NotificationPage() {
                       imageSrc={notification.post.imageURL}
                       initialLikes={notification.post.likes.length}
                       initialBookmarks={notification.post.bookmarks.length}
-                      profileImage={notification.post.user.profileImage || "/yeti_pfp.jpg"} // Profilkép átadva
+                      profileImage={notification.post.user.profileImage || "/yeti_pfp.jpg"}
                     />
                   </div>
                 )}

@@ -65,7 +65,9 @@ export default function NotificationPage() {
 
   const handleNotificationClick = (notification: Notification) => {
     if (notification.type === "new_post" && notification.post) {
-      setSelectedPostId(notification.post.id === selectedPostId ? null : notification.post.id);
+      setSelectedPostId(
+        notification.post.id === selectedPostId ? null : notification.post.id
+      );
     }
   };
 
@@ -76,14 +78,14 @@ export default function NotificationPage() {
 
       await fetch("/api/notifications", {
         method: "DELETE",
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json" 
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ notificationId }),
       });
 
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
@@ -106,12 +108,12 @@ export default function NotificationPage() {
                     onClick={() => handleNotificationClick(notification)}
                     className="flex-1 flex items-start gap-4 cursor-pointer"
                   >
-                    {/* Profilkép kezelése */}
+                    {/* Egyetlen profilkép kezelő elem minden típushoz */}
                     <div className="relative h-12 w-12 flex-shrink-0">
                       <Image
                         src={
-                          notification.type === "follow" 
-                            ? notification.fromUser?.profileImage || "/yeti_pfp.jpg" // Követési értesítések alapértelmezett képe
+                          notification.type === "follow" || notification.type === "like"
+                            ? notification.fromUser?.profileImage || "/yeti_pfp.jpg"
                             : notification.post?.user?.profileImage || "/yeti_pfp.jpg"
                         }
                         alt="User avatar"
@@ -119,15 +121,21 @@ export default function NotificationPage() {
                         className="rounded-full object-cover"
                       />
                     </div>
-
-                    <div>
-                      <p className="text-white">{notification.message}</p>
+  
+                    <div className="flex-1">
+                      {/* Üzenet szövege minden típusra */}
+                      <p className="text-white">
+                        {notification.type === "like" 
+                          ? `${notification.fromUser?.username} liked your post`
+                          : notification.message}
+                      </p>
                       <p className="text-gray-400 text-sm mt-1">
                         {new Date(notification.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
-
+  
+                  {/* Törlés gomb minden értesítéshez */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -138,8 +146,8 @@ export default function NotificationPage() {
                     <Trash2 size={20} />
                   </button>
                 </div>
-
-                {/* Poszt tartalom megjelenítése */}
+  
+                {/* Poszt tartalom megjelenítése csak new_post típusnál */}
                 {notification.type === "new_post" && notification.post?.id === selectedPostId && (
                   <div className="mt-4">
                     <Post
@@ -148,8 +156,8 @@ export default function NotificationPage() {
                       date={new Date(notification.createdAt).toLocaleDateString()}
                       content={notification.post.content}
                       imageSrc={notification.post.imageURL}
-                      initialLikes={notification.post.likes.length || 0}
-                      initialBookmarks={notification.post.bookmarks.length ||0}
+                      initialLikes={notification.post.likes?.length || 0}
+                      initialBookmarks={notification.post.bookmarks?.length || 0}
                       profileImage={notification.post.user.profileImage || "/yeti_pfp.jpg"}
                     />
                   </div>
@@ -161,5 +169,5 @@ export default function NotificationPage() {
       </main>
       <RightSideMenu />
     </div>
-  );
+  );  
 }

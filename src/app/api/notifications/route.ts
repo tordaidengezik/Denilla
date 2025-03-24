@@ -40,22 +40,7 @@ export async function GET(req: Request) {
       orderBy: { createdAt: "desc" },
     });
 
-
-    const enrichedNotifications = await Promise.all(
-      notifications.map(async (notification) => {
-        if (notification.type === "follow") {
-          const follower = await prisma.user.findUnique({
-            where: { id: notification.toUserId },
-            select: { username: true, profileImage: true },
-          });
-          return { ...notification, user: follower };
-        }
-        return notification;
-      })
-    );
-
-    return NextResponse.json(enrichedNotifications);
-    
+    return NextResponse.json(notifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);
     return NextResponse.json(

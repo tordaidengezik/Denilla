@@ -21,6 +21,7 @@ model User {
   likes         Like[]
   bookmarks     Bookmark[]
   notifications Notification[] @relation("ReceivedNotifications")
+  sentNotifications Notification[] @relation("SentNotifications")
   followers     Follow[]       @relation("Followers")
   following     Follow[]       @relation("Following")
   comments      Comment[]
@@ -65,15 +66,18 @@ model Notification {
   id        Int      @id @default(autoincrement())
   toUser    User     @relation("ReceivedNotifications", fields: [toUserId], references: [id], onDelete: Cascade)
   toUserId  Int
-  type      String // 'new_post' vagy 'system_message' vagy 'like' vagy 'follow'
+  type      String   // 'new_post', 'like', 'follow'
   message   String
-  postId    Int? // Opcionális, csak post-típusú értesítéseknél
+  postId    Int?     // Csak poszt-értesítéseknél
   post      Post?    @relation(fields: [postId], references: [id])
+  fromUser  User?    @relation("SentNotifications", fields: [fromUserId], references: [id]) // Új reláció
+  fromUserId Int?    // Követést/like-ot kezdeményező felhasználó ID-ja
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@index([toUserId])
 }
+
 
 model Follow {
   id          Int      @id @default(autoincrement())

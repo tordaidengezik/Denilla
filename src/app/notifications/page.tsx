@@ -18,12 +18,16 @@ interface Notification {
     id: number;
     content: string;
     imageURL?: string;
-    likes: { userId: number; username: string }[];
-    bookmarks: { userId: number; username: string }[];
+    likes: { userId: number }[];
+    bookmarks: { userId: number }[];
     user: {
       username: string;
       profileImage?: string;
     };
+  };
+  fromUser?: {
+    username: string;
+    profileImage?: string;
   };
 }
 
@@ -107,7 +111,7 @@ export default function NotificationPage() {
                       <Image
                         src={
                           notification.type === "follow" 
-                            ? "/yeti_pfp.jpg" // Követési értesítések alapértelmezett képe
+                            ? notification.fromUser?.profileImage || "/yeti_pfp.jpg" // Követési értesítések alapértelmezett képe
                             : notification.post?.user?.profileImage || "/yeti_pfp.jpg"
                         }
                         alt="User avatar"
@@ -144,8 +148,8 @@ export default function NotificationPage() {
                       date={new Date(notification.createdAt).toLocaleDateString()}
                       content={notification.post.content}
                       imageSrc={notification.post.imageURL}
-                      initialLikes={notification.post.likes.length}
-                      initialBookmarks={notification.post.bookmarks.length}
+                      initialLikes={notification.post.likes.length || 0}
+                      initialBookmarks={notification.post.bookmarks.length ||0}
                       profileImage={notification.post.user.profileImage || "/yeti_pfp.jpg"}
                     />
                   </div>

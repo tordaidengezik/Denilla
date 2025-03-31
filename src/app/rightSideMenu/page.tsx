@@ -56,6 +56,8 @@ export default function RightSideMenu() {
           user.id === userId ? { ...user, isFollowing: !isFollowing } : user
         )
       );
+
+      window.dispatchEvent(new Event("followStatusChanged"));
     } catch (error) {
       console.error("Error toggling follow:", error);
     }

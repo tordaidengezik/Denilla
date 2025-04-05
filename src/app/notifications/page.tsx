@@ -102,7 +102,7 @@ export default function NotificationPage() {
         ) : (
           <div className="p-4 space-y-6">
             {notifications.map((notification) => (
-              <div key={notification.id} className="group relative">
+              <div key={notification.id} className="group relative" data-testid="notification-item">
                 <div className="flex items-start justify-between bg-black p-4 rounded-lg border border-gray-600 hover:bg-gray-900 transition-all">
                   <div 
                     onClick={() => handleNotificationClick(notification)}
@@ -141,6 +141,7 @@ export default function NotificationPage() {
                       e.stopPropagation();
                       handleDeleteNotification(notification.id);
                     }}
+                    data-testid="delete-notification-button"
                     className="text-gray-400 hover:text-orange-650 p-2 rounded-full hover:bg-gray-800"
                   >
                     <Trash2 size={20} />

@@ -132,6 +132,7 @@ export default function Layout() {
         {/* Poszt megjelenítése */}
         <div key={post.id}>
           <Post
+            data-testid="post-content"
             id={post.id}
             author={post.user.username}
             date={new Date(post.createdAt).toLocaleDateString()}
@@ -150,6 +151,7 @@ export default function Layout() {
           {comments.map((comment) => (
             <div
               key={comment.id}
+              data-testid="comment-content"
               className="flex items-center space-x-4 bg-black p-4 rounded-lg border border-gray-600"
             >
               {/* Felhasználói kép */}
@@ -172,6 +174,7 @@ export default function Layout() {
           {/* Új komment írása */}
           <div className="flex items-center space-x-4 mt-4">
             <input
+              data-testid="comment-input"
               type="text"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
@@ -180,6 +183,7 @@ export default function Layout() {
             />
             <button
               onClick={handleAddComment}
+              data-testid="submit-comment-button"
               className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-all"
             >
               Add Comment

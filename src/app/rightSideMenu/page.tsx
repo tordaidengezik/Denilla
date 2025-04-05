@@ -82,6 +82,7 @@ export default function RightSideMenu() {
               </div>
               <button
                 onClick={() => handleFollowToggle(user.id, user.isFollowing)}
+                data-testid="follow-button"
                 className={`px-4 py-1 rounded-lg font-bold text-white ${
                   user.isFollowing ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-650 hover:bg-orange-700"
                 }`}

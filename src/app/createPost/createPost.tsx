@@ -129,20 +129,21 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
 
       <div className="fixed inset-0 z-50 flex justify-center items-center">
         <div className="bg-black p-6 rounded-xl w-full max-w-4xl h-auto border border-gray-500 relative">
-        <div className="flex items-center space-x-4 mb-4">
-          {/* Profilkép konténer */}
-          <div className="w-12 h-12 rounded-full overflow-hidden">
-            <Image
-              src={user.profileImage || "/yeti_pfp.jpg"}
-              alt="Logo"
-              width={50}
-              height={50}
-              className="w-full h-full object-cover"
-            />
+          <div className="flex items-center space-x-4 mb-4">
+            {/* Profilkép konténer */}
+            <div className="w-12 h-12 rounded-full overflow-hidden">
+              <Image
+                src={user.profileImage || "/yeti_pfp.jpg"}
+                alt="Logo"
+                width={50}
+                height={50}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <h1 className="text-white font-bold">{user.username}</h1>
           </div>
-          <h1 className="text-white font-bold">{user.username}</h1>
-        </div>
           <textarea
+            data-testid="post-content-input"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind?"
@@ -150,11 +151,15 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
           />
 
           <div className="flex items-center space-x-4 mb-4">
-            <label className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 cursor-pointer">
+            <label
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 cursor-pointer"
+              data-testid="img-upload-button"
+            >
               Add Image
               <input
                 type="file"
                 accept="image/*"
+                data-testid="file-upload-input"
                 onChange={handleImageUpload}
                 className="hidden"
               />
@@ -182,6 +187,7 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
             </button>
             <button
               onClick={handleSubmit}
+              data-testid="post-submit-button"
               disabled={!content && !file}
               className={`${
                 !content && !file

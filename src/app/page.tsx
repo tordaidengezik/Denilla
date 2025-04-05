@@ -106,17 +106,20 @@ export default function Home() {
               <input
                 type="email"
                 name="email"
+                data-testid="email-input"
                 placeholder="Email"
                 className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <input
                 type="password"
                 name="password"
+                data-testid="password-input"
                 placeholder="Password"
                 className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <button
                 type="submit"
+                data-testid="login-button"
                 className="bg-black text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-800 transition-all font-semibold"
               >
                 Sign In
@@ -135,23 +138,27 @@ export default function Home() {
               <input
                 type="text"
                 name="username"
+                data-testid="register-username"
                 placeholder="Username"
                 className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <input
                 type="email"
                 name="email"
+                data-testid="register-email"
                 placeholder="Email"
                 className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <input
                 type="password"
                 name="password"
+                data-testid="register-password"
                 placeholder="Password"
                 className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
               />
               <button
                 type="submit"
+                data-testid="register-submit"
                 className="bg-white text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-200 transition-all font-semibold"
               >
                 Create Account
@@ -174,6 +181,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setFormVisible("register")}
+              data-testid="create-account-button"
               className="bg-white text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-200 font-semibold"
             >
               Create Account

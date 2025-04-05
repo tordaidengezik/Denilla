@@ -24,7 +24,7 @@ export default function Login() {
         const data = await res.json();
         setMessage("Sikeres bejelentkezés!");
         localStorage.setItem("token", data.token);
-        router.push("/post");
+        router.push("/foryou");
       } else {
         const error = await res.json();
         setMessage(error.error || "Érvénytelen bejelentkezés.");
@@ -58,6 +58,7 @@ export default function Login() {
             <input
               type="email"
               name="email"
+              data-testid="email-input"
               id="email"
               placeholder="Enter your email"
               onChange={handleChange}
@@ -73,6 +74,7 @@ export default function Login() {
             <input
               type="password"
               name="password"
+              data-testid="password-input"
               id="password"
               placeholder="Enter your password"
               onChange={handleChange}
@@ -83,6 +85,7 @@ export default function Login() {
           {/* Bejelentkezés gomb */}
           <button
             type="submit"
+            data-testid="login-button"
             className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-orange-400"
           >
             Sign In

@@ -256,6 +256,7 @@ export default function SideMenu() {
 
               <button
                 onClick={() => setIsModalOpen(true)}
+                data-testid="create-post-button"
                 className="bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 text-white font-bold px-4 py-2 w-40 rounded-xl hover:from-orange-600 hover:via-red-600 hover:to-yellow-600 focus:ring-2 focus:ring-orange-300 transition-all"
               >
                 Post

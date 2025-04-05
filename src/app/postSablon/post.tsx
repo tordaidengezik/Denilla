@@ -192,7 +192,7 @@ export default function Post({
 
   return (
     <div className="p-6 bg-black rounded-xl mx-3 my-3">
-      <div className="flex items-center justify-between" >
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {/* Profilkép konténer */}
           <div className="w-10 h-10 rounded-full overflow-hidden">
@@ -212,15 +212,15 @@ export default function Post({
           </h1>
         </div>
         <div className="flex items-center space-x-6">
-          <button onClick={handleLike} className="flex items-center space-x-2">
-            <p className={liked ? "text-red-600" : "text-white"}>{likeCount}</p>
+          <button onClick={handleLike} data-testid="like-button" className="flex items-center space-x-2">
+            <p className={liked ? "text-red-600" : "text-white"} data-testid="like-count">{likeCount} </p>
             <Heart className={liked ? "text-red-600" : "text-white"} />
           </button>
           <button
-            onClick={handleBookmark}
+            onClick={handleBookmark} data-testid="bookmark-button"
             className="flex items-center space-x-2"
           >
-            <p className={bookmarked ? "text-blue-500" : "text-white"}>
+            <p className={bookmarked ? "text-blue-500" : "text-white"} data-testid="bookmark-count">
               {bookmarkCount}
             </p>
             <Bookmark className={bookmarked ? "text-blue-500" : "text-white"} />
@@ -228,7 +228,7 @@ export default function Post({
         </div>
       </div>
 
-      <div className="pt-5" onClick={handlePostClick}>
+      <div className="pt-5" onClick={handlePostClick} data-testid="post-content">
         <p className="mb-4">{currentContent}</p>
         {currentImageSrc && (
           <div className="overflow-hidden rounded-xl max-h-96 mt-4">
@@ -238,7 +238,7 @@ export default function Post({
               width={5000}
               height={5000}
               className="w-full object-cover"
-            />
+            /> 
           </div>
         )}
       </div>
@@ -254,6 +254,7 @@ export default function Post({
           </button>
           <button
             onClick={handleDelete}
+            data-testid="delete-button"
             className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-red-600 hover:bg-red-700 transition-all flex items-center justify-center space-x-2"
           >
             <span>Delete</span>

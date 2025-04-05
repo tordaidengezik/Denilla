@@ -225,6 +225,7 @@ export default function ProfilePage() {
           </button>
           <button
             onClick={() => setActiveTab("likes")}
+            data-testid="likes-tab-button"
             className={`flex-1 py-2 text-center ${
               activeTab === "likes" ? "text-orange-650" : "text-gray-300"
             }`}

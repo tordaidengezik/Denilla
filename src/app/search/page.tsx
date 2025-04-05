@@ -72,6 +72,7 @@ export default function Layout() {
         <div className="p-4">
           <input
             type="text"
+            data-testid="search-input"
             placeholder="Search for posts or profiles"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -87,7 +88,7 @@ export default function Layout() {
               className="flex items-center justify-between bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition"
             >
               {/* Profilkép és név */}
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3" data-testid="search-result">
                 <Image
                   src={user.profileImage || "/yeti_pfp.jpg"}
                   alt={user.username}
@@ -100,6 +101,7 @@ export default function Layout() {
               {/* Követési gomb */}
               <button
                 onClick={() => handleFollowToggle(user.id, user.isFollowing)}
+                data-testid="follow-button"
                 className={`px-4 py-1 rounded-lg font-bold text-white ${
                   user.isFollowing ? "bg-orange-700 hover:bg-orange-800" : "bg-orange-650 hover:bg-orange-700"
                 }`}

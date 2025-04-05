@@ -60,6 +60,7 @@ export default function ProfileLikes() {
       {posts.map((post) => (
         <div key={post.id}>
           <Post
+            data-testid="post-content"
             id={post.id}
             author={post.user.username}
             date={new Date(post.createdAt).toLocaleDateString()}

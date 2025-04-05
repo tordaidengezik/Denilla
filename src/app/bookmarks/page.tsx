@@ -20,6 +20,7 @@ interface Post {
 }
 export default function BookmarksPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,7 +48,15 @@ export default function BookmarksPage() {
     };
 
     fetchBookmarks();
-  }, [router]);
+    const handleBookmarkUpdate = () => {
+      setRefreshKey((prev) => prev + 1);
+    }
+    window.addEventListener("bookmarkUpdate", handleBookmarkUpdate);
+
+    return () => {
+      window.removeEventListener("bookmarkUpdate", handleBookmarkUpdate);
+    };
+  }, [router, refreshKey]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">

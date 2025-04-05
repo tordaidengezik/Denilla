@@ -74,6 +74,8 @@ describe('Denilla Automata Tesztek', () => {
     cy.viewport(1400,1000)
     cy.get('[data-testid="follow-button"]').first().click()
     cy.get('[data-testid="follow-button"]').should('contain', 'Following')
+    cy.visit('/following')
+    cy.get('[data-testid="post-content"]').should('exist')
   });
 
   // AT007: Könyvjelző

@@ -72,7 +72,7 @@ describe('Denilla Automata Tesztek', () => {
   it('AT006 - Felhasználó követése', () => {
     cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
     cy.viewport(1400,1000)
-    cy.get('[data-testid="follow-button"]').first().click()
+    cy.get('[data-testid="follow-button"]').last().click()
     cy.get('[data-testid="follow-button"]').should('contain', 'Following')
     cy.visit('/following')
     cy.get('[data-testid="post-content"]').should('exist')
@@ -106,6 +106,7 @@ describe('Denilla Automata Tesztek', () => {
   it('AT010 - Komment hozzáadása', () => {
     cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
     cy.get('[data-testid="post-content"]').first().click({ force: true })
+    cy.wait(1000)
     cy.get('[data-testid="comment-input"]').type('Ez egy teszt komment')
     cy.get('[data-testid="submit-comment-button"]').click()
     cy.get('[data-testid="comment-content"]').should('contain', 'Ez egy teszt komment')

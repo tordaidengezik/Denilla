@@ -272,9 +272,7 @@ export default function Post({
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
-            className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 
-          hover:border-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50
-          placeholder:text-gray-400 transition-all duration-200"
+            className="w-full p-3 mb-4 bg-gray-800 text-white rounded-lg h-32 resize-none focus:ring-2 focus:ring-orange-650 focus:outline-none"
             placeholder="Add a description..."
           />
 

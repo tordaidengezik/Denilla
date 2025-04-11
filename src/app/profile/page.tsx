@@ -132,7 +132,7 @@ export default function ProfilePage() {
                 onChange={(e) => setNewDescription(e.target.value)}
                 className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 
                   hover:border-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/50
-                  placeholder:text-gray-400 transition-all duration-200"
+                  placeholder:text-gray-400 transition-all duration-200 resize-none"
                 placeholder="Add a description..."
               />
               <div className="mt-2 space-y-4">

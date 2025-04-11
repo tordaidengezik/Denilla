@@ -17,11 +17,13 @@ export async function GET(req: Request) {
       username: true,
       email: true,
       role: true,
+      profileImage: true, // Profilkép hozzáadása
     },
   });
 
   return NextResponse.json(users);
 }
+
 
 export async function PUT(req: Request) {
   const user = await verifyAdmin(req);

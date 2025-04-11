@@ -28,9 +28,19 @@ export async function GET(req: Request) {
   }
 
   const posts = await prisma.post.findMany({
-    include: { user: { select: { username: true } } },
+    include: {
+      user: {
+        select: {
+          username: true,
+          profileImage: true, // Profilkép hozzáadása
+        },
+      },
+      likes: true,
+      bookmarks: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 
   return NextResponse.json(posts);
 }
+

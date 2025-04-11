@@ -19,6 +19,7 @@ interface PostProps {
   onDelete?: (postId: number) => void;
   onEdit?: (postId: number, content: string, file: File | null) => void;
   showActions?: boolean;
+  hideInteractions?: boolean;
 }
 
 export default function Post({
@@ -33,6 +34,7 @@ export default function Post({
   onDelete,
   showActions = false,
   onLikeRemove,
+  hideInteractions = false,
 }: PostProps) {
   const [likeCount, setLikeCount] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
@@ -211,21 +213,23 @@ export default function Post({
             {date}
           </h1>
         </div>
-        <div className="flex items-center space-x-6">
-          <button onClick={handleLike} data-testid="like-button" className="flex items-center space-x-2">
-            <p className={liked ? "text-red-600" : "text-white"} data-testid="like-count">{likeCount} </p>
-            <Heart className={liked ? "text-red-600" : "text-white"} />
-          </button>
-          <button
-            onClick={handleBookmark} data-testid="bookmark-button"
-            className="flex items-center space-x-2"
-          >
-            <p className={bookmarked ? "text-blue-500" : "text-white"} data-testid="bookmark-count">
-              {bookmarkCount}
-            </p>
-            <Bookmark className={bookmarked ? "text-blue-500" : "text-white"} />
-          </button>
-        </div>
+        {!hideInteractions && (
+          <div className="flex items-center space-x-6">
+            <button onClick={handleLike} data-testid="like-button" className="flex items-center space-x-2">
+              <p className={liked ? "text-red-600" : "text-white"} data-testid="like-count">{likeCount} </p>
+              <Heart className={liked ? "text-red-600" : "text-white"} />
+            </button>
+            <button
+              onClick={handleBookmark} data-testid="bookmark-button"
+              className="flex items-center space-x-2"
+            >
+              <p className={bookmarked ? "text-blue-500" : "text-white"} data-testid="bookmark-count">
+                {bookmarkCount}
+              </p>
+              <Bookmark className={bookmarked ? "text-blue-500" : "text-white"} />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="pt-5" onClick={handlePostClick} data-testid="post-content">

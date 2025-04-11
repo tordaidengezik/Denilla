@@ -11,6 +11,9 @@ export default function AdminPage() {
   const [users, setUsers] = useState<{ id: number; username: string; email: string; role: string }[]>([]);
   const [posts, setPosts] = useState<{ id: number; content: string }[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<{ type: "user" | "post"; id: number } | null>(null);
+  // Új állapotok a szerkesztéshez
+  const [editUser, setEditUser] = useState<{ id: number | null; username: string }>({ id: null, username: "" });
+  const [editPost, setEditPost] = useState<{ id: number | null; content: string }>({ id: null, content: "" });
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -41,6 +44,7 @@ export default function AdminPage() {
         const token = localStorage.getItem("token");
         if (!token) return;
 
+        // Módosított végpontok - az eredeti végpontok használatával kezdjük a felhasználók és posztok lekérdezését
         const [usersRes, postsRes] = await Promise.all([
           fetch("/api/auth/admin/manageUsers", { headers: { Authorization: `Bearer ${token}` } }),
           fetch("/api/auth/admin/deletePosts", { headers: { Authorization: `Bearer ${token}` } })
@@ -55,6 +59,72 @@ export default function AdminPage() {
 
     fetchData();
   }, []);
+
+  // Felhasználó szerkesztés kezelő függvény
+  const handleUserEdit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token || !editUser.id) return;
+
+      const response = await fetch("/api/auth/admin/editUser", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId: editUser.id,
+          newUsername: editUser.username,
+        }),
+      });
+
+      if (response.ok) {
+        setUsers(
+          users.map((user) =>
+            user.id === editUser.id
+              ? { ...user, username: editUser.username }
+              : user
+          )
+        );
+        setEditUser({ id: null, username: "" });
+      }
+    } catch (error) {
+      console.error("Error editing username:", error);
+    }
+  };
+
+  // Poszt szerkesztés kezelő függvény
+  const handlePostEdit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token || !editPost.id) return;
+
+      const response = await fetch("/api/auth/admin/editPost", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          postId: editPost.id,
+          newContent: editPost.content,
+        }),
+      });
+
+      if (response.ok) {
+        setPosts(
+          posts.map((post) =>
+            post.id === editPost.id
+              ? { ...post, content: editPost.content }
+              : post
+          )
+        );
+        setEditPost({ id: null, content: "" });
+      }
+    } catch (error) {
+      console.error("Error editing post:", error);
+    }
+  };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -114,68 +184,140 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Edit User Modal */}
+      {editUser.id && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-gray-900 p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">
+            <h3 className="text-white text-xl font-bold mb-4 text-center">Edit Username</h3>
+            <input
+              type="text"
+              value={editUser.username}
+              onChange={(e) => setEditUser({ ...editUser, username: e.target.value })}
+              className="w-full p-2 mb-4 bg-gray-800 text-white rounded"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setEditUser({ id: null, username: "" })}
+                className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUserEdit}
+                className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Post Modal */}
+      {editPost.id && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-gray-900 p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">
+            <h3 className="text-white text-xl font-bold mb-4 text-center">Edit Post Content</h3>
+            <textarea
+              value={editPost.content}
+              onChange={(e) => setEditPost({ ...editPost, content: e.target.value })}
+              className="w-full p-2 mb-4 bg-gray-800 text-white rounded h-32 resize-none"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setEditPost({ id: null, content: "" })}
+                className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePostEdit}
+                className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <SideMenu/>
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <h1 className="text-white text-center text-3xl font-bold mt-10">Admin Panel</h1>
 
         {/* Felhasználók kezelése */}
         <section className="p-4">
-  <h2 className="text-white text-xl font-bold mb-4">Manage Users</h2>
-  {users.map((user) => (
-    <div key={user.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
-      <span className="text-white">{user.username} ({user.email}) - Role: {user.role}</span>
-      <div className="flex space-x-2">
-        <button
-          onClick={() => setDeleteTarget({ type: "user", id: user.id })}
-          className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700"
-        >
-          Delete User
-        </button>
-        <button
-          onClick={async () => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-
-            const newRole = user.role === "moderator" ? "user" : "moderator";
-
-            await fetch("/api/auth/admin/updateRole", {
-              method: "PUT",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ userId: user.id, role: newRole }),
-            });
-
-            setUsers((prevUsers) =>
-              prevUsers.map((u) =>
-                u.id === user.id ? { ...u, role: newRole } : u
-              )
-            );
-          }}
-          className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700"
-        >
-          {user.role === "moderator" ? "Revoke Moderator" : "Make Moderator"}
-        </button>
-      </div>
-    </div>
-  ))}
-</section>
-
+          <h2 className="text-white text-xl font-bold mb-4">Manage Users</h2>
+          {users.map((user) => (
+            <div key={user.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-800 p-4 rounded-lg mb-2">
+            <span className="text-white mb-3 sm:mb-0">{user.username} ({user.email}) - Role: {user.role}</span>
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => setEditUser({ id: user.id, username: user.username })}
+                className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => setDeleteTarget({ type: "user", id: user.id })}
+                className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700 text-sm sm:text-base flex-1 sm:flex-none"
+              >
+                Delete
+              </button>
+              <button
+                onClick={async () => {
+                  const token = localStorage.getItem("token");
+                  if (!token) return;
+          
+                  const newRole = user.role === "moderator" ? "user" : "moderator";
+          
+                  await fetch("/api/auth/admin/updateRole", {
+                    method: "PUT",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userId: user.id, role: newRole }),
+                  });
+          
+                  setUsers((prevUsers) =>
+                    prevUsers.map((u) =>
+                      u.id === user.id ? { ...u, role: newRole } : u
+                    )
+                  );
+                }}
+                className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
+              >
+                <span className="hidden sm:inline">{user.role === "moderator" ? "Revoke Moderator" : "Make Moderator"}</span>
+                <span className="sm:hidden">{user.role === "moderator" ? "Remove Mod" : "Make Mod"}</span>
+              </button>
+            </div>
+          </div>
+          
+          ))}
+        </section>
 
         {/* Posztok kezelése */}
         <section className="p-4">
           <h2 className="text-white text-xl font-bold mb-4">Manage Posts</h2>
           {posts.map((post) => (
-            <div key={post.id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-2">
-              <span className="text-white mr-4 break-words flex-1">{post.content}</span>
+            <div key={post.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-800 p-4 rounded-lg mb-2">
+            <span className="text-white break-words flex-1 mb-3 sm:mb-0">{post.content}</span>
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => setEditPost({ id: post.id, content: post.content })}
+                className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
+              >
+                Edit
+              </button>
               <button
                 onClick={() => setDeleteTarget({ type: "post", id: post.id })}
-                className="px-4 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700"
+                className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700 text-sm sm:text-base flex-1 sm:flex-none"
               >
-                Delete Post
+                Delete
               </button>
             </div>
+          </div>          
           ))}
         </section>
       </main>

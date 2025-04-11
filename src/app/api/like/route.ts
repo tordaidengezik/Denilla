@@ -17,6 +17,7 @@ const verifyToken = (req: Request) => {
 };
 
 export async function POST(req: Request) {
+  // POST metódus marad változatlan
   try {
     const user = verifyToken(req);
     if (!user) {
@@ -25,7 +26,6 @@ export async function POST(req: Request) {
 
     const { postId } = await req.json();
 
-    // 1. Like létrehozása
     await prisma.like.create({
       data: {
         userId: user.id,
@@ -33,7 +33,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // 2. Poszt tulajdonosának és like-oló adatainak lekérése
     const post = await prisma.post.findUnique({
       where: { id: Number(postId) },
       select: { userId: true },
@@ -44,20 +43,18 @@ export async function POST(req: Request) {
       select: { username: true, profileImage: true },
     });
 
-    // 3. Értesítés küldése (ha nem saját poszt)
     if (post && post.userId !== user.id) {
       await prisma.notification.create({
         data: {
-          toUserId: post.userId, // Poszt tulajdonosa
+          toUserId: post.userId,
           type: "like",
           message: `${liker?.username} liked your post`,
-          fromUserId: user.id, // Like-oló felhasználó
+          fromUserId: user.id,
           postId: Number(postId),
         },
       });
     }
 
-    // 4. Frissített poszt visszaadása
     const updatedPost = await prisma.post.findUnique({
       where: { id: Number(postId) },
       include: { likes: true, bookmarks: true },
@@ -74,6 +71,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  // DELETE metódus marad változatlan
   try {
     const user = verifyToken(req);
     if (!user) {
@@ -113,12 +111,39 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const likedPosts = await prisma.like.findMany({
+    // Lekérdezzük, hogy a bejelentkezett felhasználó kiket követ
+    const following = await prisma.follow.findMany({
       where: {
-        userId: user.id,
+        followerId: user.id,  // Akiket a felhasználó követ
+      },
+      select: {
+        followingId: true,
+      },
+    });
+
+    // Ha senkit nem követ, üres tömböt adunk vissza
+    if (following.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    // Lekérdezzük a követett felhasználók által like-olt posztokat
+    const followingIds = following.map(f => f.followingId);
+    
+    const likedPostsByFollowing = await prisma.like.findMany({
+      where: {
+        userId: {
+          in: followingIds,  // A követett felhasználók által like-olt posztok
+        },
       },
       include: {
-        post: {
+        user: {  // A like-oló (követett) felhasználó adatai
+          select: {
+            id: true,
+            username: true,
+            profileImage: true,
+          },
+        },
+        post: {  // A like-olt poszt részletes adatai
           include: {
             user: {
               select: {
@@ -136,11 +161,11 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json(likedPosts);
+    return NextResponse.json(likedPostsByFollowing);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "Hiba történt a like-olt posztok lekérésekor" },
+      { error: "Hiba történt a követett felhasználók által like-olt posztok lekérésekor" },
       { status: 500 }
     );
   }

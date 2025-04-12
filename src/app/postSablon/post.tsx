@@ -20,9 +20,8 @@ interface PostProps {
   onEdit?: (postId: number, content: string, file: File | null) => void;
   showActions?: boolean;
   hideInteractions?: boolean;
-  fullImage?: boolean; // Új prop a teljes kép megjelenítéséhez
+  fullImage?: boolean; 
 }
-
 
 export default function Post({
   id,
@@ -99,6 +98,7 @@ export default function Post({
       console.error("Error handling bookmark:", error);
     }
   };
+  
   const handleEdit = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -213,9 +213,10 @@ export default function Post({
             />
           </div>
   
-          <div>
+          <div className="flex items-center space-x-2">
             <h1 className="font-bold text-white text-base">{author}</h1>
-            <h2 className="text-gray-400 text-xs">{date}</h2>
+            <span className="text-gray-500">•</span>
+            <span className="text-gray-400 text-xs">{date}</span>
           </div>
         </div>
         {!hideInteractions && (
@@ -243,7 +244,10 @@ export default function Post({
       </div>
   
       <div className="pt-5" data-testid="post-content">
-        <p className="mb-4 text-gray-200 leading-relaxed">{currentContent}</p>
+        {/* Módosított szöveg megjelenítés korlátozással */}
+        <p className={`mb-4 text-gray-200 leading-relaxed ${!fullImage ? 'line-clamp-3 overflow-hidden' : ''}`}>
+          {currentContent}
+        </p>
         {currentImageSrc && (
           <div className={`overflow-hidden rounded-xl ${!fullImage ? 'max-h-96' : ''} mt-4 shadow-inner`}>
             <Image

@@ -98,7 +98,7 @@ export default function ProfilePage() {
             className="absolute top-0 left-0 w-full h-full"
           />
           {/* Profile Picture */}
-          <div className="absolute bottom-[-40px] left-5 w-20 h-20 rounded-full overflow-hidden border-2 border-dark-gray">
+          <div className="absolute bottom-[-40px] left-5 w-20 h-20 rounded-full overflow-hidden">
             <Image
               src={user.profileImage || "/yeti_pfp.jpg"}
               alt="Profile Picture"

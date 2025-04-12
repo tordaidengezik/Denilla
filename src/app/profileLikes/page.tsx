@@ -99,20 +99,22 @@ export default function ProfileLikes() {
           {/* "Liked by" információ */}
           <div className="flex items-center px-4 py-2 text-gray-400">
             <div className="flex-shrink-0 mr-2">
-              <Image
-                src={item.user.profileImage || "/yeti_pfp.jpg"}
-                alt={item.user.username}
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
+              <div className="w-6 h-6 rounded-full overflow-hidden">
+                <Image
+                  src={item.user.profileImage || "/yeti_pfp.jpg"}
+                  alt={item.user.username}
+                  width={24}
+                  height={24}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
             <span>
               liked by <span className="font-semibold text-white">{item.user.username}</span>
             </span>
           </div>
           
-          {/* A poszt megjelenítése */}
+          {/* A poszt megjelenítése - ez a rész változatlan */}
           <Post
             data-testid="post-content"
             id={item.post.id}

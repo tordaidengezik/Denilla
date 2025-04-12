@@ -65,22 +65,28 @@ export async function POST(req: Request) {
       },
     });
 
-    const otherUsers = await prisma.user.findMany({
+    // MÓDOSÍTOTT RÉSZ - Csak a követők lekérése
+    const followers = await prisma.follow.findMany({
       where: {
-        NOT: {
-          id: parseInt(userId),
-        },
+        followingId: parseInt(userId) // A posztoló felhasználó követői
       },
+      select: {
+        followerId: true // A követők ID-jai
+      }
     });
 
-    await prisma.notification.createMany({
-      data: otherUsers.map((user) => ({
-        toUserId: user.id,
-        type: "new_post",
-        message: `${post.user.username} created a new post`,
-        postId: post.id,
-      })),
-    });
+    // Csak a követőknek küldünk értesítést
+    if (followers.length > 0) {
+      await prisma.notification.createMany({
+        data: followers.map(follower => ({
+          toUserId: follower.followerId,
+          type: "new_post",
+          message: `${post.user.username} created a new post`,
+          postId: post.id,
+          fromUserId: parseInt(userId) // A posztoló felhasználó ID-ja
+        }))
+      });
+    }
 
     return NextResponse.json(post, { status: 201 });
   } catch (error) {
@@ -91,6 +97,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
 export async function GET(req: Request) {
   try {

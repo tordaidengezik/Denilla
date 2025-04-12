@@ -30,15 +30,15 @@ export async function GET(req: Request) {
       include: {
         post: {
           include: {
-            user: { select: { username: true, profileImage: true } },
+            user: { select: { id: true, username: true, profileImage: true } }, // JAVÍTVA: hozzáadtuk az id-t
             likes: true,
             bookmarks: true,
           },
         },
-        fromUser: { select: { username: true, profileImage: true } },
+        fromUser: { select: { id: true, username: true, profileImage: true } }, // JAVÍTVA: hozzáadtuk az id-t
       },
       orderBy: { createdAt: "desc" },
-    });
+    });    
 
     return NextResponse.json(notifications);
   } catch (error) {
@@ -49,3 +49,46 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const user = verifyToken(req);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { notificationId } = await req.json();
+    
+    if (!notificationId) {
+      return NextResponse.json({ error: "Missing notificationId" }, { status: 400 });
+    }
+
+    // Ellenőrizzük, hogy az értesítés a felhasználóhoz tartozik-e
+    const notification = await prisma.notification.findUnique({
+      where: { id: notificationId },
+      select: { toUserId: true }
+    });
+
+    if (!notification) {
+      return NextResponse.json({ error: "Notification not found" }, { status: 404 });
+    }
+
+    if (notification.toUserId !== parseInt(user.id)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    // Töröljük az értesítést az adatbázisból
+    await prisma.notification.delete({
+      where: { id: notificationId }
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    return NextResponse.json(
+      { error: "Failed to delete notification" },
+      { status: 500 }
+    );
+  }
+}
+

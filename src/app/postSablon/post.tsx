@@ -20,7 +20,9 @@ interface PostProps {
   onEdit?: (postId: number, content: string, file: File | null) => void;
   showActions?: boolean;
   hideInteractions?: boolean;
+  fullImage?: boolean; // Új prop a teljes kép megjelenítéséhez
 }
+
 
 export default function Post({
   id,
@@ -35,6 +37,7 @@ export default function Post({
   showActions = false,
   onLikeRemove,
   hideInteractions = false,
+  fullImage = false, 
 }: PostProps) {
   const [likeCount, setLikeCount] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
@@ -193,10 +196,13 @@ export default function Post({
   };
 
   return (
-    <div className="p-6 bg-black rounded-xl mx-3 my-3">
+    <div 
+      className={`p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl mx-3 my-6 ${!fullImage ? 'hover:translate-y-[-2px]' : ''} transition-all duration-300 shadow-md hover:shadow-xl border border-gray-800`}
+      onClick={fullImage ? undefined : handlePostClick}
+    >
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          {/* Profilkép konténer */}
+        <div className="flex items-center space-x-4" onClick={(e) => e.stopPropagation()}>
+          {/* Profilkép konténer - színes keret nélkül */}
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <Image
               src={profileImage}
@@ -206,22 +212,26 @@ export default function Post({
               className="w-full h-full object-cover"
             />
           </div>
-
-          <h1 className="font-bold text-white">{author}</h1>
-          <h1 className="flex text-gray-400">
-            <Dot />
-            {date}
-          </h1>
+  
+          <div>
+            <h1 className="font-bold text-white text-base">{author}</h1>
+            <h2 className="text-gray-400 text-xs">{date}</h2>
+          </div>
         </div>
         {!hideInteractions && (
-          <div className="flex items-center space-x-6">
-            <button onClick={handleLike} data-testid="like-button" className="flex items-center space-x-2">
+          <div className="flex items-center space-x-6" onClick={(e) => e.stopPropagation()}>
+            <button 
+              onClick={handleLike} 
+              data-testid="like-button" 
+              className="flex items-center space-x-2 p-2 hover:bg-gray-800/30 rounded-full transition-colors"
+            >
               <p className={liked ? "text-red-600" : "text-white"} data-testid="like-count">{likeCount} </p>
               <Heart className={liked ? "text-red-600" : "text-white"} />
             </button>
             <button
-              onClick={handleBookmark} data-testid="bookmark-button"
-              className="flex items-center space-x-2"
+              onClick={handleBookmark} 
+              data-testid="bookmark-button"
+              className="flex items-center space-x-2 p-2 hover:bg-gray-800/30 rounded-full transition-colors"
             >
               <p className={bookmarked ? "text-blue-500" : "text-white"} data-testid="bookmark-count">
                 {bookmarkCount}
@@ -231,24 +241,24 @@ export default function Post({
           </div>
         )}
       </div>
-
-      <div className="pt-5" onClick={handlePostClick} data-testid="post-content">
-        <p className="mb-4">{currentContent}</p>
+  
+      <div className="pt-5" data-testid="post-content">
+        <p className="mb-4 text-gray-200 leading-relaxed">{currentContent}</p>
         {currentImageSrc && (
-          <div className="overflow-hidden rounded-xl max-h-96 mt-4">
+          <div className={`overflow-hidden rounded-xl ${!fullImage ? 'max-h-96' : ''} mt-4 shadow-inner`}>
             <Image
               src={currentImageSrc}
               alt="Post Image"
               width={5000}
               height={5000}
-              className="w-full object-cover"
+              className={`w-full ${!fullImage ? 'object-cover hover:scale-[1.02] transition-transform duration-500' : 'object-contain'}`}
             /> 
           </div>
         )}
       </div>
-
+  
       {showActions && !isEditing && (
-        <div className="flex justify-end space-x-2 mt-4">
+        <div className="flex justify-end space-x-2 mt-4" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => setIsEditing(true)}
             className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700 transition-all flex items-center justify-center space-x-2"
@@ -266,16 +276,16 @@ export default function Post({
           </button>
         </div>
       )}
-
+  
       {showActions && isEditing && (
-        <div className="mt-4">
+        <div className="mt-4" onClick={(e) => e.stopPropagation()}>
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             className="w-full p-3 mb-4 bg-gray-800 text-white rounded-lg h-32 resize-none focus:ring-2 focus:ring-orange-650 focus:outline-none"
             placeholder="Add a description..."
           />
-
+  
           <input
             type="file"
             onChange={(e) => setEditFile(e.target.files?.[0] || null)}
@@ -284,7 +294,7 @@ export default function Post({
             file:bg-orange-600 file:text-white hover:file:bg-orange-700 transition-colors"
             accept="image/*"
           />
-
+  
           <div className="flex justify-end space-x-2 mt-2">
             <button
               onClick={() => setIsEditing(false)}
@@ -292,7 +302,7 @@ export default function Post({
             >
               Cancel
             </button>
-
+  
             <button
               onClick={handleEdit}
               className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700"
@@ -303,5 +313,5 @@ export default function Post({
         </div>
       )}
     </div>
-  );
+  );  
 }

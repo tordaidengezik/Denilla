@@ -198,7 +198,7 @@ export default function PostView() {
       });
 
       if (response.ok) {
-        const updatedComment = await response.json();
+        await response.json();
         setComments((prevComments) =>
           prevComments.map((c) =>
             c.id === editingCommentId ? { ...c, content: editCommentContent } : c

@@ -83,7 +83,7 @@ export default function ProfileLikes() {
     return (
       <div className="flex flex-col justify-center items-center mt-10 p-4">
         <div className="text-white text-center text-xl font-semibold mb-2">
-        its quiet
+          It's quiet here
         </div>
         <div className="text-gray-400 text-center text-sm">
         The users you follow havent liked any posts yet.

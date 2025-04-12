@@ -13,7 +13,7 @@ export default function ProfilePage() {
     username: "",
     description: "",
     profileImage: "/yeti_pfp.jpg",
-    coverImage: "/cover.jpg",
+    coverImage: "/cover.webp",
   });
 
   const [deleteProfileImage, setDeleteProfileImage] = useState(false);
@@ -91,7 +91,7 @@ export default function ProfilePage() {
         {/* Cover Image */}
         <div className="relative bg-gray-800 h-48">
           <Image
-            src={user.coverImage || "/cover.jpg"}
+            src={user.coverImage || "/cover.webp"}
             alt="Cover Image"
             layout="fill"
             objectFit="cover"
@@ -145,8 +145,8 @@ export default function ProfilePage() {
                     onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
                     className="flex-1 text-sm text-gray-400
                       file:mr-2 file:py-1.5 file:px-4 file:rounded-lg
-                      file:border-0 file:text-sm file:font-medium
-                      file:bg-orange-600 file:text-white
+                      file:border-0 file:text-sm file:font-bold
+                      file:bg-orange-600 file:text-white 
                       hover:file:bg-orange-700 transition-colors"
                     accept="image/*"
                   />
@@ -170,7 +170,7 @@ export default function ProfilePage() {
                     onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
                     className="flex-1 text-sm text-gray-400
                       file:mr-2 file:py-1.5 file:px-4 file:rounded-lg
-                      file:border-0 file:text-sm file:font-medium
+                      file:border-0 file:text-sm file:font-bold
                       file:bg-orange-600 file:text-white
                       hover:file:bg-orange-700 transition-colors"
                     accept="image/*"

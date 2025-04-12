@@ -96,14 +96,14 @@ export default function RightSideMenu() {
         </ul>
       </div>
 
-      {/* Top Trends Today szekció */}
+      {/* Módosított Top Trends Today szekció */}
       <div className="border border-gray-500 rounded-lg p-4 bg-black">
         <h2 className="text-white font-bold mb-4">Top Trends Today</h2>
         <ul className="space-y-2">
           <li>
             <p className="text-gray-500 opacity-70">1 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)}
+              onClick={() => router.push(`/search?q=NextJs`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #NextJs
@@ -112,7 +112,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">2 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)}
+              onClick={() => router.push(`/search?q=React`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #React
@@ -121,7 +121,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">3 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)}
+              onClick={() => router.push(`/search?q=JavaScript`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #JavaScript
@@ -130,7 +130,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">4 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)}
+              onClick={() => router.push(`/search?q=TailwindCSS`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #TailwindCSS
@@ -139,7 +139,7 @@ export default function RightSideMenu() {
           <li>
             <p className="text-gray-500 opacity-70">5 - trending</p>
             <a
-              onClick={() => router.push(`/postView?id=1`)}
+              onClick={() => router.push(`/search?q=WebDevelopment`)}
               className="text-orange-650 hover:underline cursor-pointer"
             >
               #WebDevelopment
@@ -150,4 +150,3 @@ export default function RightSideMenu() {
     </nav>
   );
 }
-

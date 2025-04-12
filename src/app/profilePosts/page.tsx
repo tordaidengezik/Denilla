@@ -19,11 +19,13 @@ interface PostType {
 
 export default function ProfilePosts() {
   const [userPosts, setUserPosts] = useState<PostType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
+        setIsLoading(true);
         const token = localStorage.getItem('token');
         if (!token) {
           router.push('/login');
@@ -42,6 +44,8 @@ export default function ProfilePosts() {
         }
       } catch (error) {
         console.error('Hiba történt a posztok betöltésekor:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -52,6 +56,30 @@ export default function ProfilePosts() {
     setUserPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
   }
 
+  // Betöltés közben spinner vagy üres hely
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-650"></div>
+      </div>
+    );
+  }
+
+  // Ha nincsenek posztok, üres állapot üzenet
+  if (userPosts.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center mt-10 p-4">
+        <div className="text-white text-center text-xl font-semibold mb-2">
+          It's quiet here
+        </div>
+        <div className="text-gray-400 text-center text-sm">
+          You haven't created any posts yet.
+        </div>
+      </div>
+    );
+  }
+
+  // Posztok megjelenítése
   return (
     <div>
       {userPosts.map((post) => (

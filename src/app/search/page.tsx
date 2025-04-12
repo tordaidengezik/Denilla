@@ -178,7 +178,7 @@ export default function Layout() {
 
         {!loading && searchQuery && (users.length === 0 && posts.length === 0) && (
           <div className="p-4 text-center text-white">
-            No results found for "{searchQuery}"
+            No results found for &quot;{searchQuery}&quot;
           </div>
         )}
 

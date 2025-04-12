@@ -61,11 +61,16 @@ export default function ProfileLikes() {
 
     fetchLikedPostsByFollowing();
     const handleLikeUpdate = () => setRefreshKey((prev) => prev + 1);
+    
     window.addEventListener("likeUpdate", handleLikeUpdate);
-
+    window.addEventListener("followStatusChanged", fetchLikedPostsByFollowing);
+    
     return () => {
       window.removeEventListener("likeUpdate", handleLikeUpdate);
+      window.removeEventListener("followStatusChanged", fetchLikedPostsByFollowing);
     };
+
+    
   }, [router, refreshKey]);
 
   if (isLoading) {
@@ -78,10 +83,10 @@ export default function ProfileLikes() {
     return (
       <div className="flex flex-col justify-center items-center mt-10 p-4">
         <div className="text-white text-center text-xl font-semibold mb-2">
-          csend van
+        its quiet
         </div>
         <div className="text-gray-400 text-center text-sm">
-          Az általad követett felhasználók még nem kedveltek posztokat.
+        The users you follow havent liked any posts yet.
         </div>
       </div>
     );

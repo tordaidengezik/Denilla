@@ -5,6 +5,7 @@ import RightSideMenu from "../rightSideMenu/page";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Post from "../postSablon/post";
+import { Search } from "lucide-react";
 
 // Új típusok
 interface User {
@@ -122,14 +123,17 @@ export default function Layout() {
 
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <div className="p-4">
-          <input
-            type="text"
-            data-testid="search-input"
-            placeholder="Search for posts or profiles"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 text-white bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-650"
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              data-testid="search-input"
+              placeholder="Search for posts or profiles"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full p-3 pl-10 text-white bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-650"
+            />
+          </div>
           
           <div className="flex justify-between mt-3 w-full px-4 sm:px-8 md:px-12 lg:px-20">
             <button
@@ -164,6 +168,7 @@ export default function Layout() {
             </button>
           </div>
         </div>
+
 
         {loading && (
           <div className="flex justify-center p-4">

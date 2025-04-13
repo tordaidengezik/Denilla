@@ -101,7 +101,7 @@ export default function Home() {
         )}
   
         {formVisible === "login" ? (
-          <div className="bg-[#1f1f1f]/50 p-4 md:p-6 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-gradient-to-r from-gray-900 to-orange-900/70 p-5 rounded-lg shadow-xl md:p-6 w-full max-w-md">
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
               <input
                 type="email"
@@ -127,13 +127,13 @@ export default function Home() {
             </form>
             <button
               onClick={() => setFormVisible("register")}
-              className="text-sm text-orange-650 mt-4 hover:underline"
+              className="text-base text-orange-650 mt-4 hover:underline font-bold"
             >
               Dont have an account? Create one here.
             </button>
           </div>
         ) : formVisible === "register" ? (
-          <div className="bg-[#1f1f1f]/50 p-4 md:p-6 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-gradient-to-r from-gray-900 to-orange-900/70 p-5 rounded-lg shadow-xl md:p-6 w-full max-w-md">
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
               <input
                 type="text"
@@ -166,7 +166,7 @@ export default function Home() {
             </form>
             <button
               onClick={() => setFormVisible("login")}
-              className="text-sm text-orange-650 mt-4 hover:underline"
+              className="text-base text-orange-650 mt-4 hover:underline font-bold"
             >
               Already have an account? Sign in here.
             </button>
@@ -189,7 +189,7 @@ export default function Home() {
           </div>
         )}
   
-        <h1 className="text-sm text-black text-center px-4 md:px-0">
+        <h1 className="text-sm text-black text-center px-4 md:px-0 font-bold">
           By signing up, you agree to the Terms of Service <br /> 
           and Privacy Policy, including Cookie Use.
         </h1>

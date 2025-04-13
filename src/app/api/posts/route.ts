@@ -201,12 +201,37 @@ export async function DELETE(req: Request) {
     }
 
     const { postId } = await req.json();
-
-    await prisma.post.delete({
-      where: {
-        id: postId,
-      },
-    });
+    
+    // Tranzakciót használunk, hogy biztosítsuk az atomicitást
+    await prisma.$transaction([
+      // Először töröljük a kapcsolódó like-okat
+      prisma.like.deleteMany({
+        where: {
+          postId: parseInt(postId),
+        },
+      }),
+      
+      // Töröljük a kapcsolódó könyvjelzőket
+      prisma.bookmark.deleteMany({
+        where: {
+          postId: parseInt(postId),
+        },
+      }),
+      
+      // Itt törölheted a többi kapcsolódó rekordot (pl. kommenteket, értesítéseket)
+      prisma.notification.deleteMany({
+        where: {
+          postId: parseInt(postId),
+        },
+      }),
+      
+      // Végül töröljük magát a posztot
+      prisma.post.delete({
+        where: {
+          id: parseInt(postId),
+        },
+      }),
+    ]);
 
     return NextResponse.json({ message: "Poszt sikeresen törölve" });
   } catch (error) {
@@ -217,3 +242,4 @@ export async function DELETE(req: Request) {
     );
   }
 }
+

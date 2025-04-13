@@ -267,8 +267,8 @@ export default function PostView() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
-
-      <main className="w-full md:w-2/4 h-2/4 md:h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
+  
+      <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         {/* Vissza gomb */}
         <div className="sticky top-0 z-10 p-4 flex items-center space-x-2 bg-dark-gray/90 backdrop-blur-sm border-b border-gray-700">
           <button
@@ -279,7 +279,7 @@ export default function PostView() {
           </button>
           <h2 className="text-white font-bold text-lg">Post</h2>
         </div>
-
+  
         <div key={post.id}>
           <Post
             data-testid="post-content"
@@ -294,14 +294,14 @@ export default function PostView() {
             fullImage={true} // Teljes kép megjelenítése részletes nézetben
           />
         </div>
-
+  
         {/* Kommentek */}
         <div className="px-4 py-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-bold text-xl">Comments ({comments.length})</h2>
             <div className="h-0.5 flex-grow ml-4 bg-gradient-to-r from-gray-700 to-transparent"></div>
           </div>
-
+  
           {/* Új komment írása */}
           <div className="mb-8 bg-gradient-to-r from-gray-900 to-black p-4 rounded-xl border border-gray-800">
             {/* Felhasználó adatok */}
@@ -342,7 +342,7 @@ export default function PostView() {
               </div>
             </div>
           </div>
-
+  
           {/* Kommentek listája */}
           {comments.length === 0 ? (
             <div className="text-center py-10">
@@ -369,7 +369,6 @@ export default function PostView() {
                       height={40}
                       className="rounded-full"
                     />
-
                     {/* Komment tartalom */}
                     <div className="flex-grow">
                       <div className="flex items-center justify-between">
@@ -440,7 +439,7 @@ export default function PostView() {
           )}
         </div>
       </main>
-
+  
       <RightSideMenu />
       
       {/* Komment törlés megerősítő modál */}
@@ -469,4 +468,5 @@ export default function PostView() {
       )}
     </div>
   );
+  
 }

@@ -10,10 +10,11 @@ import {
   Bell,
   Bookmark,
   LogOut,
-  X,
+  Menu,
   UserRound,
 } from "lucide-react";
 import CreatePostModal from "../createPost/createPost";
+import ReactDOM from "react-dom"; // Új import a Portal-hoz
 
 interface User {
   username: string;
@@ -47,7 +48,8 @@ export default function SideMenu() {
       ? "#F84F08"
       : "#FFFFFF";
 
-  const handleLogout = () => {
+  const handleLogout = (e: React.MouseEvent) => {
+    e.stopPropagation();
     localStorage.removeItem("token");
     router.push("/");
     setShowLogoutConfirm(false);
@@ -129,55 +131,66 @@ export default function SideMenu() {
     checkModerator();
   }, []);
 
-  return (
-    <>
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-gray-900 p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">
-            <h3 className="text-white text-xl font-bold mb-6 text-center">
-              Are you sure to logout?
-            </h3>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="px-6 py-2 rounded-lg font-bold text-white bg-gray-700 hover:bg-gray-600 transition-all w-full sm:w-36"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-6 py-2 rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700 transition-all w-full sm:w-36"
-              >
-                Yes
-              </button>
-            </div>
+  // Modál renderelése Portal segítségével
+  const renderLogoutConfirmModal = () => {
+    if (!showLogoutConfirm) return null;
+    
+    // Csak böngészőben rendereljük (NextJS SSR compatibility)
+    if (typeof document === 'undefined') return null;
+    
+    return ReactDOM.createPortal(
+      <div 
+        className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] backdrop-blur-sm"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowLogoutConfirm(false);
+        }}
+      >
+        <div 
+          className="p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl transition-all duration-300 shadow-md hover:shadow-xl border border-gray-800 w-full max-w-md mx-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3 className="text-white text-xl font-bold mb-6 text-center">
+            Are you sure to logout?
+          </h3>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutConfirm(false);
+              }}
+              className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-gray-700 hover:bg-gray-600 transition-all flex items-center justify-center space-x-2"
+            >
+              <span>Cancel</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-orange-650 hover:bg-orange-700 transition-all flex items-center justify-center space-x-2"
+            >
+              <span>Yes</span>
+            </button>
           </div>
         </div>
+      </div>,
+      document.body
+    );
+  };
+
+  return (
+    <>
+      {/* Logout megerősítő modál Portal használatával */}
+      {renderLogoutConfirmModal()}
+      
+      {/* Továbbfejlesztett hamburger gomb - szebb kinézet és jobb elhelyezés */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="lg:hidden fixed top-5 left-5 z-50 p-2.5 bg-gradient-to-r from-gray-900 to-gray-800 rounded-full shadow-lg border border-gray-700 hover:from-orange-650 hover:to-orange-700 transition-all duration-300"
+          aria-label="Menü nyitása"
+        >
+          <Menu className="w-6 h-6 text-white" />
+        </button>
       )}
-      {/* Hamburger gomb */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 rounded-full"
-        aria-label="Menü nyitása"
-      >
-        {isOpen ? (
-          <X className="w-6 h-6 text-white" />
-        ) : (
-          <svg
-            className="w-6 h-6 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        )}
-      </button>
 
       {/* Reszponzív menü konténer */}
       <div
@@ -294,10 +307,10 @@ export default function SideMenu() {
 
       {isModalOpen && <CreatePostModal onClose={() => setIsModalOpen(false)} />}
 
-      {/* Mobil overlay */}
+      {/* Mobil overlay - sötétebb háttérrel */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-black/80 z-40 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         />
       )}

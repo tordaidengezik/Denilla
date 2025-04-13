@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Dot, Heart, Bookmark, Trash2, Pencil } from "lucide-react";
+import { Heart, Bookmark, Trash2, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ReactDOM from "react-dom"; // Új import a Portal-hoz
 
 interface PostProps {
   id: number;
@@ -47,6 +48,7 @@ export default function Post({
   const [currentContent, setCurrentContent] = useState(content);
   const [editFile, setEditFile] = useState<File | null>(null);
   const [currentImageSrc, setCurrentImageSrc] = useState(imageSrc);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const router = useRouter();
 
@@ -69,6 +71,8 @@ export default function Post({
   }, [id]);
 
   const handlePostClick = () => {
+    // Ha a törlési megerősítő látható, ne navigálj
+    if (showDeleteConfirm) return;
     router.push(`/postView?id=${id}`);
   };
 
@@ -131,7 +135,13 @@ export default function Post({
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Megakadályozza a kattintási esemény buborékolását
+    setShowDeleteConfirm(true);
+  };
+  
+  const confirmDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Megakadályozza a kattintási esemény buborékolását
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -148,7 +158,6 @@ export default function Post({
       if (response.ok) {
         onDelete?.(id);
 
-        // Könyvjelzők frissítése
         const savedBookmarks = localStorage.getItem("bookmarkedPosts");
         if (savedBookmarks) {
           const bookmarkedPosts = JSON.parse(savedBookmarks);
@@ -165,6 +174,7 @@ export default function Post({
     } catch (error) {
       console.error("Hiba történt a törlés során:", error);
     }
+    setShowDeleteConfirm(false);
   };
 
   const handleLike = async () => {
@@ -195,11 +205,59 @@ export default function Post({
     }
   };
 
+  // Modál renderelése Portal segítségével
+  const renderDeleteConfirmModal = () => {
+    if (!showDeleteConfirm) return null;
+    
+    // Csak böngészőben rendereljük (NextJS SSR compatibility)
+    if (typeof document === 'undefined') return null;
+    
+    return ReactDOM.createPortal(
+      <div 
+        className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] backdrop-blur-sm"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowDeleteConfirm(false);
+        }}
+      >
+        <div 
+          className="p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl transition-all duration-300 shadow-md hover:shadow-xl border border-gray-800 w-full max-w-md mx-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3 className="text-white text-xl font-bold mb-6 text-center">
+            Are you sure you want to delete this post?
+          </h3>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDeleteConfirm(false);
+              }}
+              className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-gray-700 hover:bg-gray-600 transition-all flex items-center justify-center space-x-2"
+            >
+              <span>Cancel</span>
+            </button>
+            <button
+              onClick={confirmDelete}
+              className="px-4 py-1 m-1 min-w-[6rem] rounded-lg font-bold text-white bg-red-600 hover:bg-red-700 transition-all flex items-center justify-center space-x-2"
+            >
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
   return (
     <div 
       className={`p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl mx-3 my-6 ${!fullImage ? 'hover:translate-y-[-2px]' : ''} transition-all duration-300 shadow-md hover:shadow-xl border border-gray-800`}
       onClick={fullImage ? undefined : handlePostClick}
     >
+      {/* Törlési megerősítő modál Portal használatával */}
+      {renderDeleteConfirmModal()}
+      
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4" onClick={(e) => e.stopPropagation()}>
           {/* Profilkép konténer - színes keret nélkül */}

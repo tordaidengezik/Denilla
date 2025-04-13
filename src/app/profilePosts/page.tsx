@@ -70,13 +70,13 @@ export default function ProfilePosts() {
     return (
       <div className="flex flex-col justify-center items-center mt-10 p-4">
         <div className="text-white text-center text-xl font-semibold mb-2">
-          It's quiet here
+          It&apos;s quiet here
         </div>
         <div className="text-gray-400 text-center text-sm">
-          You haven't created any posts yet.
+          You haven&apos;t created any posts yet.
         </div>
       </div>
-    );
+    );    
   }
 
   // Posztok megjelenítése

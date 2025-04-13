@@ -277,31 +277,42 @@ export default function SideMenu() {
             </div>
           </nav>
 
-          {/* Profil és logout rész módosítva */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center justify-between space-x-3 w-[60%] max-w-lg border border-gray-600 rounded-full shadow-lg">
-            <Link
-              href="/profile"
-              className="flex items-center justify-start text-white text-base p-2 hover:bg-orange-650 rounded-full transition-all w-full"
-            >
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                <Image
-                  src={user.profileImage || "/yeti_pfp.jpg"}
-                  alt="Profile Picture"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="font-bold text-xl ml-3">{user.username}</span>
-            </Link>
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] sm:w-[80%] lg:w-[85%] max-w-[280px] bg-gradient-to-r from-gray-900 to-black border border-gray-700 rounded-full shadow-lg overflow-hidden">
+            <div className="flex items-center justify-between">
+              <Link
+                href="/profile"
+                className="flex items-center flex-grow py-2 pl-2 pr-1 hover:bg-gray-800/50 transition-all duration-300 rounded-l-full group"
+              >
+                <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-transparent group-hover:border-orange-650 transition-all duration-300">
+                  <Image
+                    src={user.profileImage || "/yeti_pfp.jpg"}
+                    alt="Profile Picture"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                <span className="font-semibold text-base ml-2 text-gray-100 group-hover:text-white truncate max-w-[130px] transition-all">
+                  {user.username}
+                </span>
+              </Link>
 
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              className="flex items-center justify-center p-3 text-white text-base hover:bg-red-600 rounded-full"
-            >
-              <LogOut color="#FFFFFF" size={24} />
-            </button>
+              <div className="h-8 w-px bg-gray-700 mx-1"></div>
+              
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutConfirm(true);
+                }}
+                className="p-2.5 text-gray-300 hover:text-white hover:bg-red-600/80 rounded-full transition-all duration-300 flex items-center justify-center ml-1"
+                aria-label="Kijelentkezés"
+              >
+                <LogOut size={20} />
+              </button>
+            </div>
           </div>
+
         </div>
       </div>
 

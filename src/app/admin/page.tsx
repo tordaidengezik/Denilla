@@ -142,19 +142,14 @@ export default function AdminPage() {
       });
   
       if (response.ok) {
-        setPosts(
-          posts.map((post) =>
-            post.id === editPost.id
-              ? { ...post, content: editPost.content, imageURL: editPost.imageURL }
-              : post
-          )
-        );
-        setEditPost({ id: null, content: "", imageURL: "" });
+        setEditPost({ id: null, content: "", imageURL: "" });        
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error editing post:", error);
     }
   };
+  
   
 
   const handleDelete = async () => {

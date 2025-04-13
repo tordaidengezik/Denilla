@@ -31,16 +31,24 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { postId, newContent } = await req.json();
+  const { postId, newContent, imageURL } = await req.json();
 
   if (!postId || !newContent) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
 
   try {
+    const updateData: { content: string; imageURL?: string } = {
+      content: newContent
+    };
+
+    if (imageURL !== undefined) {
+      updateData.imageURL = imageURL;
+    }
+
     const updatedPost = await prisma.post.update({
       where: { id: postId },
-      data: { content: newContent },
+      data: updateData,
     });
 
     return NextResponse.json(updatedPost);
@@ -49,3 +57,4 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Failed to update post" }, { status: 500 });
   }
 }
+

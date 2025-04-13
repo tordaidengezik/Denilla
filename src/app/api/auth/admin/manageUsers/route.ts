@@ -51,28 +51,7 @@ export async function DELETE(req: Request) {
   const { userId } = await req.json();
 
   try {
-    // 1. Töröljük a felhasználóhoz kapcsolódó értesítéseket
-    await prisma.notification.deleteMany({
-      where: { OR: [
-        { toUserId: userId },
-        { post: { userId: userId } }
-      ]}
-    });
-
-    // 2. Töröljük a felhasználó összes kapcsolatát
-    await prisma.$transaction([
-      prisma.like.deleteMany({ where: { userId: userId } }),
-      prisma.bookmark.deleteMany({ where: { userId: userId } }),
-      prisma.follow.deleteMany({ 
-        where: { OR: [
-          { followerId: userId },
-          { followingId: userId }
-        ]}
-      }),
-      prisma.post.deleteMany({ where: { userId: userId } }),
-    ]);
-
-    // 3. Töröljük magát a felhasználót
+    // Csak a felhasználó törlése szükséges, a kapcsolódó rekordokat az onDelete: Cascade kezeli
     await prisma.user.delete({
       where: { id: userId },
     });
@@ -94,3 +73,4 @@ export async function DELETE(req: Request) {
     );
   }
 }
+

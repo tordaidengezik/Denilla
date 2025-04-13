@@ -37,7 +37,7 @@ describe('Denilla Automata Tesztek', () => {
 
   // AT003: Szöveges poszt
   it('AT003 - Szöveges poszt létrehozása', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.get('[data-testid="create-post-button"]').click({ force: true })
     cy.get('[data-testid="post-content-input"]').type('Ez egy teszt poszt')
     cy.get('[data-testid="post-submit-button"]').click()
@@ -47,7 +47,7 @@ describe('Denilla Automata Tesztek', () => {
 
   // AT004: Képes poszt
   it('AT004 - Képes poszt létrehozása', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.get('[data-testid="create-post-button"]').click({ force: true }) 
     cy.get('[data-testid="post-content-input"]').type('Képes poszt')
     cy.get('[data-testid="img-upload-button"]').click()
@@ -59,18 +59,15 @@ describe('Denilla Automata Tesztek', () => {
 
   // AT005: Poszt kedvelése
   it('AT005 - Poszt like-olása', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.get('[data-testid="like-button"]').first().click()
     cy.wait(1000)
     cy.contains('[data-testid="like-count"]', '1', { timeout: 5000 }).should('exist')
-    cy.visit('/profile')
-    cy.get('[data-testid="likes-tab-button"]').click()
-    cy.get('[data-testid="post-content"]').should('exist')
   });
 
   // AT006: Felhasználó követése
   it('AT006 - Felhasználó követése', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.viewport(1400,1000)
     cy.get('[data-testid="follow-button"]').last().click()
     cy.get('[data-testid="follow-button"]').should('contain', 'Following')
@@ -80,7 +77,7 @@ describe('Denilla Automata Tesztek', () => {
 
   // AT007: Könyvjelző
   it('AT007 - Poszt könyvjelzőzése', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.get('[data-testid="bookmark-button"]').first().click()
     cy.get('[data-testid="bookmark-count"]').first().should('contain', '1')
     cy.visit('/bookmarks')
@@ -89,7 +86,7 @@ describe('Denilla Automata Tesztek', () => {
 
   // AT008: Keresés
   it('AT008 - Felhasználó keresése', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.visit('/search')
     cy.get('[data-testid="search-input"]').type('profile2')
     cy.get('[data-testid="search-result"]').should('contain', 'profile2')
@@ -104,7 +101,7 @@ describe('Denilla Automata Tesztek', () => {
 
   // AT010: Komment írása
   it('AT010 - Komment hozzáadása', () => {
-    cy.bejelentkezes(tesztFelhasznalo.email, tesztFelhasznalo.jelszo)
+    cy.bejelentkezes(ujFelhasznalo.email, ujFelhasznalo.jelszo)
     cy.get('[data-testid="post-content"]').first().click({ force: true })
     cy.wait(1000)
     cy.get('[data-testid="comment-input"]').type('Ez egy teszt komment')

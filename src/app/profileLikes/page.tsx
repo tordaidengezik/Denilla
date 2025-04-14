@@ -75,7 +75,7 @@ export default function ProfileLikes() {
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-40">
-      <div className="text-white text-lg">Betöltés...</div>
+      <div className="text-white text-lg">Loading...</div>
     </div>;
   }
 

@@ -168,13 +168,15 @@ export default function ModeratorPage() {
               className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gradient-to-r from-gray-900 to-gray-800 p-4 rounded-lg mb-2"
             >
               <div className="flex items-center mb-3 sm:mb-0">
-                <Image 
-                  src={user.profileImage || "/yeti_pfp.jpg"} 
-                  alt={user.username}
-                  width={40}
-                  height={40}
-                  className="rounded-full mr-3"
-                />
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                  <Image
+                    src={user.profileImage || "/yeti_pfp.jpg"}
+                    alt={user.username}
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <div>
                   <div className="text-white font-semibold">{user.username}</div>
                   {user.email && (

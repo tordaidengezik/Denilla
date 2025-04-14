@@ -27,21 +27,115 @@ interface Post {
   bookmarks?: { userId: number }[];
 }
 
-export default function ModeratorPage() {
+interface UserEditModalProps {
+  user: User;
+  onCancel: () => void;
+  onSave: (newUsername: string) => void;
+}
+
+interface PostEditModalProps {
+  post: Post;
+  onCancel: () => void;
+  onSave: (newContent: string, imageURL: string) => void;
+}
+
+function UserEditModal({ user, onCancel, onSave }: UserEditModalProps): JSX.Element {
+  const [username, setUsername] = useState<string>(user.username);
+
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-black p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">
+        <h3 className="text-white text-xl font-bold mb-4 text-center">Edit Username</h3>
+        <input
+          type="text"
+          value={username}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+          className="w-full p-2 mb-4 bg-gray-800 text-white rounded focus:ring-2 focus:ring-orange-650 focus:outline-none"
+        />
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-gray-700 hover:bg-gray-600 text-sm sm:text-base flex-1 sm:flex-none"
+          >
+            Cancel
+          </button> 
+          <button
+            onClick={() => onSave(username)}
+            className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PostEditModal({ post, onCancel, onSave }: PostEditModalProps): JSX.Element {
+  const [content, setContent] = useState<string>(post.content);
+  const [imageURL, setImageURL] = useState<string>(post.imageURL || "");
+
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-black p-6 rounded-lg border border-gray-600 w-full max-w-xl mx-4">
+        <h3 className="text-white text-xl font-bold mb-4 text-center">Edit Post</h3>
+        
+        {imageURL && (
+          <div className="mb-4">
+            <Image 
+              src={imageURL} 
+              width={500} 
+              height={300} 
+              alt="Post image" 
+              className="rounded-lg w-full h-auto object-cover"
+            />
+          </div>
+        )}
+        
+        <textarea
+          value={content}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
+          className="w-full p-3 mb-4 bg-gray-800 text-white rounded-lg h-32 resize-none focus:ring-2 focus:ring-orange-650 focus:outline-none"
+          placeholder="Edit post content..."
+        />
+        
+        <div className="flex flex-wrap gap-2 justify-end">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-gray-700 hover:bg-gray-600 text-sm sm:text-base flex-1 sm:flex-none"
+          >
+            Cancel
+          </button>
+          
+          {imageURL && (
+            <button
+              onClick={() => setImageURL("")}
+              className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700 text-sm sm:text-base flex-1 sm:flex-none"
+            >
+              Delete Image
+            </button>
+          )}
+          
+          <button
+            onClick={() => onSave(content, imageURL)}
+            className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ModeratorPage(): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [editUser, setEditUser] = useState<{
-    id: number | null;
-    username: string;
-  }>({ id: null, username: "" });
-  const [editPost, setEditPost] = useState<{
-    id: number | null;
-    content: string;
-    imageURL?: string;
-  }>({ id: null, content: "", imageURL: "" });
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
+  const [editingPostId, setEditingPostId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
@@ -64,7 +158,6 @@ export default function ModeratorPage() {
         
         if (postsRes.ok) {
           const postData = await postsRes.json();
-          // Normalizálás a hiányzó mezők miatt
           setPosts(postData.map((post: Partial<Post>) => ({
             ...post,
             likes: post.likes || [],
@@ -77,19 +170,18 @@ export default function ModeratorPage() {
       }
     };
     
-
     fetchData();
   }, []);
 
-  const handleUserEdit = async () => {
+  const handleUserSave = async (userId: number, newUsername: string): Promise<void> => {
     try {
       const token = localStorage.getItem("token");
-      if (!token || !editUser.id) return;
+      if (!token) return;
       
-      const targetUser = users.find(user => user.id === editUser.id);
+      const targetUser = users.find(user => user.id === userId);
       if (targetUser?.role === "admin") {
         console.error("Admin felhasználók szerkesztése nem engedélyezett");
-        setEditUser({ id: null, username: "" });
+        setEditingUserId(null);
         return;
       }
   
@@ -100,29 +192,28 @@ export default function ModeratorPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: editUser.id,
-          newUsername: editUser.username,
+          userId: userId,
+          newUsername: newUsername,
         }),
       });
   
       setUsers(
         users.map((user) =>
-          user.id === editUser.id
-            ? { ...user, username: editUser.username }
+          user.id === userId
+            ? { ...user, username: newUsername }
             : user
         )
       );
-      setEditUser({ id: null, username: "" });
+      setEditingUserId(null);
     } catch (error) {
       console.error("Error editing username:", error);
     }
   };
   
-
-  const handlePostEdit = async () => {
+  const handlePostSave = async (postId: number, newContent: string, imageURL: string): Promise<void> => {
     try {
       const token = localStorage.getItem("token");
-      if (!token || !editPost.id) return;
+      if (!token) return;
   
       const response = await fetch("/api/auth/moderator/editPost", {
         method: "PUT",
@@ -131,14 +222,14 @@ export default function ModeratorPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          postId: editPost.id,
-          newContent: editPost.content,
-          imageURL: editPost.imageURL
+          postId: postId,
+          newContent: newContent,
+          imageURL: imageURL
         }),
       });
   
       if (response.ok) {
-        setEditPost({ id: null, content: "", imageURL: "" });        
+        setEditingPostId(null);
         window.location.reload();
       } else {
         console.error("Failed to update post");
@@ -148,6 +239,8 @@ export default function ModeratorPage() {
     }
   };
   
+  const userToEdit = users.find(user => user.id === editingUserId);
+  const postToEdit = posts.find(post => post.id === editingPostId);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -203,7 +296,7 @@ export default function ModeratorPage() {
               
               {user.role !== "admin" ? (
                 <button
-                  onClick={() => setEditUser({ id: user.id, username: user.username })}
+                  onClick={() => setEditingUserId(user.id)}
                   className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
                 >
                   Edit
@@ -215,7 +308,6 @@ export default function ModeratorPage() {
               )}
             </div>
           ))}
-
         </section>
   
         <section className="p-4">
@@ -243,11 +335,7 @@ export default function ModeratorPage() {
                 
                 <div className="absolute top-4 right-4 flex z-10">
                   <button
-                    onClick={() => setEditPost({ 
-                      id: post.id, 
-                      content: post.content,
-                      imageURL: post.imageURL
-                    })}
+                    onClick={() => setEditingPostId(post.id)}
                     className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm"
                   >
                     Edit
@@ -260,84 +348,20 @@ export default function ModeratorPage() {
           )}
         </section>
   
-        {editUser.id && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
-            <div className="bg-black p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">
-              <h3 className="text-white text-xl font-bold mb-4 text-center">Edit Username</h3>
-              <input
-                type="text"
-                value={editUser.username}
-                onChange={(e) => setEditUser({ ...editUser, username: e.target.value })}
-                className="w-full p-2 mb-4 bg-gray-800 text-white rounded focus:ring-2 focus:ring-orange-650 focus:outline-none"
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => setEditUser({ id: null, username: "" })}
-                  className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-gray-700 hover:bg-gray-600 text-sm sm:text-base flex-1 sm:flex-none"
-                >
-                  Cancel
-                </button> 
-                <button
-                  onClick={handleUserEdit}
-                  className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
+        {userToEdit && (
+          <UserEditModal 
+            user={userToEdit}
+            onCancel={() => setEditingUserId(null)}
+            onSave={(newUsername: string) => handleUserSave(userToEdit.id, newUsername)}
+          />
         )}
         
-        {editPost.id && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
-            <div className="bg-black p-6 rounded-lg border border-gray-600 w-full max-w-xl mx-4">
-              <h3 className="text-white text-xl font-bold mb-4 text-center">Edit Post</h3>
-              
-              {editPost.imageURL && (
-                <div className="mb-4">
-                  <Image 
-                    src={editPost.imageURL} 
-                    width={500} 
-                    height={300} 
-                    alt="Post image" 
-                    className="rounded-lg w-full h-auto object-cover"
-                  />
-                </div>
-              )}
-              
-              <textarea
-                value={editPost.content}
-                onChange={(e) => setEditPost({ ...editPost, content: e.target.value })}
-                className="w-full p-3 mb-4 bg-gray-800 text-white rounded-lg h-32 resize-none focus:ring-2 focus:ring-orange-650 focus:outline-none"
-                placeholder="Edit post content..."
-              />
-              
-              <div className="flex flex-wrap gap-2 justify-end">
-                <button
-                  onClick={() => setEditPost({ id: null, content: "", imageURL: "" })}
-                  className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-gray-700 hover:bg-gray-600 text-sm sm:text-base flex-1 sm:flex-none"
-                >
-                  Cancel
-                </button>
-                
-                {editPost.imageURL && (
-                  <button
-                    onClick={() => setEditPost({...editPost, imageURL: ""})}
-                    className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-orange-650 hover:bg-orange-700 text-sm sm:text-base flex-1 sm:flex-none"
-                  >
-                    Delete Image
-                  </button>
-                )}
-                
-                <button
-                  onClick={handlePostEdit}
-                  className="px-3 py-1 rounded-lg font-bold text-white transition-all bg-blue-600 hover:bg-blue-700 text-sm sm:text-base flex-1 sm:flex-none"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
+        {postToEdit && (
+          <PostEditModal 
+            post={postToEdit}
+            onCancel={() => setEditingPostId(null)}
+            onSave={(newContent: string, imageURL: string) => handlePostSave(postToEdit.id, newContent, imageURL)}
+          />
         )}
       </main>
       <RightSideMenu />

@@ -22,9 +22,11 @@ interface Post {
 
 export default function Following() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const fetchFollowingPosts = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -44,13 +46,13 @@ export default function Following() {
       }
     } catch (error) {
       console.error("Error fetching following posts:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchFollowingPosts();
-
-    // Listen for follow status changes
     window.addEventListener("followStatusChanged", fetchFollowingPosts);
     return () => {
       window.removeEventListener("followStatusChanged", fetchFollowingPosts);
@@ -62,7 +64,11 @@ export default function Following() {
       <SideMenu />
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <TopMenu />
-        {posts.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center h-64 text-white">
+            <p>Downloading...</p>
+          </div>
+        ) : posts.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
             <p className="text-lg font-semibold">
               No posts from followed users yet

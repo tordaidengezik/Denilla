@@ -56,40 +56,40 @@ export default function ForYouPage() {
     fetchPosts();
   }, [router]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen text-white">
-        <p>Downloading...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <TopMenu />
-        {posts.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-white">
-            <p className="text-lg font-semibold">There aren't available posts</p>
-          </div>
-        ) : (
-          posts.map((post) => (
-            <div key={post.id}>
-              <Post
-                id={post.id}
-                author={post.user.username}
-                date={new Date(post.createdAt).toLocaleDateString()}
-                content={post.content}
-                imageSrc={post.imageURL}
-                initialLikes={post.likes.length}
-                initialBookmarks={post.bookmarks.length}
-                profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
-              />
-              <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+        
+        {/* Itt csak a dinamikus tartalomhoz jelenik meg a betöltés jelző */}
+        <div className="content-area">
+          {loading ? (
+            <div className="flex items-center justify-center h-64 text-white">
+              <p>Downloading...</p>
             </div>
-          ))
-        )}
+          ) : posts.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-white">
+              <p className="text-lg font-semibold">There aren't available posts</p>
+            </div>
+          ) : (
+            posts.map((post) => (
+              <div key={post.id}>
+                <Post
+                  id={post.id}
+                  author={post.user.username}
+                  date={new Date(post.createdAt).toLocaleDateString()}
+                  content={post.content}
+                  imageSrc={post.imageURL}
+                  initialLikes={post.likes.length}
+                  initialBookmarks={post.bookmarks.length}
+                  profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
+                />
+                <hr className="w-4/5 border-gray-500 border-t-2 mx-auto" />
+              </div>
+            ))
+          )}
+        </div>
       </main>
       <RightSideMenu />
     </div>

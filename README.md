@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Denilla Social Media Platform
 
-## Getting Started
+Egy modern közösségi média platform, ahol felhasználók posztokat hozhatnak létre, egymást követhetik.
 
-First, run the development server:
+---
 
+## 🌟 Főbb funkciók
+- 👤 **Felhasználókezelés**: Regisztráció, bejelentkezés, profil szerkesztés
+- 📝 **Posztok létrehozása**: Szöveges és képes posztok
+- ❤️ **Interakciók**: Like, kommentelés, könyvjelzőzés
+- 🛠️ **Moderátori felület**: Tartalomkezeléshez
+- 🔔 **Valós idejű értesítések**
+
+---
+
+## 🛠️ Technológiai verem
+- **Frontend**: Next.js 13, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Adatbázis**: PostgreSQL, Prisma ORM
+- **Tesztelés**: Cypress
+- **Telepítés**: Docker
+
+---
+
+## 📦 Telepítés helyi környezetben
+
+### ⚙️ Előfeltételek
+- [Node.js](https://nodejs.org/) 18+
+- [PostgreSQL](https://www.postgresql.org/) 14+
+- [Docker](https://www.docker.com/) (opcionális)
+
+### 1️⃣ **Csomagok telepítése**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install next@latest react@latest react-dom@latest
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2️⃣ **Adatbázis konfiguráció**
+```bash
+1: Hozz létre egy .env fájlt a projekt gyökerében, és add hozzá a következőket:
+DATABASE_URL="postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres?schema=public"
+JWT_SECRET=f3c7f103ff0df87e3b3ffdd983a9ef68a07df4e0d5ccbb80c2c94bf29d36dfb2
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2: Prisma inicializálása:
+npm i -g prisma
+prisma generate
+prisma db push
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3️⃣ **Admin felhasználó létrehozása**
+```bash
+npx prisma db seed
+```
+### 4️⃣ **Alkalmazás indítása**
+```bash
+npm run dev
+Az alkalmazás elérhető lesz a http://localhost:3000 címen
+```
+### ✅ **Tesztek futtatása**
+```bash
+npx cypress run
+```

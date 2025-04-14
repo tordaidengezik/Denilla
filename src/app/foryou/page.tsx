@@ -71,7 +71,7 @@ export default function ForYouPage() {
         <TopMenu />
         {posts.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
-            <p className="text-lg font-semibold">Nincsenek posztok</p>
+            <p className="text-lg font-semibold">There aren't available posts</p>
           </div>
         ) : (
           posts.map((post) => (

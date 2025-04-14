@@ -17,7 +17,7 @@ export async function GET(req: Request) {
       username: true,
       email: true,
       role: true,
-      profileImage: true, // Profilkép hozzáadása
+      profileImage: true, 
     },
   });
 

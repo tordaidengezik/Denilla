@@ -1,4 +1,3 @@
-// /api/notifications/following-posts/route.ts
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
@@ -59,8 +58,10 @@ export async function GET(req: Request) {
     });
 
     // 2. Debug információ
-    console.log(`Found ${followingPostNotifications.length} following post notifications for user ${user.id}`);
-    
+    console.log(
+      `Found ${followingPostNotifications.length} following post notifications for user ${user.id}`
+    );
+
     return NextResponse.json(followingPostNotifications);
   } catch (error) {
     console.error("Error fetching following post notifications:", error);

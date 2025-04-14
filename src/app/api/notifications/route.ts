@@ -30,15 +30,15 @@ export async function GET(req: Request) {
       include: {
         post: {
           include: {
-            user: { select: { id: true, username: true, profileImage: true } }, // JAVÍTVA: hozzáadtuk az id-t
+            user: { select: { id: true, username: true, profileImage: true } },
             likes: true,
             bookmarks: true,
           },
         },
-        fromUser: { select: { id: true, username: true, profileImage: true } }, // JAVÍTVA: hozzáadtuk az id-t
+        fromUser: { select: { id: true, username: true, profileImage: true } },
       },
       orderBy: { createdAt: "desc" },
-    });    
+    });
 
     return NextResponse.json(notifications);
   } catch (error) {
@@ -58,19 +58,25 @@ export async function DELETE(req: Request) {
     }
 
     const { notificationId } = await req.json();
-    
+
     if (!notificationId) {
-      return NextResponse.json({ error: "Missing notificationId" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing notificationId" },
+        { status: 400 }
+      );
     }
 
     // Ellenőrizzük, hogy az értesítés a felhasználóhoz tartozik-e
     const notification = await prisma.notification.findUnique({
       where: { id: notificationId },
-      select: { toUserId: true }
+      select: { toUserId: true },
     });
 
     if (!notification) {
-      return NextResponse.json({ error: "Notification not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Notification not found" },
+        { status: 404 }
+      );
     }
 
     if (notification.toUserId !== parseInt(user.id)) {
@@ -79,7 +85,7 @@ export async function DELETE(req: Request) {
 
     // Töröljük az értesítést az adatbázisból
     await prisma.notification.delete({
-      where: { id: notificationId }
+      where: { id: notificationId },
     });
 
     return NextResponse.json({ success: true });
@@ -91,4 +97,3 @@ export async function DELETE(req: Request) {
     );
   }
 }
-

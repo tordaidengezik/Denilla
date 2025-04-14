@@ -17,7 +17,6 @@ const verifyToken = (req: Request) => {
 };
 
 export async function POST(req: Request) {
-  // POST metódus marad változatlan
   try {
     const user = verifyToken(req);
     if (!user) {
@@ -71,7 +70,6 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  // DELETE metódus marad változatlan
   try {
     const user = verifyToken(req);
     if (!user) {
@@ -114,7 +112,7 @@ export async function GET(req: Request) {
     // Lekérdezzük, hogy a bejelentkezett felhasználó kiket követ
     const following = await prisma.follow.findMany({
       where: {
-        followerId: user.id,  // Akiket a felhasználó követ
+        followerId: user.id, // Akiket a felhasználó követ
       },
       select: {
         followingId: true,
@@ -127,23 +125,25 @@ export async function GET(req: Request) {
     }
 
     // Lekérdezzük a követett felhasználók által like-olt posztokat
-    const followingIds = following.map(f => f.followingId);
-    
+    const followingIds = following.map((f) => f.followingId);
+
     const likedPostsByFollowing = await prisma.like.findMany({
       where: {
         userId: {
-          in: followingIds,  // A követett felhasználók által like-olt posztok
+          in: followingIds, // A követett felhasználók által like-olt posztok
         },
       },
       include: {
-        user: {  // A like-oló (követett) felhasználó adatai
+        user: {
+          // A like-oló (követett) felhasználó adatai
           select: {
             id: true,
             username: true,
             profileImage: true,
           },
         },
-        post: {  // A like-olt poszt részletes adatai
+        post: {
+          // A like-olt poszt részletes adatai
           include: {
             user: {
               select: {
@@ -165,7 +165,10 @@ export async function GET(req: Request) {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "Hiba történt a követett felhasználók által like-olt posztok lekérésekor" },
+      {
+        error:
+          "Hiba történt a követett felhasználók által like-olt posztok lekérésekor",
+      },
       { status: 500 }
     );
   }

@@ -32,7 +32,7 @@ export async function GET(req: Request) {
       user: {
         select: {
           username: true,
-          profileImage: true, // Profilkép hozzáadása
+          profileImage: true, 
         },
       },
       likes: true,

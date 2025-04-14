@@ -26,7 +26,7 @@ export async function GET(req: Request) {
         mode: 'insensitive',
       },
       NOT: {
-        id: decoded.id, // Kizárjuk a bejelentkezett felhasználót
+        id: decoded.id,
       },
     },
     select: {

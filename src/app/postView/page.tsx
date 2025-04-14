@@ -11,7 +11,7 @@ import Post from "../postSablon/post";
 export default function PostView() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const postId = searchParams.get("id"); // Az URL-ből kiolvassuk az ID-t
+  const postId = searchParams.get("id");
 
   interface Comment {
     id: number;
@@ -51,11 +51,9 @@ export default function PostView() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isModerator, setIsModerator] = useState(false);
-  // Új állapotok a törlés megerősítéséhez
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
-  // Felhasználói adatok és szerepkörök lekérése
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -65,7 +63,6 @@ export default function PostView() {
           return;
         }
 
-        // Felhasználói profil lekérése
         const profileResponse = await fetch("/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +75,6 @@ export default function PostView() {
           console.log("User data loaded:", userData);
         }
 
-        // Admin jogosultság ellenőrzése
         const adminResponse = await fetch("/api/auth/admin/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -88,7 +84,6 @@ export default function PostView() {
           console.log("User is admin");
         }
         
-        // Moderátor jogosultság ellenőrzése
         const moderatorResponse = await fetch("/api/auth/moderator/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -105,7 +100,6 @@ export default function PostView() {
     fetchCurrentUser();
   }, [router]);
 
-  // Poszt lekérése
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -122,7 +116,6 @@ export default function PostView() {
     fetchPost();
   }, [postId]);
 
-  // Kommentek lekérése
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -140,7 +133,6 @@ export default function PostView() {
     fetchComments();
   }, [postId]);
 
-  // Új komment hozzáadása
   const handleAddComment = async () => {
     if (!newComment.trim() || isSubmitting) return;
     
@@ -161,7 +153,7 @@ export default function PostView() {
       if (response.ok) {
         const newCommentData = await response.json();
         setComments((prevComments) => [...prevComments, newCommentData]);
-        setNewComment(""); // Input mező törlése
+        setNewComment("");
       }
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -170,13 +162,11 @@ export default function PostView() {
     }
   };
 
-  // Komment szerkesztés kezdeményezése
   const handleEditComment = (comment: Comment) => {
     setEditingCommentId(comment.id);
     setEditCommentContent(comment.content);
   };
 
-  // Komment szerkesztés mentése
   const handleSaveCommentEdit = async () => {
     if (!editCommentContent.trim() || isSubmitting) return;
     
@@ -213,13 +203,11 @@ export default function PostView() {
     }
   };
 
-  // Komment törlés megerősítése
   const confirmDeleteComment = (commentId: number) => {
     setCommentToDelete(commentId);
     setShowDeleteConfirm(true);
   };
 
-  // Komment törlés végrehajtása
   const handleDeleteComment = async () => {
     try {
       if (!commentToDelete) return;
@@ -237,11 +225,9 @@ export default function PostView() {
       });
 
       if (response.ok) {
-        // Távolítsuk el a törölt kommentet a listából
         setComments((prevComments) =>
           prevComments.filter((c) => c.id !== commentToDelete)
         );
-        // Bezárjuk a modált
         setShowDeleteConfirm(false);
         setCommentToDelete(null);
       }
@@ -269,7 +255,6 @@ export default function PostView() {
       <SideMenu />
   
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
-        {/* Vissza gomb */}
         <div className="sticky top-0 z-10 p-4 flex items-center space-x-2 bg-dark-gray/90 backdrop-blur-sm border-b border-gray-700">
           <button
             onClick={() => router.back()}
@@ -291,20 +276,17 @@ export default function PostView() {
             initialLikes={post.likes.length}
             initialBookmarks={post.bookmarks.length}
             profileImage={post.user.profileImage || "/yeti_pfp.jpg"}
-            fullImage={true} // Teljes kép megjelenítése részletes nézetben
+            fullImage={true}
           />
         </div>
   
-        {/* Kommentek */}
         <div className="px-4 py-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-bold text-xl">Comments ({comments.length})</h2>
             <div className="h-0.5 flex-grow ml-4 bg-gradient-to-r from-gray-700 to-transparent"></div>
           </div>
   
-          {/* Új komment írása */}
           <div className="mb-8 bg-gradient-to-r from-gray-900 to-black p-4 rounded-xl border border-gray-800">
-            {/* Felhasználó adatok */}
             {currentUser && (
               <div className="flex items-center space-x-3 mb-3">
                 <Image
@@ -343,7 +325,6 @@ export default function PostView() {
             </div>
           </div>
   
-          {/* Kommentek listája */}
           {comments.length === 0 ? (
             <div className="text-center py-10">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -361,7 +342,6 @@ export default function PostView() {
                   className="bg-gradient-to-r from-gray-900 to-black p-4 rounded-xl border border-gray-800 transition-all"
                 >
                   <div className="flex items-start space-x-3">
-                    {/* Felhasználói kép */}
                     <Image
                       src={comment.user.profileImage || "/yeti_pfp.jpg"}
                       alt={comment.user.username}
@@ -369,16 +349,14 @@ export default function PostView() {
                       height={40}
                       className="rounded-full"
                     />
-                    {/* Komment tartalom */}
                     <div className="flex-grow">
                       <div className="flex items-center justify-between">
                         <p className="text-white font-semibold">{comment.user.username}</p>
                         
-                        {/* Egyszerűsített jogosultság ellenőrzés felhasználónév alapján */}
                         {(currentUser && (
-                          comment.user.username === currentUser.username || // saját komment
-                          isAdmin || // admin jogosultság
-                          isModerator // moderátor jogosultság
+                          comment.user.username === currentUser.username ||
+                          isAdmin || 
+                          isModerator 
                         )) && (
                           <div className="flex items-center gap-2">
                             <button
@@ -389,7 +367,6 @@ export default function PostView() {
                               <Pencil size={20} />
                             </button>
                             
-                            {/* Törlés gomb csak saját kommenthez vagy adminnak */}
                             {(comment.user.username === currentUser?.username || isAdmin) && (
                               <button
                                 onClick={() => confirmDeleteComment(comment.id)}
@@ -403,7 +380,6 @@ export default function PostView() {
                         )}
                       </div>
                       
-                      {/* Szerkesztés mód vagy megjelenítés */}
                       {editingCommentId === comment.id ? (
                         <div className="mt-2">
                           <textarea
@@ -442,7 +418,6 @@ export default function PostView() {
   
       <RightSideMenu />
       
-      {/* Komment törlés megerősítő modál */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-gray-900 p-6 rounded-lg border border-gray-600 w-full max-w-md mx-4">

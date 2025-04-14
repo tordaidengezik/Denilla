@@ -48,7 +48,6 @@ export default function NotificationPage() {
           return;
         }
 
-        // Alap értesítések (like, follow) és követett felhasználók posztértesítéseinek lekérése
         const [generalNotificationsRes, followingPostsRes] = await Promise.all([
           fetch("/api/notifications", {
             headers: { Authorization: `Bearer ${token}` },
@@ -62,7 +61,6 @@ export default function NotificationPage() {
         
         if (generalNotificationsRes.ok) {
           const generalData = await generalNotificationsRes.json();
-          // Kiszűrjük a new_post típusú értesítéseket az általános értesítések közül
           const filteredGeneral = generalData.filter((n: Notification) => n.type !== "new_post");
           allNotifications = [...filteredGeneral];
         }
@@ -73,7 +71,6 @@ export default function NotificationPage() {
           allNotifications = [...allNotifications, ...followingPostsData];
         }
         
-        // Rendezzük az értesítéseket dátum szerint csökkenő sorrendbe
         allNotifications.sort((a, b) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -117,12 +114,10 @@ export default function NotificationPage() {
     }
   };
 
-  // Egyszerűsített szűrési logika - nincs szükség followingUsers ellenőrzésre
   const filteredNotifications = notifications.filter(notification => 
     notificationType === 'all' || notification.type === notificationType
   );
 
-  // Értesítések számának kiszámítása típusonként - egyszerűsített
   const counts = {
     follow: notifications.filter(n => n.type === 'follow').length,
     like: notifications.filter(n => n.type === 'like').length,
@@ -136,7 +131,6 @@ export default function NotificationPage() {
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <h1 className="text-white text-center text-2xl font-bold mt-6 mb-4">Notifications</h1>
         
-        {/* Értesítés típus szűrő */}
         <div className="flex justify-between mt-2 w-full px-4 sm:px-8 md:px-12 lg:px-20">
           <button
             onClick={() => setNotificationType('all')}
@@ -233,7 +227,6 @@ export default function NotificationPage() {
                     onClick={() => handleNotificationClick(notification)}
                     className="flex-1 flex items-start gap-4 cursor-pointer"
                   >
-                    {/* Profilkép az értesítéshez */}
                     <div className="relative h-12 w-12 flex-shrink-0">
                       <Image
                         src={
@@ -245,7 +238,6 @@ export default function NotificationPage() {
                         fill
                         className="rounded-full object-cover"
                       />
-                      {/* Értesítés típus ikon */}
                       <div className={`absolute -bottom-1 -right-1 rounded-full p-1 
                         ${notification.type === 'follow' ? 'bg-blue-600' : 
                           notification.type === 'like' ? 'bg-red-600' : 'bg-green-600'}`}>
@@ -256,7 +248,6 @@ export default function NotificationPage() {
                     </div>
   
                     <div className="flex-1">
-                      {/* Üzenet szövege */}
                       <p className="text-white">
                         {notification.message}
                       </p>
@@ -266,7 +257,6 @@ export default function NotificationPage() {
                     </div>
                   </div>
   
-                  {/* Törlés gomb */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -279,7 +269,6 @@ export default function NotificationPage() {
                   </button>
                 </div>
   
-                {/* Poszt tartalom megjelenítése csak new_post típusnál */}
                 {notification.type === "new_post" && notification.post?.id === selectedPostId && (
                   <div className="mt-4">
                     <Post

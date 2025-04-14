@@ -9,7 +9,6 @@ import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 
-// Új típusok
 interface User {
   id: number; 
   username: string; 
@@ -59,7 +58,6 @@ export default function Layout() {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        // Párhuzamos keresés a két végponton
         const promises = [];
         
         if (searchType === 'all' || searchType === 'users') {
@@ -93,7 +91,6 @@ export default function Layout() {
       }
     };
 
-    // Debouncing a kereséshez (300ms késleltetés)
     const timeoutId = setTimeout(() => {
       fetchResults();
     }, 300);
@@ -248,7 +245,6 @@ export default function Layout() {
         
         {!searchQuery && (
           <div className="px-6 pt-2 space-y-6">
-            {/* Keresési tippek */}
             <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
               <h3 className="text-white font-bold mb-3">Search Tips</h3>
               <ul className="text-gray-300 space-y-2">
@@ -267,7 +263,6 @@ export default function Layout() {
               </ul>
             </div>
             
-            {/* Javasolt keresések */}
             <div>
               <h3 className="text-white font-bold mb-3">Try searching for:</h3>
               <div className="flex flex-wrap gap-2">

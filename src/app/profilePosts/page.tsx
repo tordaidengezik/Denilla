@@ -56,16 +56,12 @@ export default function ProfilePosts() {
     setUserPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
   }
 
-  // Betöltés közben spinner vagy üres hely
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-40">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-650"></div>
-      </div>
-    );
+    return <div className="flex justify-center items-center h-40">
+      <div className="text-white text-lg">Loading...</div>
+    </div>;
   }
 
-  // Ha nincsenek posztok, üres állapot üzenet
   if (userPosts.length === 0) {
     return (
       <div className="flex flex-col justify-center items-center mt-10 p-4">
@@ -79,7 +75,6 @@ export default function ProfilePosts() {
     );    
   }
 
-  // Posztok megjelenítése
   return (
     <div>
       {userPosts.map((post) => (

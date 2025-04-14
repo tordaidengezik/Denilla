@@ -51,7 +51,6 @@ export async function DELETE(req: Request) {
   const { userId } = await req.json();
 
   try {
-    // Csak a felhasználó törlése szükséges, a kapcsolódó rekordokat az onDelete: Cascade kezeli
     await prisma.user.delete({
       where: { id: userId },
     });

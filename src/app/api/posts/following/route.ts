@@ -16,7 +16,6 @@ export async function GET(req: Request) {
     };
     const userId = parseInt(decoded.id);
 
-    // Get posts from users that the current user follows
     const followingPosts = await prisma.post.findMany({
       where: {
         user: {

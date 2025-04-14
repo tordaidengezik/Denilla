@@ -68,7 +68,7 @@ export default function RightSideMenu() {
       <div className="border border-gray-500 rounded-lg p-4 bg-black mb-6">
         <h2 className="text-white font-bold mb-4">Who to Follow</h2>
         <ul className="space-y-1">
-          {users.map((user) => (
+          {users.slice(0, 5).map((user) => (
             <li key={user.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-900 transition">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden">
@@ -96,7 +96,6 @@ export default function RightSideMenu() {
         </ul>
       </div>
 
-      {/* Módosított Top Trends Today szekció */}
       <div className="border border-gray-500 rounded-lg p-4 bg-black">
         <h2 className="text-white font-bold mb-4">Top Trends Today</h2>
         <ul className="space-y-2">

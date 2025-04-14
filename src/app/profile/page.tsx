@@ -88,7 +88,6 @@ export default function ProfilePage() {
       <SideMenu />
 
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
-        {/* Cover Image */}
         <div className="relative bg-gray-800 h-48">
           <Image
             src={user.coverImage || "/cover.webp"}
@@ -97,7 +96,6 @@ export default function ProfilePage() {
             objectFit="cover"
             className="absolute top-0 left-0 w-full h-full"
           />
-          {/* Profile Picture */}
           <div className="absolute bottom-[-40px] left-5 w-20 h-20 rounded-full overflow-hidden">
             <Image
               src={user.profileImage || "/yeti_pfp.jpg"}
@@ -109,7 +107,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* User Info Section */}
         <div className="p-5 pt-14">
           <div className="flex items-center justify-between">
             <h1 className="text-white font-bold text-xl ml-5">
@@ -213,7 +210,6 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* Tabs */}
         <div className="flex border-b border-gray-500">
           <button
             onClick={() => setActiveTab("posts")}
@@ -234,7 +230,6 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* Content */}
         {activeTab === "posts" && <ProfilePosts />}
         {activeTab === "likes" && <ProfileLikes />}
       </main>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -40,82 +41,74 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-orange-500 to-black">
-      <div className="w-full max-w-lg bg-black rounded-lg shadow-lg p-8 border border-orange-500">
-        {/* Fejléc */}
-        <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-orange-500">Denilla</h1>
-          <p className="text-gray-400 text-sm">Next generation social network platform.</p>
+    <div
+      className="flex flex-col md:flex-row items-center justify-center h-screen text-white px-4 md:px-8 space-y-8 md:space-y-0 md:space-x-8 lg:space-x-16 xl:space-x-24"
+      style={{
+        background: "linear-gradient(45deg, #000000 45%, #F84F08 45%)",
+      }}
+    >
+      <div className="flex flex-col items-center space-y-4 mt-8 md:mt-0">
+        <div className="w-48 md:w-64 lg:w-72">
+          <Image 
+            src="/Denilla.png" 
+            alt="Denilla Logo" 
+            width={300} 
+            height={300}
+            className="w-full h-auto"
+          />
         </div>
+      </div>
 
-        {/* Bejelentkezési űrlap */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email mező */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-              Email
-            </label>
+      <div className="flex flex-col items-center space-y-6 px-4 md:px-0 pb-8 md:pb-0 w-full max-w-2xl md:translate-x-12 lg:translate-x-24">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black text-center">
+          Denilla
+        </h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold text-white/90 text-center">
+          Next generation social network platform.
+        </h1>
+
+        {message && (
+          <div className={`bg-black text-white p-3 rounded-lg w-full max-w-md mx-auto animate-fade-in backdrop-blur-sm ${
+            message.includes("Sikeres") ? "text-green-400" : "text-red-400"
+          }`}>
+            {message.includes("Sikeres") ? "✅ " : "⚠️ "}{message}
+          </div>
+        )}
+
+        <div className="bg-gradient-to-r from-gray-900 to-orange-900/70 p-5 rounded-lg shadow-xl md:p-6 w-full max-w-md">
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <input
               type="email"
               name="email"
               data-testid="email-input"
               id="email"
-              placeholder="Enter your email"
+              placeholder="Email"
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
             />
-          </div>
-
-          {/* Jelszó mező */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-              Password
-            </label>
             <input
               type="password"
               name="password"
               data-testid="password-input"
               id="password"
-              placeholder="Enter your password"
+              placeholder="Password"
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="px-4 py-2 rounded bg-black text-white focus:outline-none focus:ring-2 focus:ring-orange-650"
             />
-          </div>
-
-          {/* Bejelentkezés gomb */}
-          <button
-            type="submit"
-            data-testid="login-button"
-            className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-orange-400"
-          >
-            Sign In
-          </button>
-        </form>
-
-        {/* Üzenetek */}
-        {message && (
-          <p
-            className={`mt-4 text-center ${
-              message.includes("Sikeres") ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            {message}
-          </p>
-        )}
-
-        {/* Lábjegyzet */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-400 text-sm">
-            By signing in, you agree to the{" "}
-            <a href="#" className="text-orange-500 hover:text-orange-400">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-orange-500 hover:text-orange-400">
-              Privacy Policy
-            </a>.
-          </p>
+            <button
+              type="submit"
+              data-testid="login-button"
+              className="bg-black text-orange-650 px-6 py-2 rounded-lg hover:bg-gray-800 transition-all font-semibold"
+            >
+              Sign In
+            </button>
+          </form>
         </div>
+
+        <h1 className="text-sm text-black text-center px-4 md:px-0 font-bold">
+          By signing up, you agree to the Terms of Service <br /> 
+          and Privacy Policy, including Cookie Use.
+        </h1>
       </div>
     </div>
   );

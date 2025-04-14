@@ -62,7 +62,6 @@ export default function ForYouPage() {
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
         <TopMenu />
         
-        {/* Itt csak a dinamikus tartalomhoz jelenik meg a betöltés jelző */}
         <div className="content-area">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-white">

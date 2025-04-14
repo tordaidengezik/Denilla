@@ -24,7 +24,6 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Alapértelmezett értesítések lekérése
     const notifications = await prisma.notification.findMany({
       where: { toUserId: parseInt(user.id) },
       include: {
@@ -66,7 +65,6 @@ export async function DELETE(req: Request) {
       );
     }
 
-    // Ellenőrizzük, hogy az értesítés a felhasználóhoz tartozik-e
     const notification = await prisma.notification.findUnique({
       where: { id: notificationId },
       select: { toUserId: true },
@@ -83,7 +81,6 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    // Töröljük az értesítést az adatbázisból
     await prisma.notification.delete({
       where: { id: notificationId },
     });

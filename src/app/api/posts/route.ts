@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-// Token ellenőrző middleware
 const verifyToken = (req: Request) => {
   const authHeader = req.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -22,7 +21,6 @@ const verifyToken = (req: Request) => {
 
 export async function POST(req: Request) {
   try {
-    // Token ellenőrzés
     const user = verifyToken(req);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -40,7 +38,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Ideiglenes base64 kép tárolás
     let imageURL = null;
     if (file) {
       const bytes = await file.arrayBuffer();
@@ -65,17 +62,15 @@ export async function POST(req: Request) {
       },
     });
 
-    // MÓDOSÍTOTT RÉSZ - Csak a követők lekérése
     const followers = await prisma.follow.findMany({
       where: {
-        followingId: parseInt(userId) // A posztoló felhasználó követői
+        followingId: parseInt(userId) 
       },
       select: {
-        followerId: true // A követők ID-jai
+        followerId: true
       }
     });
 
-    // Csak a követőknek küldünk értesítést
     if (followers.length > 0) {
       await prisma.notification.createMany({
         data: followers.map(follower => ({
@@ -83,7 +78,7 @@ export async function POST(req: Request) {
           type: "new_post",
           message: `${post.user.username} created a new post`,
           postId: post.id,
-          fromUserId: parseInt(userId) // A posztoló felhasználó ID-ja
+          fromUserId: parseInt(userId) 
         }))
       });
     }
@@ -101,23 +96,20 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    // Token ellenőrzése
     const token = req.headers.get("authorization")?.split(" ")[1];
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Felhasználó ID kinyerése a tokenből
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       id: string;
     };
     const userId = parseInt(decoded.id);
 
-    // Posztok lekérése ahol a user nem egyezik
     const posts = await prisma.post.findMany({
       where: {
         userId: {
-          not: userId, // Kizárjuk a bejelentkezett felhasználó posztjait
+          not: userId,
         },
       },
       include: {

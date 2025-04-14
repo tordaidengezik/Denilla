@@ -11,7 +11,7 @@ async function main() {
       username: "admin",
       email: "admin@admin.com",
       password: hashedPassword,
-      role: "admin", // Admin szerepkör
+      role: "admin",
     },
   });
 

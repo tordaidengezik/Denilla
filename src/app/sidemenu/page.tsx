@@ -14,7 +14,7 @@ import {
   UserRound,
 } from "lucide-react";
 import CreatePostModal from "../createPost/createPost";
-import ReactDOM from "react-dom"; // Új import a Portal-hoz
+import ReactDOM from "react-dom";
 
 interface User {
   username: string;
@@ -131,11 +131,9 @@ export default function SideMenu() {
     checkModerator();
   }, []);
 
-  // Modál renderelése Portal segítségével
   const renderLogoutConfirmModal = () => {
     if (!showLogoutConfirm) return null;
     
-    // Csak böngészőben rendereljük (NextJS SSR compatibility)
     if (typeof document === 'undefined') return null;
     
     return ReactDOM.createPortal(
@@ -178,10 +176,7 @@ export default function SideMenu() {
 
   return (
     <>
-      {/* Logout megerősítő modál Portal használatával */}
-      {renderLogoutConfirmModal()}
-      
-      {/* Továbbfejlesztett hamburger gomb - szebb kinézet és jobb elhelyezés */}
+      {renderLogoutConfirmModal()}      
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -192,7 +187,6 @@ export default function SideMenu() {
         </button>
       )}
 
-      {/* Reszponzív menü konténer */}
       <div
         className={`
           fixed lg:relative
@@ -317,8 +311,6 @@ export default function SideMenu() {
       </div>
 
       {isModalOpen && <CreatePostModal onClose={() => setIsModalOpen(false)} />}
-
-      {/* Mobil overlay - sötétebb háttérrel */}
       {isOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/80 z-40 backdrop-blur-sm"

@@ -15,13 +15,11 @@ export async function POST(req: Request) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
     const { followingId } = await req.json();
 
-    // 1. Követő felhasználó adatainak lekérése
     const follower = await prisma.user.findUnique({
       where: { id: parseInt(decoded.id) },
       select: { username: true, profileImage: true }
     });
 
-    // 2. Követés létrehozása
     await prisma.follow.create({
       data: {
         followerId: parseInt(decoded.id),
@@ -29,7 +27,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // 3. Értesítés generálása
     await prisma.notification.create({
       data: {
         toUserId: parseInt(followingId),
@@ -49,7 +46,6 @@ export async function POST(req: Request) {
 }
 
 
-// Unfollow user
 export async function DELETE(req: Request) {
   try {
     const token = req.headers.get('authorization')?.split(' ')[1];

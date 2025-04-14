@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-// Bővített token ellenőrzés szerepkör információval
 const verifyToken = (req: Request) => {
   const authHeader = req.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) return null;
@@ -18,8 +17,6 @@ const verifyToken = (req: Request) => {
   }
 };
 
-// Kommentek lekérése egy poszthoz
-// Kommentek lekérése egy poszthoz
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const postId = url.searchParams.get("postId");
@@ -28,7 +25,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing postId" }, { status: 400 });
   }
 
-  // Összes komment lekérése egy poszthoz
   const comments = await prisma.comment.findMany({
     where: { postId: Number(postId) },
     include: {
@@ -43,7 +39,6 @@ export async function GET(req: Request) {
 }
 
 
-// Új komment létrehozása
 export async function POST(req: Request) {
   const user = verifyToken(req);
   if (!user) {
@@ -56,7 +51,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
-  // Konvertáljuk a postId-t Integer típusra
   const parsedPostId = parseInt(postId, 10);
 
   if (isNaN(parsedPostId)) {
@@ -79,7 +73,6 @@ export async function POST(req: Request) {
   return NextResponse.json(newComment);
 }
 
-// Komment szerkesztése
 export async function PUT(req: Request) {
   const user = verifyToken(req);
   if (!user) {
@@ -92,7 +85,6 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
-  // Komment adatok lekérése
   const comment = await prisma.comment.findUnique({
     where: { id: Number(commentId) },
     select: { userId: true }
@@ -102,7 +94,6 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Comment not found" }, { status: 404 });
   }
 
-  // Jogosultság ellenőrzése
   const isCommentOwner = comment.userId === user.id;
   const isAdmin = user.role === 'admin';
   const isModerator = user.role === 'moderator';
@@ -111,7 +102,6 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Permission denied" }, { status: 403 });
   }
 
-  // Komment frissítése
   const updatedComment = await prisma.comment.update({
     where: { id: Number(commentId) },
     data: { content },
@@ -125,7 +115,6 @@ export async function PUT(req: Request) {
   return NextResponse.json(updatedComment);
 }
 
-// Komment törlése
 export async function DELETE(req: Request) {
   const user = verifyToken(req);
   if (!user) {
@@ -138,7 +127,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Missing commentId" }, { status: 400 });
   }
 
-  // Komment adatok lekérése
   const comment = await prisma.comment.findUnique({
     where: { id: Number(commentId) },
     select: { userId: true }
@@ -148,7 +136,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Comment not found" }, { status: 404 });
   }
 
-  // Jogosultság ellenőrzése - csak tulajdonos vagy admin törölhet
   const isCommentOwner = comment.userId === user.id;
   const isAdmin = user.role === 'admin';
 
@@ -156,7 +143,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Permission denied" }, { status: 403 });
   }
 
-  // Komment törlése
   await prisma.comment.delete({
     where: { id: Number(commentId) }
   });

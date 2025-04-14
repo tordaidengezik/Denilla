@@ -25,7 +25,6 @@ body {
   transition: transform 0.3s ease-in-out;
 }
 
-/* Mobilnézetben fix pozícionálás */
 @media (max-width: 767px) {
   .fixed {
     position: fixed;

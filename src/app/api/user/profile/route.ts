@@ -65,7 +65,6 @@ export async function PUT(req: Request) {
     if (deleteProfileImage) {
       updateData.profileImage = null;
     } else if (formData.get('profileImage')) {
-      // Handle new profile image upload
       const profileImage = formData.get('profileImage') as File;
       const profileImageUrl = await handleImageUpload(profileImage);
       updateData.profileImage = profileImageUrl;
@@ -74,7 +73,6 @@ export async function PUT(req: Request) {
     if (deleteCoverImage) {
       updateData.coverImage = null;
     } else if (formData.get('coverImage')) {
-      // Handle new cover image upload
       const coverImage = formData.get('coverImage') as File;
       const coverImageUrl = await handleImageUpload(coverImage);
       updateData.coverImage = coverImageUrl;

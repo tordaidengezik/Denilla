@@ -19,7 +19,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ role: "admin" });
     }
 
-    return NextResponse.json({ role: null }, { status: 403 }); // Ha nem admin
+    return NextResponse.json({ role: null }, { status: 403 });
   } catch (error) {
     console.error("Role check error:", error);
     return NextResponse.json({ role: null }, { status: 401 });

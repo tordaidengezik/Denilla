@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Heart, Bookmark, Trash2, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import ReactDOM from "react-dom"; // Új import a Portal-hoz
+import ReactDOM from "react-dom"; 
 
 interface PostProps {
   id: number;
@@ -71,7 +71,6 @@ export default function Post({
   }, [id]);
 
   const handlePostClick = () => {
-    // Ha a törlési megerősítő látható, ne navigálj
     if (showDeleteConfirm) return;
     router.push(`/postView?id=${id}`);
   };
@@ -136,12 +135,12 @@ export default function Post({
   };
 
   const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Megakadályozza a kattintási esemény buborékolását
+    e.stopPropagation();
     setShowDeleteConfirm(true);
   };
   
   const confirmDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Megakadályozza a kattintási esemény buborékolását
+    e.stopPropagation();
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -205,11 +204,9 @@ export default function Post({
     }
   };
 
-  // Modál renderelése Portal segítségével
   const renderDeleteConfirmModal = () => {
     if (!showDeleteConfirm) return null;
     
-    // Csak böngészőben rendereljük (NextJS SSR compatibility)
     if (typeof document === 'undefined') return null;
     
     return ReactDOM.createPortal(
@@ -255,12 +252,10 @@ export default function Post({
       className={`p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl mx-3 my-6 ${!fullImage ? 'hover:translate-y-[-2px]' : ''} transition-all duration-300 shadow-md hover:shadow-xl border border-gray-800`}
       onClick={fullImage ? undefined : handlePostClick}
     >
-      {/* Törlési megerősítő modál Portal használatával */}
       {renderDeleteConfirmModal()}
       
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4" onClick={(e) => e.stopPropagation()}>
-          {/* Profilkép konténer - színes keret nélkül */}
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <Image
               src={profileImage}
@@ -302,7 +297,6 @@ export default function Post({
       </div>
   
       <div className="pt-5" data-testid="post-content">
-        {/* Módosított szöveg megjelenítés korlátozással */}
         <p className={`mb-4 text-gray-200 leading-relaxed ${!fullImage ? 'line-clamp-3 overflow-hidden' : ''}`}>
           {currentContent}
         </p>

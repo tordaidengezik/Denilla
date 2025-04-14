@@ -96,7 +96,6 @@ export default function ProfileLikes() {
     <div>
       {likedPosts.map((item) => (
         <div key={`${item.post.id}-${item.user.id}`} className="mb-4">
-          {/* "Liked by" információ */}
           <div className="flex items-center px-4 py-2 text-gray-400">
             <div className="flex-shrink-0 mr-2">
               <div className="w-6 h-6 rounded-full overflow-hidden">
@@ -114,7 +113,6 @@ export default function ProfileLikes() {
             </span>
           </div>
           
-          {/* A poszt megjelenítése - ez a rész változatlan */}
           <Post
             data-testid="post-content"
             id={item.post.id}

@@ -26,11 +26,9 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
   });
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Görgetés letiltása a modal megnyitásakor
   useEffect(() => {
     document.body.style.overflow = "hidden";
     
-    // Tisztítás a modal bezárásakor
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -42,7 +40,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
       router.push("/login");
       return;
     }
-    // Token dekódolása a user ID megszerzéséhez
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setUserId(payload.id);
@@ -109,7 +106,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
       });
 
       if (response.status === 401) {
-        // Token lejárt vagy érvénytelen
         localStorage.removeItem("token");
         router.push("/login");
         return;
@@ -125,20 +121,17 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
       setFile(null);
       setUploadedImage(null);
       onClose();
-      window.location.reload(); // Frissítjük az oldalt az új poszt megjelenítéséhez
+      window.location.reload();
     } catch (error) {
       console.error("Hiba történt a poszt létrehozásakor:", error);
     }
   };
 
-  // React Portal használata - csak a kliens oldalon
   const renderModal = () => {
-    // Ellenőrizzük, hogy a document objektum elérhető-e (csak kliens oldalon)
     if (typeof document === 'undefined') return null;
     
     return ReactDOM.createPortal(
       <>
-        {/* Háttér elmosás és overlay - enyhébb átlátszatlanság (80%) és kisebb blur */}
         <div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999]"
           onClick={onClose}
@@ -146,7 +139,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
           tabIndex={-1}
         ></div>
 
-        {/* Modal tartalom még magasabb z-index-szel */}
         <div className="fixed inset-0 z-[10000] flex justify-center items-center p-4">
           <div 
             className="bg-gradient-to-r from-gray-900 to-black p-6 rounded-xl w-full max-w-4xl h-auto border border-gray-700 shadow-xl relative"
@@ -155,7 +147,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
             aria-modal="true"
           >
             <div className="flex items-center space-x-4 mb-4">
-              {/* Profilkép konténer */}
               <div className="w-12 h-12 rounded-full overflow-hidden">
                 <Image
                   src={user.profileImage || "/yeti_pfp.jpg"}
@@ -166,9 +157,8 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
                 />
               </div>
               <h1 className="text-white font-bold text-lg">{user.username}</h1>
-            </div>
-            
-            {/* Textarea */}
+            </div>            
+
             <textarea
               data-testid="post-content-input"
               value={content}
@@ -195,7 +185,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
               </label>
             </div>
 
-            {/* Kép megjelenítés az X gombbal */}
             {uploadedImage && (
               <div className="relative flex justify-center items-center mt-4">
                 <Image
@@ -205,7 +194,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
                   height={500}
                   className="w-auto h-auto max-w-full max-h-[500px] object-contain rounded-lg"
                 />
-                {/* Kép eltávolítása gomb */}
                 <button 
                   onClick={() => {
                     setFile(null);
@@ -219,7 +207,6 @@ export default function CreatePostModal({ onClose }: CreatePostModalProps) {
               </div>
             )}
 
-            {/* Gombok a megadott stílusban */}
             <div className="flex justify-end space-x-4 mt-6">
               <button
                 onClick={onClose}

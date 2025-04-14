@@ -19,7 +19,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Missing search query' }, { status: 400 });
   }
 
-  // Keresés a posztokban tartalom alapján
   const posts = await prisma.post.findMany({
     where: {
       content: {

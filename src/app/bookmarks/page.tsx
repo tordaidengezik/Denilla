@@ -22,7 +22,7 @@ interface Post {
 
 export default function BookmarksPage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [searchQuery, setSearchQuery] = useState(""); // Új állapot a kereséshez
+  const [searchQuery, setSearchQuery] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
 
@@ -61,7 +61,6 @@ export default function BookmarksPage() {
     };
   }, [router, refreshKey]);
 
-  // Szűrjük a posztokat a keresési kifejezés alapján
   const filteredPosts = searchQuery
     ? posts.filter(post => 
         post.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -72,7 +71,6 @@ export default function BookmarksPage() {
     <div className="flex flex-col md:flex-row h-screen">
       <SideMenu />
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
-        {/* Kereső mező - csak akkor jelenik meg, ha van elmentett poszt */}
         {posts.length > 0 && (
           <div className="sticky top-0 bg-dark-gray p-4 z-10">
             <div className="relative">
@@ -97,7 +95,6 @@ export default function BookmarksPage() {
           </div>
         )}
 
-        {/* Posztok megjelenítése vagy üres üzenet */}
         {filteredPosts.length === 0 ? (
           <div className="flex items-center justify-center h-full text-white">
             {posts.length === 0 ? (

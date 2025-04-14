@@ -24,7 +24,6 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 1. Közvetlen lekérdezés a követett felhasználók posztjainak értesítéseihez
     const followingPostNotifications = await prisma.notification.findMany({
       where: {
         toUserId: parseInt(user.id),
@@ -57,7 +56,6 @@ export async function GET(req: Request) {
       },
     });
 
-    // 2. Debug információ
     console.log(
       `Found ${followingPostNotifications.length} following post notifications for user ${user.id}`
     );

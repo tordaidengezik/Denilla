@@ -11,7 +11,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Admin-ként minden felhasználót lekérdezhetünk
   const users = await prisma.user.findMany({
     select: {
       id: true,

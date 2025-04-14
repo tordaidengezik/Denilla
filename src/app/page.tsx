@@ -8,17 +8,24 @@ export default function Home() {
   const [formVisible, setFormVisible] = useState<"register" | "login" | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [actionType, setActionType] = useState<"login" | "register" | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage(null);
-        router.push('/foryou');
+        
+        if (actionType === "login") {
+          router.push('/foryou');
+        } 
+        else if (actionType === "register") {
+          router.push('/login');
+        }
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [successMessage, router]);
+  }, [successMessage, router, actionType]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -34,6 +41,8 @@ export default function Home() {
     
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
+    
+    setActionType(formVisible);
     
     try {
       const endpoint = formVisible === 'login' ? '/api/auth/login' : '/api/auth/register';
@@ -51,12 +60,10 @@ export default function Home() {
         localStorage.setItem('token', data.token);
       }
       
-      // Sikeres üzenet kezelése
       if (data.message) {
         setSuccessMessage(data.message);
       }
     } catch (error) {
-      // Hibaüzenet kezelése
       setErrorMessage(error instanceof Error ? error.message : 'Váratlan hiba');
     }
   };
@@ -197,9 +204,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-
-
-
-

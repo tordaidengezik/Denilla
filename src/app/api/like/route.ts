@@ -109,33 +109,29 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Lekérdezzük, hogy a bejelentkezett felhasználó kiket követ
     const following = await prisma.follow.findMany({
       where: {
-        followerId: user.id, // Akiket a felhasználó követ
+        followerId: user.id,
       },
       select: {
         followingId: true,
       },
     });
 
-    // Ha senkit nem követ, üres tömböt adunk vissza
     if (following.length === 0) {
       return NextResponse.json([]);
     }
 
-    // Lekérdezzük a követett felhasználók által like-olt posztokat
     const followingIds = following.map((f) => f.followingId);
 
     const likedPostsByFollowing = await prisma.like.findMany({
       where: {
         userId: {
-          in: followingIds, // A követett felhasználók által like-olt posztok
+          in: followingIds,
         },
       },
       include: {
         user: {
-          // A like-oló (követett) felhasználó adatai
           select: {
             id: true,
             username: true,
@@ -143,7 +139,6 @@ export async function GET(req: Request) {
           },
         },
         post: {
-          // A like-olt poszt részletes adatai
           include: {
             user: {
               select: {

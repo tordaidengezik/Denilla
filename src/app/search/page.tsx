@@ -272,16 +272,16 @@ export default function Layout() {
               <h3 className="text-white font-bold mb-3">Try searching for:</h3>
               <div className="flex flex-wrap gap-2">
                 <button 
-                  onClick={() => setSearchQuery("yeti")}
+                  onClick={() => setSearchQuery("gaming")}
                   className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full transition"
                 >
-                  yeti
+                  gaming
                 </button>
                 <button 
-                  onClick={() => setSearchQuery("szia")}
+                  onClick={() => setSearchQuery("politics")}
                   className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full transition"
                 >
-                  szia
+                  politics
                 </button>
                 <button 
                   onClick={() => setSearchQuery("food")}

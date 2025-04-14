@@ -291,7 +291,7 @@ export default function AdminPage() {
 
       <SideMenu/>
       <main className="w-full lg:w-3/4 min-[1300px]:w-2/4 h-full overflow-y-scroll scrollbar-hide bg-dark-gray border-l border-r border-gray-500">
-        <h1 className="text-white text-center text-3xl font-bold mt-10">Admin Panel</h1>
+        <h1 className="text-white text-center text-3xl font-bold mt-10">Admin Dashboard</h1>
 
         <section className="p-4">
           <h2 className="text-white text-xl font-bold mb-4">Manage Users</h2>

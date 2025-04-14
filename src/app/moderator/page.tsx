@@ -76,6 +76,7 @@ export default function ModeratorPage() {
         console.error("Error fetching data:", error);
       }
     };
+    
 
     fetchData();
   }, []);
@@ -122,8 +123,8 @@ export default function ModeratorPage() {
     try {
       const token = localStorage.getItem("token");
       if (!token || !editPost.id) return;
-
-      await fetch("/api/auth/moderator/editPost", {
+  
+      const response = await fetch("/api/auth/moderator/editPost", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -135,19 +136,18 @@ export default function ModeratorPage() {
           imageURL: editPost.imageURL
         }),
       });
-
-      setPosts(
-        posts.map((post) =>
-          post.id === editPost.id
-            ? { ...post, content: editPost.content, imageURL: editPost.imageURL }
-            : post
-        )
-      );
-      setEditPost({ id: null, content: "", imageURL: "" });
+  
+      if (response.ok) {
+        setEditPost({ id: null, content: "", imageURL: "" });        
+        window.location.reload();
+      } else {
+        console.error("Failed to update post");
+      }
     } catch (error) {
       console.error("Error editing post:", error);
     }
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
